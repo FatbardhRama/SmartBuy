@@ -1,4 +1,4 @@
-import Image from "next/image";
+/*import Image from "next/image";
 
 export default function Home() {
   return (
@@ -62,4 +62,18 @@ export default function Home() {
       </main>
     </div>
   );
+}
+*/
+import { ThemeToggle } from "@/components/theme-toggle"
+
+export default function Home() {
+  return (
+    <main className="p-10">
+      <h1 className="text-4xl font-bold mb-5">
+        SmartBuy
+      </h1>
+
+      <ThemeToggle />
+    </main>
+  )
 }
