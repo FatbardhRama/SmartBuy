@@ -64,16 +64,20 @@ export default function Home() {
   );
 }
 */
-import { ThemeToggle } from "@/components/theme-toggle"
+import { HeroSection } from "@/components/home/HeroSection";
+import { Categories } from "@/components/home/Categories";
+import { FeaturedProducts } from "@/components/home/FeaturedProducts";
+import { FlashDeals } from "@/components/home/FlashDeals";
+import { Newsletter } from "@/components/home/Newsletter";
 
 export default function Home() {
   return (
-    <main className="p-10">
-      <h1 className="text-4xl font-bold mb-5">
-        SmartBuy
-      </h1>
-
-      <ThemeToggle />
-    </main>
-  )
+    <>
+      <HeroSection />
+      <Categories />
+      <FeaturedProducts />
+      <FlashDeals />
+      <Newsletter />
+    </>
+  );
 }
