@@ -16,6 +16,16 @@ model User {
   updatedAt DateTime @updatedAt
 }
 
+model Product {
+  id          String   @id @default(cuid())
+  name        String
+  description String
+  price       Float
+  image       String
+  category    String
+  createdAt   DateTime @default(now())
+}
+
 enum Role {
   CUSTOMER
   ADMIN
