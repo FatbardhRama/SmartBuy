@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { signIn } from "next-auth/react";
 
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -26,25 +27,21 @@ export function LoginForm() {
     setMessage("");
 
     try {
-      const res = await fetch("/api/auth/login", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          email,
-          password,
-        }),
+      const result = await signIn("credentials", {
+        email,
+        password,
+        redirect: false,
       });
 
-      const data = await res.json();
 
-      if (!res.ok) {
-        setMessage(data.message);
+      if (result?.error) {
+        setMessage("Invalid email or password");
         return;
       }
 
+
       setMessage("Login successful");
+
 
     } catch {
       setMessage("Something went wrong");
@@ -63,7 +60,7 @@ export function LoginForm() {
       </CardHeader>
 
       <CardContent>
-        <form 
+        <form
           onSubmit={handleSubmit}
           className="space-y-4"
         >
@@ -72,7 +69,7 @@ export function LoginForm() {
             type="email"
             placeholder="Email"
             value={email}
-            onChange={(e)=>setEmail(e.target.value)}
+            onChange={(e) => setEmail(e.target.value)}
           />
 
 
@@ -80,11 +77,14 @@ export function LoginForm() {
             type="password"
             placeholder="Password"
             value={password}
-            onChange={(e)=>setPassword(e.target.value)}
+            onChange={(e) => setPassword(e.target.value)}
           />
 
 
-          <Button className="w-full">
+          <Button
+            className="w-full"
+            disabled={loading}
+          >
             {loading ? "Logging in..." : "Login"}
           </Button>
 

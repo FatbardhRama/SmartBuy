@@ -1,4 +1,5 @@
 import { ThemeProvider } from "@/components/theme-provider";
+import { SessionProvider } from "@/components/providers/SessionProvider";
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
 import type { Metadata } from "next";
@@ -37,13 +38,17 @@ export default function RootLayout({
           defaultTheme="system"
           enableSystem
         >
-          <Header />
+          <SessionProvider>
 
-          <main className="flex-1">
-            {children}
-          </main>
+            <Header />
 
-          <Footer />
+            <main className="flex-1">
+              {children}
+            </main>
+
+            <Footer />
+
+          </SessionProvider>
         </ThemeProvider>
       </body>
     </html>
