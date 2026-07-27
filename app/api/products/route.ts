@@ -8,7 +8,16 @@ export async function GET() {
     const products = await prisma.product.findMany({
       orderBy: {
         createdAt: "desc",
-      },
+       },
+
+  select: {
+    id: true,
+    name: true,
+    description: true,
+    price: true,
+    image: true,
+    category: true,
+  },
     });
 
 
@@ -124,6 +133,66 @@ export async function DELETE(req: Request) {
     return NextResponse.json(
       {
         message: "Failed to delete product",
+      },
+      {
+        status: 500,
+      }
+    );
+
+  }
+}
+
+export async function PUT(req: Request) {
+  try {
+
+    const body = await req.json();
+
+    const {
+      id,
+      name,
+      description,
+      price,
+      image,
+      category,
+    } = body;
+
+
+    if (!id) {
+      return NextResponse.json(
+        {
+          message: "Product id is required",
+        },
+        {
+          status: 400,
+        }
+      );
+    }
+
+
+    const product = await prisma.product.update({
+      where: {
+        id,
+      },
+
+      data: {
+        name,
+        description,
+        price: Number(price),
+        image,
+        category,
+      },
+    });
+
+
+    return NextResponse.json(product);
+
+
+  } catch (error) {
+    console.error("Error updating product:", error);
+
+    return NextResponse.json(
+      {
+        message: "Failed to update product",
       },
       {
         status: 500,

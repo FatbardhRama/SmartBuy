@@ -22,8 +22,11 @@ export default function AdminPage() {
 
   const [products, setProducts] = useState<any[]>([]);
 
+  const [editingId, setEditingId] = useState<string | null>(null);
+
   const [message, setMessage] = useState("");
   const [loading, setLoading] = useState(false);
+
 
 
   async function fetchProducts() {
@@ -45,11 +48,14 @@ export default function AdminPage() {
   }
 
 
+
   useEffect(() => {
 
     fetchProducts();
 
   }, []);
+
+
 
 
 
@@ -63,32 +69,55 @@ export default function AdminPage() {
 
     try {
 
+
       const res = await fetch("/api/products", {
 
-        method: "POST",
+        method: editingId ? "PUT" : "POST",
 
         headers: {
           "Content-Type": "application/json",
         },
 
-        body: JSON.stringify({
-          name,
-          description,
-          price,
-          image,
-          category,
-        }),
+
+        body: JSON.stringify(
+
+          editingId
+
+          ?
+
+          {
+            id: editingId,
+            name,
+            description,
+            price,
+            image,
+            category,
+          }
+
+          :
+
+          {
+            name,
+            description,
+            price,
+            image,
+            category,
+          }
+
+        ),
 
       });
+
 
 
       const data = await res.json();
 
 
+
       if (!res.ok) {
 
         setMessage(
-          data.message || "Failed to create product"
+          data.message || "Operation failed"
         );
 
         return;
@@ -96,7 +125,13 @@ export default function AdminPage() {
       }
 
 
-      setMessage("Product created successfully");
+
+      setMessage(
+        editingId
+          ? "Product updated successfully"
+          : "Product created successfully"
+      );
+
 
 
       setName("");
@@ -105,55 +140,96 @@ export default function AdminPage() {
       setImage("");
       setCategory("");
 
+      setEditingId(null);
 
-      // rifreskon listën
+
+
       fetchProducts();
 
 
+
     } catch {
+
 
       setMessage("Something went wrong");
 
 
     } finally {
 
+
       setLoading(false);
+
 
     }
 
+
   }
+
+
+
+
 
   async function deleteProduct(id: string) {
 
-  try {
-
-    const res = await fetch("/api/products", {
-
-      method: "DELETE",
-
-      headers: {
-        "Content-Type": "application/json",
-      },
-
-      body: JSON.stringify({
-        id,
-      }),
-
-    });
+    try {
 
 
-    if (res.ok) {
-      fetchProducts();
+      const res = await fetch("/api/products", {
+
+        method: "DELETE",
+
+        headers: {
+          "Content-Type": "application/json",
+        },
+
+        body: JSON.stringify({
+          id,
+        }),
+
+      });
+
+
+
+      if (res.ok) {
+
+        fetchProducts();
+
+      }
+
+
+
+    } catch {
+
+      console.log("Delete failed");
+
     }
-
-
-  } catch {
-
-    console.log("Delete failed");
 
   }
 
-}
+
+
+
+
+  function editProduct(product:any) {
+
+       console.log("Editing product:", product);
+    setEditingId(product.id);
+
+    setName(product.name);
+
+    setDescription(product.description);
+
+    setPrice(product.price);
+
+    setImage(product.image);
+
+    setCategory(product.category);
+
+  }
+
+
+
+
 
   return (
 
@@ -166,10 +242,16 @@ export default function AdminPage() {
         <CardHeader>
 
           <CardTitle>
-            Admin - Add Product
+
+            {editingId
+              ? "Admin - Edit Product"
+              : "Admin - Add Product"
+            }
+
           </CardTitle>
 
         </CardHeader>
+
 
 
         <CardContent>
@@ -188,11 +270,13 @@ export default function AdminPage() {
             />
 
 
+
             <Input
               placeholder="Description"
               value={description}
               onChange={(e)=>setDescription(e.target.value)}
             />
+
 
 
             <Input
@@ -203,11 +287,13 @@ export default function AdminPage() {
             />
 
 
+
             <Input
               placeholder="Image URL"
               value={image}
               onChange={(e)=>setImage(e.target.value)}
             />
+
 
 
             <Input
@@ -217,12 +303,24 @@ export default function AdminPage() {
             />
 
 
+
             <Button
               className="w-full"
               disabled={loading}
             >
 
-              {loading ? "Adding..." : "Add Product"}
+              {
+                loading
+                ?
+                "Saving..."
+                :
+                editingId
+                ?
+                "Update Product"
+                :
+                "Add Product"
+              }
+
 
             </Button>
 
@@ -231,10 +329,13 @@ export default function AdminPage() {
             {message && (
 
               <p className="text-center text-sm">
+
                 {message}
+
               </p>
 
             )}
+
 
 
           </form>
@@ -247,22 +348,26 @@ export default function AdminPage() {
 
 
 
-      {/* PRODUCTS LIST */}
 
 
       <div className="w-full max-w-lg mt-10">
 
 
         <h2 className="text-xl font-bold mb-4">
+
           Existing Products
+
         </h2>
+
 
 
 
         <div className="space-y-4">
 
 
+
           {products.map((product)=> (
+
 
             <Card key={product.id}>
 
@@ -270,20 +375,30 @@ export default function AdminPage() {
               <CardContent className="p-4 flex justify-between items-center">
 
 
+
                 <div>
 
+
                   <h3 className="font-semibold">
+
                     {product.name}
+
                   </h3>
 
 
+
                   <p>
+
                     ${product.price}
+
                   </p>
 
 
+
                   <p className="text-sm text-muted-foreground">
+
                     {product.category}
+
                   </p>
 
 
@@ -291,12 +406,40 @@ export default function AdminPage() {
 
 
 
-                <Button
-                   variant="destructive"
-                      onClick={() => deleteProduct(product.id)}
-                      >
-                          Delete
-                 </Button>
+
+
+                <div className="flex gap-2">
+
+
+                  <Button
+
+                    variant="outline"
+
+                    onClick={() => editProduct(product)}
+
+                  >
+
+                    Edit
+
+                  </Button>
+
+
+
+                  <Button
+
+                    variant="destructive"
+
+                    onClick={() => deleteProduct(product.id)}
+
+                  >
+
+                    Delete
+
+                  </Button>
+
+
+                </div>
+
 
 
               </CardContent>
@@ -304,7 +447,10 @@ export default function AdminPage() {
 
             </Card>
 
+
+
           ))}
+
 
 
         </div>
@@ -316,5 +462,7 @@ export default function AdminPage() {
 
     </div>
 
+
   );
+
 }
