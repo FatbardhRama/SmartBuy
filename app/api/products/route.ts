@@ -87,3 +87,48 @@ export async function POST(req: Request) {
 
   }
 }
+
+export async function DELETE(req: Request) {
+  try {
+
+    const { id } = await req.json();
+
+
+    if (!id) {
+      return NextResponse.json(
+        {
+          message: "Product id is required",
+        },
+        {
+          status: 400,
+        }
+      );
+    }
+
+
+    await prisma.product.delete({
+      where: {
+        id,
+      },
+    });
+
+
+    return NextResponse.json({
+      message: "Product deleted successfully",
+    });
+
+
+  } catch (error) {
+
+    console.error("Error deleting product:", error);
+    return NextResponse.json(
+      {
+        message: "Failed to delete product",
+      },
+      {
+        status: 500,
+      }
+    );
+
+  }
+}
