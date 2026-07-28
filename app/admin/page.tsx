@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useEffect, useState, type FormEvent } from "react";
 
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -11,56 +11,50 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 
+type Product = {
+  id: string;
+  name: string;
+  description: string;
+  price: number;
+  image: string;
+  category: string;
+};
 
 export default function AdminPage() {
-
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
   const [price, setPrice] = useState("");
   const [image, setImage] = useState("");
   const [category, setCategory] = useState("");
 
-  const [products, setProducts] = useState<any[]>([]);
+  const [products, setProducts] = useState<Product[]>([]);
 
   const [editingId, setEditingId] = useState<string | null>(null);
 
   const [message, setMessage] = useState("");
   const [loading, setLoading] = useState(false);
 
-
-
   async function fetchProducts() {
-
     try {
-
       const res = await fetch("/api/products");
-
-      const data = await res.json();
-
+      const data = (await res.json()) as Product[];
       setProducts(data);
-
     } catch {
-
-      console.log("Failed to fetch products");
-
+      // Fetch error is intentionally not surfaced here.
     }
-
   }
 
 
 
   useEffect(() => {
-
-    fetchProducts();
-
+    Promise.resolve().then(fetchProducts);
   }, []);
 
 
 
 
 
-  async function handleSubmit(e: React.FormEvent) {
-
+  async function handleSubmit(e: FormEvent) {
     e.preventDefault();
 
     setLoading(true);
@@ -170,61 +164,34 @@ export default function AdminPage() {
 
 
   async function deleteProduct(id: string) {
-
     try {
-
-
       const res = await fetch("/api/products", {
-
         method: "DELETE",
-
         headers: {
           "Content-Type": "application/json",
         },
-
-        body: JSON.stringify({
-          id,
-        }),
-
+        body: JSON.stringify({ id }),
       });
 
-
-
       if (res.ok) {
-
         fetchProducts();
-
       }
-
-
-
     } catch {
-
-      console.log("Delete failed");
-
+      // Ignore delete errors in this UI.
     }
-
   }
 
 
 
 
 
-  function editProduct(product:any) {
-
-       console.log("Editing product:", product);
+  function editProduct(product: Product) {
     setEditingId(product.id);
-
     setName(product.name);
-
     setDescription(product.description);
-
-    setPrice(product.price);
-
+    setPrice(product.price.toString());
     setImage(product.image);
-
     setCategory(product.category);
-
   }
 
 

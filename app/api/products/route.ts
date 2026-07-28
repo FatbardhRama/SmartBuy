@@ -23,9 +23,7 @@ export async function GET() {
 
     return NextResponse.json(products);
 
-  } catch (error) {
-    console.error("Error fetching products:", error);
-
+  } catch {
     return NextResponse.json(
       {
         message: "Failed to fetch products",
@@ -82,9 +80,7 @@ export async function POST(req: Request) {
     );
 
 
-  } catch (error) {
-
-    console.error("Error creating product:", error);
+  } catch {
     return NextResponse.json(
       {
         message: "Failed to create product",
@@ -127,9 +123,7 @@ export async function DELETE(req: Request) {
     });
 
 
-  } catch (error) {
-
-    console.error("Error deleting product:", error);
+  } catch {
     return NextResponse.json(
       {
         message: "Failed to delete product",
@@ -187,9 +181,7 @@ export async function PUT(req: Request) {
     return NextResponse.json(product);
 
 
-  } catch (error) {
-    console.error("Error updating product:", error);
-
+  } catch {
     return NextResponse.json(
       {
         message: "Failed to update product",

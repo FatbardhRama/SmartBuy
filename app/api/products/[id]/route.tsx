@@ -50,11 +50,7 @@ export async function GET(
 
 
 
-  } catch (error) {
-
-    console.error("Error fetching product:", error);
-
-
+  } catch {
     return NextResponse.json(
       {
         message: "Failed to fetch product",
@@ -63,7 +59,6 @@ export async function GET(
         status: 500,
       }
     );
-
   }
 
 }

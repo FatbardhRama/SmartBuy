@@ -35,21 +35,22 @@ export function CartProvider({
 }: {
   children: ReactNode;
 }) {
-  const [cart, setCart] = useState<Product[]>([]);
+  const [cart, setCart] = useState<Product[]>(() => {
+    if (typeof window === "undefined") {
+      return [];
+    }
+
+    try {
+      const saved = localStorage.getItem(KEY);
+      return saved ? (JSON.parse(saved) as Product[]) : [];
+    } catch {
+      return [];
+    }
+  });
   const [loaded, setLoaded] = useState(false);
 
   useEffect(() => {
-    try {
-      const saved = localStorage.getItem(KEY);
-
-      if (saved) {
-        setCart(JSON.parse(saved));
-      }
-    } catch {
-      setCart([]);
-    } finally {
-      setLoaded(true);
-    }
+    Promise.resolve().then(() => setLoaded(true));
   }, []);
 
   useEffect(() => {

@@ -177,10 +177,7 @@ export default function CartPage() {
             <Button
               variant="destructive"
               className="w-full mt-4"
-              onClick={()=>{
-                console.log("CLEAR BUTTON CLICKED");
-                clearCart();
-              }}
+              onClick={clearCart}
             >
               Clear Cart
             </Button>
