@@ -21,21 +21,15 @@ export function HeroSection() {
             </p>
 
             <div className="flex gap-4">
-              <Button asChild size="lg">
-                <Link href="/products">
-                  Start Shopping
-                </Link>
-              </Button>
+              <Link href="/products">
+                <Button size="lg">Start Shopping</Button>
+              </Link>
 
-              <Button
-                asChild
-                variant="outline"
-                size="lg"
-              >
-                <Link href="/deals">
+              <Link href="/deals">
+                <Button variant="outline" size="lg">
                   View Deals
-                </Link>
-              </Button>
+                </Button>
+              </Link>
             </div>
 
           </div>

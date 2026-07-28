@@ -34,6 +34,10 @@ export function Header() {
             Deals
           </Link>
 
+          <Link href="/cart">
+            Cart
+          </Link>
+
         </nav>
 
 
