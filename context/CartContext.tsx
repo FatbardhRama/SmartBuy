@@ -19,6 +19,8 @@ type Product = {
 type CartContextType = {
   cart: Product[];
   loaded: boolean;
+  itemCount: number;
+  subtotal: number;
   addToCart: (product: Product) => void;
   removeFromCart: (id: string) => void;
   increaseQuantity: (id: string) => void;
@@ -47,6 +49,7 @@ export function CartProvider({
       return [];
     }
   });
+
   const [loaded, setLoaded] = useState(false);
 
   useEffect(() => {
@@ -131,11 +134,23 @@ export function CartProvider({
     setCart([]);
   }
 
+  const itemCount = cart.reduce(
+    (total, item) => total + item.quantity,
+    0
+  );
+
+  const subtotal = cart.reduce(
+    (total, item) => total + item.price * item.quantity,
+    0
+  );
+
   return (
     <CartContext.Provider
       value={{
         cart,
         loaded,
+        itemCount,
+        subtotal,
         addToCart,
         removeFromCart,
         increaseQuantity,

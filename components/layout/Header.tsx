@@ -52,6 +52,12 @@ export function Header() {
                 Hello, {session.user?.name}
               </span>
 
+              <Link href="/orders">
+                <Button variant="outline">
+                  My Orders
+                </Button>
+              </Link>
+
               <Button
                 onClick={() => signOut()}
               >
