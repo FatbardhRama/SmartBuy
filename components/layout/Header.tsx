@@ -11,7 +11,6 @@ export function Header() {
   return (
     <header className="border-b">
       <div className="container mx-auto flex h-16 items-center justify-between px-6">
-
         <Link
           href="/"
           className="text-2xl font-bold"
@@ -19,9 +18,7 @@ export function Header() {
           SmartBuy
         </Link>
 
-
         <nav className="flex items-center gap-6">
-
           <Link href="/">
             Home
           </Link>
@@ -37,14 +34,10 @@ export function Header() {
           <Link href="/cart">
             Cart
           </Link>
-
         </nav>
 
-
         <div className="flex items-center gap-3">
-
           <ThemeToggle />
-
 
           {session ? (
             <>
@@ -57,6 +50,14 @@ export function Header() {
                   My Orders
                 </Button>
               </Link>
+
+              {session.user?.role === "ADMIN" && (
+                <Link href="/admin">
+                  <Button variant="outline">
+                    Admin
+                  </Button>
+                </Link>
+              )}
 
               <Button
                 onClick={() => signOut()}
@@ -79,9 +80,7 @@ export function Header() {
               </Link>
             </>
           )}
-
         </div>
-
       </div>
     </header>
   );

@@ -1,435 +1,158 @@
-"use client";
+import { getServerSession } from "next-auth";
+import { authOptions } from "@/lib/auth";
+import { redirect } from "next/navigation";
+import Link from "next/link";
 
-import { useEffect, useState, type FormEvent } from "react";
-
-import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-
-type Product = {
-  id: string;
-  name: string;
-  description: string;
-  price: number;
-  image: string;
-  category: string;
-};
-
-export default function AdminPage() {
-  const [name, setName] = useState("");
-  const [description, setDescription] = useState("");
-  const [price, setPrice] = useState("");
-  const [image, setImage] = useState("");
-  const [category, setCategory] = useState("");
-
-  const [products, setProducts] = useState<Product[]>([]);
-
-  const [editingId, setEditingId] = useState<string | null>(null);
-
-  const [message, setMessage] = useState("");
-  const [loading, setLoading] = useState(false);
-
-  async function fetchProducts() {
-    try {
-      const res = await fetch("/api/products");
-      const data = (await res.json()) as Product[];
-      setProducts(data);
-    } catch {
-      // Fetch error is intentionally not surfaced here.
+async function getDashboardData() {
+  const res = await fetch(
+    "http://localhost:3000/api/admin/dashboard",
+    {
+      cache: "no-store",
     }
-  }
-
-
-
-  useEffect(() => {
-    Promise.resolve().then(fetchProducts);
-  }, []);
-
-
-
-
-
-  async function handleSubmit(e: FormEvent) {
-    e.preventDefault();
-
-    setLoading(true);
-    setMessage("");
-
-
-    try {
-
-
-      const res = await fetch("/api/products", {
-
-        method: editingId ? "PUT" : "POST",
-
-        headers: {
-          "Content-Type": "application/json",
-        },
-
-
-        body: JSON.stringify(
-
-          editingId
-
-          ?
-
-          {
-            id: editingId,
-            name,
-            description,
-            price,
-            image,
-            category,
-          }
-
-          :
-
-          {
-            name,
-            description,
-            price,
-            image,
-            category,
-          }
-
-        ),
-
-      });
-
-
-
-      const data = await res.json();
-
-
-
-      if (!res.ok) {
-
-        setMessage(
-          data.message || "Operation failed"
-        );
-
-        return;
-
-      }
-
-
-
-      setMessage(
-        editingId
-          ? "Product updated successfully"
-          : "Product created successfully"
-      );
-
-
-
-      setName("");
-      setDescription("");
-      setPrice("");
-      setImage("");
-      setCategory("");
-
-      setEditingId(null);
-
-
-
-      fetchProducts();
-
-
-
-    } catch {
-
-
-      setMessage("Something went wrong");
-
-
-    } finally {
-
-
-      setLoading(false);
-
-
-    }
-
-
-  }
-
-
-
-
-
-  async function deleteProduct(id: string) {
-    try {
-      const res = await fetch("/api/products", {
-        method: "DELETE",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ id }),
-      });
-
-      if (res.ok) {
-        fetchProducts();
-      }
-    } catch {
-      // Ignore delete errors in this UI.
-    }
-  }
-
-
-
-
-
-  function editProduct(product: Product) {
-    setEditingId(product.id);
-    setName(product.name);
-    setDescription(product.description);
-    setPrice(product.price.toString());
-    setImage(product.image);
-    setCategory(product.category);
-  }
-
-
-
-
-
-  return (
-
-    <div className="min-h-screen flex flex-col items-center p-6">
-
-
-      <Card className="w-full max-w-lg">
-
-
-        <CardHeader>
-
-          <CardTitle>
-
-            {editingId
-              ? "Admin - Edit Product"
-              : "Admin - Add Product"
-            }
-
-          </CardTitle>
-
-        </CardHeader>
-
-
-
-        <CardContent>
-
-
-          <form
-            onSubmit={handleSubmit}
-            className="space-y-4"
-          >
-
-
-            <Input
-              placeholder="Product name"
-              value={name}
-              onChange={(e)=>setName(e.target.value)}
-            />
-
-
-
-            <Input
-              placeholder="Description"
-              value={description}
-              onChange={(e)=>setDescription(e.target.value)}
-            />
-
-
-
-            <Input
-              placeholder="Price"
-              type="number"
-              value={price}
-              onChange={(e)=>setPrice(e.target.value)}
-            />
-
-
-
-            <Input
-              placeholder="Image URL"
-              value={image}
-              onChange={(e)=>setImage(e.target.value)}
-            />
-
-
-
-            <Input
-              placeholder="Category"
-              value={category}
-              onChange={(e)=>setCategory(e.target.value)}
-            />
-
-
-
-            <Button
-              className="w-full"
-              disabled={loading}
-            >
-
-              {
-                loading
-                ?
-                "Saving..."
-                :
-                editingId
-                ?
-                "Update Product"
-                :
-                "Add Product"
-              }
-
-
-            </Button>
-
-
-
-            {message && (
-
-              <p className="text-center text-sm">
-
-                {message}
-
-              </p>
-
-            )}
-
-
-
-          </form>
-
-
-        </CardContent>
-
-
-      </Card>
-
-
-
-
-
-      <div className="w-full max-w-lg mt-10">
-
-
-        <h2 className="text-xl font-bold mb-4">
-
-          Existing Products
-
-        </h2>
-
-
-
-
-        <div className="space-y-4">
-
-
-
-          {products.map((product)=> (
-
-
-            <Card key={product.id}>
-
-
-              <CardContent className="p-4 flex justify-between items-center">
-
-
-
-                <div>
-
-
-                  <h3 className="font-semibold">
-
-                    {product.name}
-
-                  </h3>
-
-
-
-                  <p>
-
-                    ${product.price}
-
-                  </p>
-
-
-
-                  <p className="text-sm text-muted-foreground">
-
-                    {product.category}
-
-                  </p>
-
-
-                </div>
-
-
-
-
-
-                <div className="flex gap-2">
-
-
-                  <Button
-
-                    variant="outline"
-
-                    onClick={() => editProduct(product)}
-
-                  >
-
-                    Edit
-
-                  </Button>
-
-
-
-                  <Button
-
-                    variant="destructive"
-
-                    onClick={() => deleteProduct(product.id)}
-
-                  >
-
-                    Delete
-
-                  </Button>
-
-
-                </div>
-
-
-
-              </CardContent>
-
-
-            </Card>
-
-
-
-          ))}
-
-
-
-        </div>
-
-
-      </div>
-
-
-
-    </div>
-
-
   );
 
+  if (!res.ok) {
+    return null;
+  }
+
+  return res.json();
+}
+
+export default async function AdminDashboardPage() {
+  const session = await getServerSession(authOptions);
+
+  if (!session?.user) {
+    redirect("/login");
+  }
+
+  if (session.user.role !== "ADMIN") {
+    redirect("/");
+  }
+
+  const data = await getDashboardData();
+
+  if (!data) {
+    return (
+      <main className="max-w-6xl mx-auto px-6 py-10">
+        <h1 className="text-3xl font-bold mb-6">
+          Admin Dashboard
+        </h1>
+
+        <p>Failed to load dashboard.</p>
+      </main>
+    );
+  }
+
+  return (
+    <main className="max-w-6xl mx-auto px-6 py-10">
+      <div className="flex justify-between items-center mb-10">
+        <h1 className="text-3xl font-bold">
+          Admin Dashboard
+        </h1>
+
+        <div className="flex gap-3">
+          <Link href="/admin/products">
+            <button className="border rounded-md px-4 py-2">
+              Manage Products
+            </button>
+          </Link>
+
+          <Link href="/admin/orders">
+            <button className="border rounded-md px-4 py-2">
+              Manage Orders
+            </button>
+          </Link>
+        </div>
+      </div>
+
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-10">
+        <div className="border rounded-lg p-6">
+          <p className="text-sm text-gray-500">
+            Users
+          </p>
+
+          <p className="text-3xl font-bold">
+            {data.users}
+          </p>
+        </div>
+
+        <div className="border rounded-lg p-6">
+          <p className="text-sm text-gray-500">
+            Products
+          </p>
+
+          <p className="text-3xl font-bold">
+            {data.products}
+          </p>
+        </div>
+
+        <div className="border rounded-lg p-6">
+          <p className="text-sm text-gray-500">
+            Orders
+          </p>
+
+          <p className="text-3xl font-bold">
+            {data.orders}
+          </p>
+        </div>
+
+        <div className="border rounded-lg p-6">
+          <p className="text-sm text-gray-500">
+            Revenue
+          </p>
+
+          <p className="text-3xl font-bold">
+            ${data.revenue}
+          </p>
+        </div>
+      </div>
+
+      <section>
+        <h2 className="text-2xl font-bold mb-6">
+          Recent Orders
+        </h2>
+
+        {data.recentOrders.length === 0 ? (
+          <p>No orders found.</p>
+        ) : (
+          <div className="space-y-4">
+            {data.recentOrders.map((order: any) => (
+              <div
+                key={order.id}
+                className="border rounded-lg p-5 flex justify-between items-center"
+              >
+                <div>
+                  <h3 className="font-semibold">
+                    Order #{order.id}
+                  </h3>
+
+                  <p>{order.fullName}</p>
+
+                  <p className="text-sm text-gray-500">
+                    {new Date(
+                      order.createdAt
+                    ).toLocaleDateString()}
+                  </p>
+
+                  <p className="text-sm">
+                    Status: {order.status}
+                  </p>
+                </div>
+
+                <div className="text-right">
+                  <p className="font-bold">
+                    ${order.total}
+                  </p>
+
+                  <p className="text-sm">
+                    {order.items.length} item(s)
+                  </p>
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+      </section>
+    </main>
+  );
 }
