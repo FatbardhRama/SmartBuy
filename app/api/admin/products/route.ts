@@ -2,14 +2,14 @@ import { NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
 import { prisma } from "@/lib/prisma";
 import { authOptions } from "@/lib/auth";
-
+import {
+  isNonEmptyString,
+  isValidPositiveNumber,
+} from "@/lib/validation";
 
 export async function GET() {
-
   try {
-
     const session = await getServerSession(authOptions);
-
 
     if (!session?.user?.id) {
       return NextResponse.json(
@@ -22,7 +22,6 @@ export async function GET() {
       );
     }
 
-
     if (session.user.role !== "ADMIN") {
       return NextResponse.json(
         {
@@ -34,19 +33,14 @@ export async function GET() {
       );
     }
 
-
     const products = await prisma.product.findMany({
       orderBy: {
         createdAt: "desc",
       },
     });
 
-
     return NextResponse.json(products);
-
-
   } catch {
-
     return NextResponse.json(
       {
         message: "Failed to fetch products",
@@ -55,21 +49,12 @@ export async function GET() {
         status: 500,
       }
     );
-
   }
-
 }
 
-
-
-export async function POST(
-  request: Request
-) {
-
+export async function POST(request: Request) {
   try {
-
     const session = await getServerSession(authOptions);
-
 
     if (!session?.user?.id) {
       return NextResponse.json(
@@ -82,7 +67,6 @@ export async function POST(
       );
     }
 
-
     if (session.user.role !== "ADMIN") {
       return NextResponse.json(
         {
@@ -94,39 +78,73 @@ export async function POST(
       );
     }
 
+    let body: Record<string, unknown>;
 
-    const body = await request.json();
+    try {
+      const parsedBody = await request.json();
 
+      if (
+        typeof parsedBody !== "object" ||
+        parsedBody === null ||
+        Array.isArray(parsedBody)
+      ) {
+        return NextResponse.json(
+          { message: "Invalid request body" },
+          { status: 400 }
+        );
+      }
+
+      body = parsedBody as Record<string, unknown>;
+    } catch {
+      return NextResponse.json(
+        { message: "Invalid request body" },
+        { status: 400 }
+      );
+    }
+
+    const { name, description, price, image, category } = body;
+
+    if (
+      !isNonEmptyString(name) ||
+      !isNonEmptyString(description) ||
+      !isNonEmptyString(image) ||
+      !isNonEmptyString(category)
+    ) {
+      return NextResponse.json(
+        {
+          message: "All fields are required",
+        },
+        {
+          status: 400,
+        }
+      );
+    }
+
+    if (!isValidPositiveNumber(price)) {
+      return NextResponse.json(
+        {
+          message: "Invalid price",
+        },
+        {
+          status: 400,
+        }
+      );
+    }
 
     const product = await prisma.product.create({
-
       data: {
-
-        name: body.name,
-
-        description: body.description,
-
-        price: Number(body.price),
-
-        image: body.image,
-
-        category: body.category,
-
+        name: name.trim(),
+        description: description.trim(),
+        price: Number(price),
+        image: image.trim(),
+        category: category.trim(),
       },
-
     });
 
-
-    return NextResponse.json(
-      product,
-      {
-        status: 201,
-      }
-    );
-
-
+    return NextResponse.json(product, {
+      status: 201,
+    });
   } catch {
-
     return NextResponse.json(
       {
         message: "Failed to create product",
@@ -135,7 +153,5 @@ export async function POST(
         status: 500,
       }
     );
-
   }
-
 }

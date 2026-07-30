@@ -2,16 +2,19 @@ import { NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
 import { prisma } from "@/lib/prisma";
 import { authOptions } from "@/lib/auth";
+import {
+  isNonEmptyString,
+  isValidId,
+  isValidPositiveNumber,
+} from "@/lib/validation";
 
 export async function GET(
   request: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
-
   try {
-
+    const { id } = await params;
     const session = await getServerSession(authOptions);
-
 
     if (!session?.user?.id) {
       return NextResponse.json(
@@ -24,7 +27,6 @@ export async function GET(
       );
     }
 
-
     if (session.user.role !== "ADMIN") {
       return NextResponse.json(
         {
@@ -36,13 +38,22 @@ export async function GET(
       );
     }
 
+    if (!isValidId(id)) {
+      return NextResponse.json(
+        {
+          message: "Invalid product id",
+        },
+        {
+          status: 400,
+        }
+      );
+    }
 
     const product = await prisma.product.findUnique({
       where: {
-        id: params.id,
+        id,
       },
     });
-
 
     if (!product) {
       return NextResponse.json(
@@ -55,12 +66,8 @@ export async function GET(
       );
     }
 
-
     return NextResponse.json(product);
-
-
   } catch {
-
     return NextResponse.json(
       {
         message: "Failed to fetch product",
@@ -69,21 +76,16 @@ export async function GET(
         status: 500,
       }
     );
-
   }
-
 }
-
 
 export async function PUT(
   request: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
-
   try {
-
+    const { id } = await params;
     const session = await getServerSession(authOptions);
-
 
     if (!session?.user?.id) {
       return NextResponse.json(
@@ -96,7 +98,6 @@ export async function PUT(
       );
     }
 
-
     if (session.user.role !== "ADMIN") {
       return NextResponse.json(
         {
@@ -108,39 +109,86 @@ export async function PUT(
       );
     }
 
+    if (!isValidId(id)) {
+      return NextResponse.json(
+        {
+          message: "Invalid product id",
+        },
+        {
+          status: 400,
+        }
+      );
+    }
 
-    const body = await request.json();
+    let body: Record<string, unknown>;
 
+    try {
+      const parsedBody = await request.json();
+
+      if (
+        typeof parsedBody !== "object" ||
+        parsedBody === null ||
+        Array.isArray(parsedBody)
+      ) {
+        return NextResponse.json(
+          { message: "Invalid request body" },
+          { status: 400 }
+        );
+      }
+
+      body = parsedBody as Record<string, unknown>;
+    } catch {
+      return NextResponse.json(
+        { message: "Invalid request body" },
+        { status: 400 }
+      );
+    }
+
+    const { name, description, price, image, category } = body;
+
+    if (
+      !isNonEmptyString(name) ||
+      !isNonEmptyString(description) ||
+      !isNonEmptyString(image) ||
+      !isNonEmptyString(category)
+    ) {
+      return NextResponse.json(
+        {
+          message: "All fields are required",
+        },
+        {
+          status: 400,
+        }
+      );
+    }
+
+    if (!isValidPositiveNumber(price)) {
+      return NextResponse.json(
+        {
+          message: "Invalid price",
+        },
+        {
+          status: 400,
+        }
+      );
+    }
 
     const product = await prisma.product.update({
-
       where: {
-        id: params.id,
+        id,
       },
-
 
       data: {
-
-        name: body.name,
-
-        description: body.description,
-
-        price: Number(body.price),
-
-        image: body.image,
-
-        category: body.category,
-
+        name: name.trim(),
+        description: description.trim(),
+        price: Number(price),
+        image: image.trim(),
+        category: category.trim(),
       },
-
     });
 
-
     return NextResponse.json(product);
-
-
   } catch {
-
     return NextResponse.json(
       {
         message: "Failed to update product",
@@ -149,20 +197,16 @@ export async function PUT(
         status: 500,
       }
     );
-
   }
-
 }
 
 export async function DELETE(
   request: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
-
   try {
-
+    const { id } = await params;
     const session = await getServerSession(authOptions);
-
 
     if (!session?.user?.id) {
       return NextResponse.json(
@@ -175,7 +219,6 @@ export async function DELETE(
       );
     }
 
-
     if (session.user.role !== "ADMIN") {
       return NextResponse.json(
         {
@@ -187,23 +230,27 @@ export async function DELETE(
       );
     }
 
+    if (!isValidId(id)) {
+      return NextResponse.json(
+        {
+          message: "Invalid product id",
+        },
+        {
+          status: 400,
+        }
+      );
+    }
 
     await prisma.product.delete({
       where: {
-        id: params.id,
+        id,
       },
     });
 
-
-    return NextResponse.json(
-      {
-        message: "Product deleted successfully",
-      }
-    );
-
-
+    return NextResponse.json({
+      message: "Product deleted successfully",
+    });
   } catch {
-
     return NextResponse.json(
       {
         message: "Failed to delete product",
@@ -212,7 +259,5 @@ export async function DELETE(
         status: 500,
       }
     );
-
   }
-
 }

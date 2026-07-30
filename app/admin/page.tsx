@@ -1,22 +1,8 @@
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
+import { prisma } from "@/lib/prisma";
 import { redirect } from "next/navigation";
 import Link from "next/link";
-
-async function getDashboardData() {
-  const res = await fetch(
-    "http://localhost:3000/api/admin/dashboard",
-    {
-      cache: "no-store",
-    }
-  );
-
-  if (!res.ok) {
-    return null;
-  }
-
-  return res.json();
-}
 
 export default async function AdminDashboardPage() {
   const session = await getServerSession(authOptions);
@@ -29,19 +15,33 @@ export default async function AdminDashboardPage() {
     redirect("/");
   }
 
-  const data = await getDashboardData();
+  const users = await prisma.user.count();
 
-  if (!data) {
-    return (
-      <main className="max-w-6xl mx-auto px-6 py-10">
-        <h1 className="text-3xl font-bold mb-6">
-          Admin Dashboard
-        </h1>
+  const products = await prisma.product.count();
 
-        <p>Failed to load dashboard.</p>
-      </main>
-    );
-  }
+  const orders = await prisma.order.count();
+
+  const revenue = await prisma.order.aggregate({
+    _sum: {
+      total: true,
+    },
+  });
+
+  const recentOrders = await prisma.order.findMany({
+    take: 5,
+
+    orderBy: {
+      createdAt: "desc",
+    },
+
+    include: {
+      items: {
+        include: {
+          product: true,
+        },
+      },
+    },
+  });
 
   return (
     <main className="max-w-6xl mx-auto px-6 py-10">
@@ -72,7 +72,7 @@ export default async function AdminDashboardPage() {
           </p>
 
           <p className="text-3xl font-bold">
-            {data.users}
+            {users}
           </p>
         </div>
 
@@ -82,7 +82,7 @@ export default async function AdminDashboardPage() {
           </p>
 
           <p className="text-3xl font-bold">
-            {data.products}
+            {products}
           </p>
         </div>
 
@@ -92,7 +92,7 @@ export default async function AdminDashboardPage() {
           </p>
 
           <p className="text-3xl font-bold">
-            {data.orders}
+            {orders}
           </p>
         </div>
 
@@ -102,7 +102,7 @@ export default async function AdminDashboardPage() {
           </p>
 
           <p className="text-3xl font-bold">
-            ${data.revenue}
+            ${revenue._sum.total ?? 0}
           </p>
         </div>
       </div>
@@ -112,11 +112,11 @@ export default async function AdminDashboardPage() {
           Recent Orders
         </h2>
 
-        {data.recentOrders.length === 0 ? (
+        {recentOrders.length === 0 ? (
           <p>No orders found.</p>
         ) : (
           <div className="space-y-4">
-            {data.recentOrders.map((order: any) => (
+            {recentOrders.map((order: any) => (
               <div
                 key={order.id}
                 className="border rounded-lg p-5 flex justify-between items-center"

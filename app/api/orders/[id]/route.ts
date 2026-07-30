@@ -2,13 +2,26 @@ import { NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
 import { prisma } from "@/lib/prisma";
 import { authOptions } from "@/lib/auth";
+import { isValidId } from "@/lib/validation";
 
 export async function GET(
   request: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const { id } = await params;
     const session = await getServerSession(authOptions);
+
+    if (!isValidId(id)) {
+      return NextResponse.json(
+        {
+          message: "Invalid order id",
+        },
+        {
+          status: 400,
+        }
+      );
+    }
 
     if (!session?.user?.id) {
       return NextResponse.json(
@@ -23,7 +36,7 @@ export async function GET(
 
     const order = await prisma.order.findFirst({
       where: {
-        id: params.id,
+        id,
         userId: session.user.id,
       },
 

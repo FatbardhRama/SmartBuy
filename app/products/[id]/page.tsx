@@ -70,6 +70,10 @@ export default function ProductDetailsPage() {
   }
 
   function handleAddToCart() {
+    if (!product) {
+      return;
+    }
+
     addToCart({
       id: product.id,
       name: product.name,

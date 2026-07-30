@@ -1,71 +1,95 @@
 "use client";
 
-import { useRouter } from "next/navigation";
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 
+import { Button } from "@/components/ui/button";
+
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 
 type Props = {
   productId: string;
 };
 
-
 export function DeleteProductButton({
   productId,
 }: Props) {
-
   const router = useRouter();
 
   const [loading, setLoading] = useState(false);
 
-
-
   async function handleDelete() {
-
-    const confirmed = window.confirm(
-      "Are you sure you want to delete this product?"
-    );
-
-
-    if (!confirmed) {
-      return;
-    }
-
-
     setLoading(true);
 
+    try {
+      const res = await fetch(
+        `/api/admin/products/${productId}`,
+        {
+          method: "DELETE",
+        }
+      );
 
-    const res = await fetch(
-      `/api/admin/products/${productId}`,
-      {
-        method: "DELETE",
+      if (res.ok) {
+        router.refresh();
       }
-    );
-
-
-    if (res.ok) {
-
-      router.refresh();
-
+    } finally {
+      setLoading(false);
     }
-
-
-    setLoading(false);
-
   }
 
-
-
   return (
-    <button
-      onClick={handleDelete}
-      disabled={loading}
-      className="border rounded-md px-4 py-2 text-red-600"
-    >
+    <AlertDialog>
 
-      {loading
-        ? "Deleting..."
-        : "Delete"}
+      <AlertDialogTrigger
+  render={
+    <Button variant="destructive">
+      Delete
+    </Button>
+  }
+/>
 
-    </button>
+      <AlertDialogContent>
+
+        <AlertDialogHeader>
+
+          <AlertDialogTitle>
+            Delete Product?
+          </AlertDialogTitle>
+
+          <AlertDialogDescription>
+            This action cannot be undone.
+            The product will be permanently removed.
+          </AlertDialogDescription>
+
+        </AlertDialogHeader>
+
+        <AlertDialogFooter>
+
+          <AlertDialogCancel>
+            Cancel
+          </AlertDialogCancel>
+
+          <AlertDialogAction
+            onClick={handleDelete}
+            disabled={loading}
+          >
+            {loading ? "Deleting..." : "Delete"}
+          </AlertDialogAction>
+
+        </AlertDialogFooter>
+
+      </AlertDialogContent>
+
+    </AlertDialog>
   );
 }
