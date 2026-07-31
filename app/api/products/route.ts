@@ -11,32 +11,46 @@ export async function GET(req: Request) {
     const { searchParams } = new URL(req.url);
 
     const search = searchParams.get("search")?.trim() ?? "";
+    const category = searchParams.get("category")?.trim() ?? "";
 
     const products = await prisma.product.findMany({
-      where: search
-        ? {
-            OR: [
-              {
-                name: {
-                  contains: search,
-                  mode: "insensitive",
-                },
-              },
-              {
-                description: {
-                  contains: search,
-                  mode: "insensitive",
-                },
-              },
-              {
+      where: {
+        AND: [
+          search
+            ? {
+                OR: [
+                  {
+                    name: {
+                      contains: search,
+                      mode: "insensitive",
+                    },
+                  },
+                  {
+                    description: {
+                      contains: search,
+                      mode: "insensitive",
+                    },
+                  },
+                  {
+                    category: {
+                      contains: search,
+                      mode: "insensitive",
+                    },
+                  },
+                ],
+              }
+            : {},
+
+          category
+            ? {
                 category: {
-                  contains: search,
+                  equals: category,
                   mode: "insensitive",
                 },
-              },
-            ],
-          }
-        : undefined,
+              }
+            : {},
+        ],
+      },
 
       orderBy: {
         createdAt: "desc",
