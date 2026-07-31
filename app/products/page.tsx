@@ -1,4 +1,4 @@
-import { ProductCard } from "@/components/products/ProductCard";
+import ProductsClient from "@/components/products/ProductsClient";
 
 type Product = {
   id: string;
@@ -10,12 +10,13 @@ type Product = {
 };
 
 async function getProducts(): Promise<Product[]> {
-  const res = await fetch(
-    "http://localhost:3000/api/products",
-    {
-      cache: "no-store",
-    }
-  );
+  const res = await fetch("http://localhost:3000/api/products", {
+    cache: "no-store",
+  });
+
+  if (!res.ok) {
+    throw new Error("Failed to fetch products");
+  }
 
   return res.json();
 }
@@ -25,18 +26,11 @@ export default async function ProductsPage() {
 
   return (
     <div className="container mx-auto px-6 py-10">
-      <h1 className="text-4xl font-bold mb-8">
+      <h1 className="mb-8 text-4xl font-bold">
         Products
       </h1>
 
-      <div className="grid gap-6 md:grid-cols-3">
-        {products.map((product) => (
-          <ProductCard
-            key={product.id}
-            {...product}
-          />
-        ))}
-      </div>
+      <ProductsClient products={products} />
     </div>
   );
 }

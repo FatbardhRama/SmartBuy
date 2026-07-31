@@ -6,9 +6,38 @@ import {
   isValidPositiveNumber,
 } from "@/lib/validation";
 
-export async function GET() {
+export async function GET(req: Request) {
   try {
+    const { searchParams } = new URL(req.url);
+
+    const search = searchParams.get("search")?.trim() ?? "";
+
     const products = await prisma.product.findMany({
+      where: search
+        ? {
+            OR: [
+              {
+                name: {
+                  contains: search,
+                  mode: "insensitive",
+                },
+              },
+              {
+                description: {
+                  contains: search,
+                  mode: "insensitive",
+                },
+              },
+              {
+                category: {
+                  contains: search,
+                  mode: "insensitive",
+                },
+              },
+            ],
+          }
+        : undefined,
+
       orderBy: {
         createdAt: "desc",
       },
@@ -24,6 +53,7 @@ export async function GET() {
     });
 
     return NextResponse.json(products);
+
   } catch {
     return NextResponse.json(
       {
@@ -35,7 +65,6 @@ export async function GET() {
     );
   }
 }
-
 export async function POST(req: Request) {
   try {
     let body: Record<string, unknown>;

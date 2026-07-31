@@ -1,5 +1,11 @@
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import Image from "next/image";
 
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 
 type ProductProps = {
   id: string;
@@ -10,7 +16,6 @@ type ProductProps = {
   category: string;
 };
 
-
 export function ProductCard({
   name,
   description,
@@ -18,41 +23,41 @@ export function ProductCard({
   image,
   category,
 }: ProductProps) {
+  const formattedPrice = new Intl.NumberFormat("en-US", {
+    style: "currency",
+    currency: "USD",
+  }).format(price);
 
   return (
     <Card className="overflow-hidden">
-
-      <img
-        src={image}
-        alt={name}
-        className="h-48 w-full object-cover"
-      />
+      <div className="relative h-48 w-full">
+        <Image
+          src={image}
+          alt={name}
+          fill
+          className="object-cover"
+          sizes="(max-width: 768px) 100vw, 33vw"
+          priority={false}
+        />
+      </div>
 
       <CardHeader>
-        <CardTitle>
-          {name}
-        </CardTitle>
+        <CardTitle>{name}</CardTitle>
       </CardHeader>
 
-
       <CardContent>
-
         <p className="text-sm text-muted-foreground">
           {description}
         </p>
 
-
-        <p className="mt-3 font-bold">
-          ${price}
+        <p className="mt-3 text-lg font-bold">
+          {formattedPrice}
         </p>
 
-
-        <p className="text-sm">
+        <p className="text-sm text-muted-foreground">
           {category}
         </p>
-
       </CardContent>
-
     </Card>
   );
 }
