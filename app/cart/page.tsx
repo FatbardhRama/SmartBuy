@@ -1,18 +1,20 @@
 "use client";
 
+import Image from "next/image";
+
 import { Button } from "@/components/ui/button";
 
 import {
   Card,
   CardContent,
-  CardHeader,
-  CardTitle,
 } from "@/components/ui/card";
 
 import { useCart } from "@/context/CartContext";
 
 
+
 export default function CartPage() {
+
 
   const {
     cart,
@@ -21,173 +23,292 @@ export default function CartPage() {
     increaseQuantity,
     decreaseQuantity,
     clearCart,
+    subtotal,
   } = useCart();
 
 
 
+
+
   if (!loaded) {
+
     return (
-      <div className="min-h-screen flex items-center justify-center">
+      <div className="flex min-h-screen items-center justify-center">
+
         <h1 className="text-3xl font-bold">
           Loading cart...
         </h1>
+
       </div>
     );
+
   }
 
 
-
-  const total = cart.reduce(
-    (sum, item) => sum + item.price * item.quantity,
-    0
-  );
 
 
 
   if (cart.length === 0) {
 
     return (
-      <div className="min-h-screen flex items-center justify-center">
+
+      <div className="flex min-h-screen items-center justify-center">
+
         <h1 className="text-3xl font-bold">
           Your cart is empty
         </h1>
+
       </div>
+
     );
 
   }
 
 
 
+
+
+
   return (
 
-    <div className="min-h-screen p-6">
+    <div className="container mx-auto px-6 py-10">
 
 
-      <h1 className="text-3xl font-bold mb-6">
+      <h1 className="mb-8 text-4xl font-bold">
         Shopping Cart
       </h1>
 
 
 
-      <div className="max-w-4xl space-y-5">
 
-
-        {cart.map((product)=>(
-
-
-          <Card key={product.id}>
-
-
-            <CardHeader>
-
-              <CardTitle>
-                {product.name}
-              </CardTitle>
-
-            </CardHeader>
+      <div className="grid gap-8 lg:grid-cols-3">
 
 
 
-            <CardContent className="flex justify-between items-center">
 
 
-              <div>
-
-
-                <p>
-                  Price: ${product.price}
-                </p>
+        <div className="space-y-5 lg:col-span-2">
 
 
 
-                <div className="flex items-center gap-3 mt-3">
+          {cart.map((product) => (
 
 
-                  <Button
-                    variant="outline"
-                    onClick={() =>
-                      decreaseQuantity(product.id)
-                    }
-                  >
-                    -
-                  </Button>
+            <Card key={product.id}>
+
+
+              <CardContent className="flex gap-5 p-6">
 
 
 
-                  <span className="text-lg font-bold">
-                    {product.quantity}
-                  </span>
+                <div className="relative h-32 w-32 overflow-hidden rounded-lg">
 
 
+                  <Image
 
-                  <Button
-                    variant="outline"
-                    onClick={() =>
-                      increaseQuantity(product.id)
-                    }
-                  >
-                    +
-                  </Button>
+                    src={product.image}
+
+                    alt={product.name}
+
+                    fill
+
+                    className="object-cover"
+
+                  />
 
 
                 </div>
 
 
-              </div>
+
+
+
+
+                <div className="flex flex-1 flex-col justify-between">
+
+
+                  <div>
+
+
+                    <h2 className="text-xl font-bold">
+                      {product.name}
+                    </h2>
+
+
+
+                    <p className="text-muted-foreground">
+                      ${product.price}
+                    </p>
+
+
+                  </div>
 
 
 
 
 
-              <Button
-                variant="destructive"
-                onClick={() =>
-                  removeFromCart(product.id)
-                }
-              >
-                Remove
-              </Button>
+
+                  <div className="flex items-center gap-3">
 
 
-            </CardContent>
+                    <Button
 
+                      variant="outline"
 
-          </Card>
+                      onClick={() =>
+                        decreaseQuantity(product.id)
+                      }
 
-
-        ))}
-
+                    >
+                      -
+                    </Button>
 
 
 
 
+                    <span className="font-bold">
+                      {product.quantity}
+                    </span>
 
-        <Card>
 
 
-          <CardContent className="p-6">
+
+                    <Button
+
+                      variant="outline"
+
+                      onClick={() =>
+                        increaseQuantity(product.id)
+                      }
+
+                    >
+                      +
+                    </Button>
+
+
+
+
+                  </div>
+
+
+
+
+                </div>
+
+
+
+
+
+
+
+                <div className="flex flex-col items-end justify-between">
+
+
+                  <p className="font-bold">
+
+                    ${(product.price * product.quantity).toFixed(2)}
+
+                  </p>
+
+
+
+
+                  <Button
+
+                    variant="destructive"
+
+                    onClick={() =>
+                      removeFromCart(product.id)
+                    }
+
+                  >
+                    Remove
+                  </Button>
+
+
+
+                </div>
+
+
+
+              </CardContent>
+
+
+            </Card>
+
+
+          ))}
+
+
+
+        </div>
+
+
+
+
+
+
+
+
+        <Card className="h-fit">
+
+
+          <CardContent className="space-y-5 p-6">
 
 
             <h2 className="text-2xl font-bold">
-              Total: ${total}
+              Order Summary
             </h2>
 
 
 
+
+            <div className="flex justify-between">
+
+              <span>
+                Subtotal
+              </span>
+
+
+              <span className="font-bold">
+
+                ${subtotal.toFixed(2)}
+
+              </span>
+
+
+            </div>
+
+
+
+
+
             <Button
-              variant="destructive"
-              className="w-full mt-4"
-              onClick={clearCart}
+
+              className="w-full"
+
             >
-              Clear Cart
+
+              Checkout
+
             </Button>
 
 
 
+
+
             <Button
-              className="w-full mt-3"
+
+              variant="destructive"
+
+              className="w-full"
+
+              onClick={clearCart}
+
             >
-              Checkout
+
+              Clear Cart
+
             </Button>
 
 
@@ -200,6 +321,7 @@ export default function CartPage() {
 
 
       </div>
+
 
 
     </div>

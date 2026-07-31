@@ -1,4 +1,5 @@
 import Image from "next/image";
+import Link from "next/link";
 
 import {
   Card,
@@ -6,6 +7,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+
 
 type ProductProps = {
   id: string;
@@ -16,48 +18,81 @@ type ProductProps = {
   category: string;
 };
 
+
 export function ProductCard({
+  id,
   name,
   description,
   price,
   image,
   category,
 }: ProductProps) {
+
+
   const formattedPrice = new Intl.NumberFormat("en-US", {
     style: "currency",
     currency: "USD",
   }).format(price);
 
+
+
   return (
-    <Card className="overflow-hidden">
-      <div className="relative h-48 w-full">
-        <Image
-          src={image}
-          alt={name}
-          fill
-          className="object-cover"
-          sizes="(max-width: 768px) 100vw, 33vw"
-          priority={false}
-        />
-      </div>
+    <Link href={`/products/${id}`}>
 
-      <CardHeader>
-        <CardTitle>{name}</CardTitle>
-      </CardHeader>
+      <Card className="overflow-hidden cursor-pointer transition hover:scale-[1.02]">
 
-      <CardContent>
-        <p className="text-sm text-muted-foreground">
-          {description}
-        </p>
 
-        <p className="mt-3 text-lg font-bold">
-          {formattedPrice}
-        </p>
+        <div className="relative h-48 w-full">
 
-        <p className="text-sm text-muted-foreground">
-          {category}
-        </p>
-      </CardContent>
-    </Card>
+          <Image
+            src={image}
+            alt={name}
+            fill
+            className="object-cover"
+            sizes="(max-width: 768px) 100vw, 33vw"
+            priority={false}
+          />
+
+        </div>
+
+
+
+        <CardHeader>
+
+          <CardTitle>
+            {name}
+          </CardTitle>
+
+        </CardHeader>
+
+
+
+
+        <CardContent>
+
+
+          <p className="text-sm text-muted-foreground">
+            {description}
+          </p>
+
+
+
+          <p className="mt-3 text-lg font-bold">
+            {formattedPrice}
+          </p>
+
+
+
+          <p className="text-sm text-muted-foreground">
+            {category}
+          </p>
+
+
+        </CardContent>
+
+
+      </Card>
+
+    </Link>
   );
 }
