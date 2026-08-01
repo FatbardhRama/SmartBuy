@@ -1,26 +1,17 @@
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
+import { prisma } from "@/lib/prisma";
 import { redirect } from "next/navigation";
 import Link from "next/link";
 import { DeleteProductButton } from "@/components/admin/DeleteProductButton";
 
 
 async function getProducts() {
-
-  const res = await fetch(
-    "http://localhost:3000/api/admin/products",
-    {
-      cache: "no-store",
-    }
-  );
-
-
-  if (!res.ok) {
-    return [];
-  }
-
-
-  return res.json();
+  return await prisma.product.findMany({
+    orderBy: {
+      createdAt: "desc",
+    },
+  });
 }
 
 
@@ -47,6 +38,7 @@ export default async function AdminProductsPage() {
   return (
     <main className="max-w-6xl mx-auto px-6 py-10">
 
+
       <div className="flex justify-between items-center mb-8">
 
         <h1 className="text-3xl font-bold">
@@ -55,10 +47,12 @@ export default async function AdminProductsPage() {
 
 
         <Link href="/admin/products/new">
-  <button className="border rounded-md px-4 py-2">
-    Add Product
-  </button>
-</Link>
+
+          <button className="border rounded-md px-4 py-2">
+            Add Product
+          </button>
+
+        </Link>
 
       </div>
 
@@ -70,21 +64,27 @@ export default async function AdminProductsPage() {
           No products found.
         </p>
 
+
       ) : (
+
 
         <div className="space-y-6">
 
-          {products.map((product: any) => (
+
+          {products.map((product) => (
+
 
             <div
               key={product.id}
               className="border rounded-lg p-6"
             >
 
+
               <div className="flex justify-between">
 
 
                 <div>
+
 
                   <h2 className="text-xl font-semibold">
                     {product.name}
@@ -100,14 +100,22 @@ export default async function AdminProductsPage() {
                     {product.description}
                   </p>
 
+
                 </div>
+
 
 
 
                 <div className="text-right">
 
+
                   <p className="font-bold">
-                    ${product.price}
+                    €{product.price}
+                  </p>
+
+
+                  <p className="text-sm">
+                    Stock: {product.stock}
                   </p>
 
 
@@ -115,15 +123,32 @@ export default async function AdminProductsPage() {
                     ID: {product.id}
                   </p>
 
-                   <Link href={`/admin/products/${product.id}/edit`}>
-    <button className="border rounded-md px-4 py-2">
-      Edit
-    </button>
-  </Link>
 
-             <DeleteProductButton
-    productId={product.id}
-  /> 
+
+
+                  <div className="flex gap-2 mt-4">
+
+
+                    <Link
+                      href={`/admin/products/${product.id}/edit`}
+                    >
+
+                      <button className="border rounded-md px-4 py-2">
+                        Edit
+                      </button>
+
+                    </Link>
+
+
+
+
+                    <DeleteProductButton
+                      productId={product.id}
+                    />
+
+
+                  </div>
+
 
                 </div>
 
@@ -133,11 +158,15 @@ export default async function AdminProductsPage() {
 
             </div>
 
+
           ))}
+
 
         </div>
 
+
       )}
+
 
     </main>
   );

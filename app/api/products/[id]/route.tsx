@@ -25,6 +25,7 @@ export async function GET(
         price: true,
         image: true,
         category: true,
+        stock: true,
       },
 
     });

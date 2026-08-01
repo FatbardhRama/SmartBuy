@@ -4,6 +4,7 @@ import { prisma } from "@/lib/prisma";
 import { authOptions } from "@/lib/auth";
 import {
   isNonEmptyString,
+  isValidNonNegativeInteger,
   isValidPositiveNumber,
 } from "@/lib/validation";
 
@@ -102,7 +103,7 @@ export async function POST(request: Request) {
       );
     }
 
-    const { name, description, price, image, category } = body;
+    const { name, description, price, image, category, stock } = body;
 
     if (
       !isNonEmptyString(name) ||
@@ -131,6 +132,17 @@ export async function POST(request: Request) {
       );
     }
 
+    if (stock !== undefined && !isValidNonNegativeInteger(stock)) {
+      return NextResponse.json(
+        {
+          message: "Invalid stock value",
+        },
+        {
+          status: 400,
+        }
+      );
+    }
+
     const product = await prisma.product.create({
       data: {
         name: name.trim(),
@@ -138,6 +150,7 @@ export async function POST(request: Request) {
         price: Number(price),
         image: image.trim(),
         category: category.trim(),
+        stock: stock === undefined ? 0 : Number(stock),
       },
     });
 

@@ -236,6 +236,52 @@ export async function POST(request: Request) {
     }
 
     let total = 0;
+    const inventoryUpdates: Array<{ id: string; stock: number }> = [];
+
+    for (const item of parsedItems) {
+      const product = products.find(
+        (product) => product.id === item.productId
+      );
+
+      if (!product) {
+        return NextResponse.json(
+          {
+            message: "One or more products do not exist.",
+          },
+          {
+            status: 404,
+          }
+        );
+      }
+
+      if (product.stock <= 0) {
+        return NextResponse.json(
+          {
+            message: `Product out of stock: ${product.name}`,
+          },
+          {
+            status: 400,
+          }
+        );
+      }
+
+      if (product.stock < item.quantity) {
+        return NextResponse.json(
+          {
+            message: `Not enough inventory for ${product.name}`,
+          },
+          {
+            status: 400,
+          }
+        );
+      }
+
+      total += product.price * item.quantity;
+      inventoryUpdates.push({
+        id: product.id,
+        stock: product.stock - item.quantity,
+      });
+    }
 
     const orderItems = parsedItems.map((item) => {
       const product = products.find(
@@ -246,8 +292,6 @@ export async function POST(request: Request) {
         throw new Error("Product not found.");
       }
 
-      total += product.price * item.quantity;
-
       return {
         productId: product.id,
         quantity: item.quantity,
@@ -255,27 +299,40 @@ export async function POST(request: Request) {
       };
     });
 
-    const order = await prisma.order.create({
-      data: {
-        userId: session.user.id,
+    const order = await prisma.$transaction(async (tx) => {
+      const createdOrder = await tx.order.create({
+        data: {
+          userId: session.user.id,
 
-        fullName: fullName.trim(),
-        email: email.trim(),
-        phone: phone.trim(),
-        address: address.trim(),
-        city: city.trim(),
-        postalCode: postalCode.trim(),
+          fullName: fullName.trim(),
+          email: email.trim(),
+          phone: phone.trim(),
+          address: address.trim(),
+          city: city.trim(),
+          postalCode: postalCode.trim(),
 
-        total,
+          total,
 
-        items: {
-          create: orderItems,
+          items: {
+            create: orderItems,
+          },
         },
-      },
 
-      include: {
-        items: true,
-      },
+        include: {
+          items: true,
+        },
+      });
+
+      await Promise.all(
+        inventoryUpdates.map((item) =>
+          tx.product.update({
+            where: { id: item.id },
+            data: { stock: item.stock },
+          })
+        )
+      );
+
+      return createdOrder;
     });
 
     return NextResponse.json(order, {

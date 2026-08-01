@@ -31,6 +31,25 @@ export function isValidPositiveNumber(value: unknown): boolean {
   return false;
 }
 
+export function isValidNonNegativeInteger(value: unknown): boolean {
+  if (typeof value === "number") {
+    return Number.isInteger(value) && value >= 0;
+  }
+
+  if (typeof value === "string") {
+    const trimmedValue = value.trim();
+
+    if (trimmedValue === "") {
+      return false;
+    }
+
+    const parsedValue = Number(trimmedValue);
+    return Number.isInteger(parsedValue) && parsedValue >= 0;
+  }
+
+  return false;
+}
+
 export function isValidOrderStatus(value: unknown): boolean {
   return (
     typeof value === "string" &&

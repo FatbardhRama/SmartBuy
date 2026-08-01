@@ -15,6 +15,7 @@ export default function NewProductPage() {
     price: "",
     image: "",
     category: "",
+    stock: "",
   });
 
 
@@ -126,6 +127,15 @@ export default function NewProductPage() {
           className="w-full border rounded-md p-3"
         />
 
+        <input
+          name="stock"
+          placeholder="Stock"
+          type="number"
+          min="0"
+          value={form.stock}
+          onChange={handleChange}
+          className="w-full border rounded-md p-3"
+        />
 
         <button
           disabled={loading}

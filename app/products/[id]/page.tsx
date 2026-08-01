@@ -12,6 +12,7 @@ type ProductDetails = {
   price: number;
   category: string;
   image: string;
+  stock: number;
 };
 
 export default function ProductDetailsPage() {
@@ -21,6 +22,7 @@ export default function ProductDetailsPage() {
 
   const [product, setProduct] = useState<ProductDetails | null>(null);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
 
   useEffect(() => {
     let isMounted = true;
@@ -74,13 +76,20 @@ export default function ProductDetailsPage() {
       return;
     }
 
+    if (product.stock <= 0) {
+      setError("Product out of stock.");
+      return;
+    }
+
     addToCart({
       id: product.id,
       name: product.name,
       price: Number(product.price),
       image: product.image,
       quantity: 1,
+      stock: product.stock,
     });
+    setError("");
   }
 
   return (
@@ -111,12 +120,19 @@ export default function ProductDetailsPage() {
             Category: {product.category}
           </p>
 
+          <p className={`font-medium ${product.stock > 0 ? "text-green-600" : "text-red-500"}`}>
+            {product.stock > 0 ? `In Stock: ${product.stock} available` : "Out of Stock"}
+          </p>
+
+          {error && <p className="text-sm text-red-500">{error}</p>}
+
           <button
             type="button"
-            className="w-full bg-green-600 text-white p-4 rounded-lg"
+            className="w-full bg-green-600 text-white p-4 rounded-lg disabled:bg-gray-400"
             onClick={handleAddToCart}
+            disabled={product.stock <= 0}
           >
-            ADD TO CART
+            {product.stock > 0 ? "ADD TO CART" : "OUT OF STOCK"}
           </button>
         </CardContent>
       </Card>

@@ -19,6 +19,7 @@ export default function EditProductPage() {
     price: "",
     image: "",
     category: "",
+    stock: "",
   });
 
 
@@ -50,6 +51,7 @@ export default function EditProductPage() {
         price: String(product.price),
         image: product.image,
         category: product.category,
+        stock: String(product.stock ?? 0),
       });
 
 
@@ -194,7 +196,15 @@ export default function EditProductPage() {
           className="w-full border rounded-md p-3"
         />
 
-
+        <input
+          name="stock"
+          value={form.stock}
+          onChange={handleChange}
+          placeholder="Stock"
+          type="number"
+          min="0"
+          className="w-full border rounded-md p-3"
+        />
 
         <button
           disabled={saving}

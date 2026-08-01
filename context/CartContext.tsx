@@ -15,6 +15,7 @@ type Product = {
   price: number;
   image: string;
   quantity: number;
+  stock: number;
 };
 
 
@@ -129,7 +130,9 @@ export function CartProvider({
 
 
       if (exists) {
-
+        if (exists.quantity >= product.stock) {
+          return current;
+        }
 
         return current.map((item) =>
 
@@ -147,9 +150,9 @@ export function CartProvider({
 
       }
 
-
-
-
+      if (product.stock <= 0) {
+        return current;
+      }
 
       return [
 
@@ -161,6 +164,7 @@ export function CartProvider({
           price: Number(product.price),
           image: product.image,
           quantity: 1,
+          stock: product.stock,
         },
 
       ];
@@ -197,7 +201,7 @@ export function CartProvider({
 
       current.map((item)=>
 
-        item.id === id
+        item.id === id && item.quantity < item.stock
 
         ? {
             ...item,
