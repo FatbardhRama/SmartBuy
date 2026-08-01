@@ -1,9 +1,9 @@
 "use client";
 
+import Link from "next/link";
 import Image from "next/image";
 
 import { Button } from "@/components/ui/button";
-
 import {
   Card,
   CardContent,
@@ -283,15 +283,13 @@ export default function CartPage() {
 
 
 
-            <Button
-
-              className="w-full"
-
-            >
-
-              Checkout
-
-            </Button>
+            <Link href="/checkout">
+  <Button
+    className="w-full"
+  >
+    Checkout
+  </Button>
+</Link>
 
 
 

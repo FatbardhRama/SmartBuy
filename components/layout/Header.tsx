@@ -12,12 +12,13 @@ export function Header() {
 
   const { data: session } = useSession();
 
-  const { itemCount } = useCart();
-
+  const {
+    itemCount,
+    loaded,
+  } = useCart();
 
 
   return (
-
     <header className="border-b">
 
       <div className="container mx-auto flex h-16 items-center justify-between px-6">
@@ -32,7 +33,6 @@ export function Header() {
 
 
 
-
         <nav className="flex items-center gap-6">
 
 
@@ -41,18 +41,14 @@ export function Header() {
           </Link>
 
 
-
           <Link href="/products">
             Products
           </Link>
 
 
-
           <Link href="/deals">
             Deals
           </Link>
-
-
 
 
           <Link
@@ -62,23 +58,18 @@ export function Header() {
 
             Cart
 
-            {itemCount > 0 && (
 
+            {loaded && itemCount > 0 && (
               <span className="rounded-full bg-black px-2 py-0.5 text-xs text-white">
-
                 {itemCount}
-
               </span>
-
             )}
+
 
           </Link>
 
 
-
         </nav>
-
-
 
 
 
@@ -90,15 +81,14 @@ export function Header() {
 
 
 
-
           {session ? (
 
             <>
 
+
               <span className="text-sm">
                 Hello, {session.user?.name}
               </span>
-
 
 
 
@@ -109,8 +99,6 @@ export function Header() {
                 </Button>
 
               </Link>
-
-
 
 
 
@@ -125,9 +113,6 @@ export function Header() {
                 </Link>
 
               )}
-
-
-
 
 
 
@@ -157,7 +142,6 @@ export function Header() {
 
 
 
-
               <Link href="/register">
 
                 <Button>
@@ -167,11 +151,9 @@ export function Header() {
               </Link>
 
 
-
             </>
 
           )}
-
 
 
         </div>
@@ -181,7 +163,5 @@ export function Header() {
 
 
     </header>
-
   );
-
 }

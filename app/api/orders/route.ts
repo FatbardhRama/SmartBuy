@@ -24,6 +24,50 @@ type OrderRequest = {
   items: OrderItemRequest[];
 };
 
+export async function GET() {
+  try {
+    const session = await getServerSession(authOptions);
+
+    if (!session?.user?.id) {
+      return NextResponse.json(
+        {
+          message: "Unauthorized.",
+        },
+        {
+          status: 401,
+        }
+      );
+    }
+
+    const orders = await prisma.order.findMany({
+      where: {
+        userId: session.user.id,
+      },
+      include: {
+        items: {
+          include: {
+            product: true,
+          },
+        },
+      },
+      orderBy: {
+        createdAt: "desc",
+      },
+    });
+
+    return NextResponse.json(orders);
+  } catch {
+    return NextResponse.json(
+      {
+        message: "Failed to fetch orders.",
+      },
+      {
+        status: 500,
+      }
+    );
+  }
+}
+
 export async function POST(request: Request) {
   try {
     const session = await getServerSession(authOptions);
@@ -50,16 +94,24 @@ export async function POST(request: Request) {
         Array.isArray(parsedBody)
       ) {
         return NextResponse.json(
-          { message: "Invalid request body" },
-          { status: 400 }
+          {
+            message: "Invalid request body",
+          },
+          {
+            status: 400,
+          }
         );
       }
 
       body = parsedBody as Record<string, unknown>;
     } catch {
       return NextResponse.json(
-        { message: "Invalid request body" },
-        { status: 400 }
+        {
+          message: "Invalid request body",
+        },
+        {
+          status: 400,
+        }
       );
     }
 

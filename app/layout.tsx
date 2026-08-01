@@ -1,14 +1,9 @@
-import { ThemeProvider } from "@/components/theme-provider";
-import { SessionProvider } from "@/components/providers/SessionProvider";
-import { CartProvider } from "@/context/CartContext";
-
-import { Header } from "@/components/layout/Header";
-import { Footer } from "@/components/layout/Footer";
-
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 
 import "./globals.css";
+
+import AppProviders from "@/components/providers/AppProviders";
 
 
 const geistSans = Geist({
@@ -32,9 +27,9 @@ export const metadata: Metadata = {
 
 export default function RootLayout({
   children,
-}: Readonly<{
+}: {
   children: React.ReactNode;
-}>) {
+}) {
 
   return (
 
@@ -46,41 +41,12 @@ export default function RootLayout({
 
       <body className="min-h-full flex flex-col">
 
-
-        <ThemeProvider
-          attribute="class"
-          defaultTheme="system"
-          enableSystem
-        >
-
-
-          <SessionProvider>
-
-
-            <CartProvider>
-
-
-              <Header />
-
-
-              <main className="flex-1">
-                {children}
-              </main>
-
-
-              <Footer />
-
-
-            </CartProvider>
-
-
-          </SessionProvider>
-
-
-        </ThemeProvider>
-
+        <AppProviders>
+          {children}
+        </AppProviders>
 
       </body>
+
 
     </html>
 

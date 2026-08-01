@@ -36,12 +36,9 @@ export async function GET() {
       },
     });
 
-
     return NextResponse.json(orders);
 
-  } catch (error) {
-
-    console.error("GET ORDERS ERROR:", error);
+  } catch {
 
     return NextResponse.json(
       {

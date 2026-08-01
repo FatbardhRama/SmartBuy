@@ -30,42 +30,27 @@ export async function GET(req: Request) {
     const sort = searchParams.get("sort") ?? "newest";
 
 
-    let orderBy;
-
+    const orderBy: Record<string, "asc" | "desc"> = {};
 
     switch (sort) {
       case "price-low":
-        orderBy = {
-          price: "asc",
-        };
+        orderBy.price = "asc";
         break;
-
 
       case "price-high":
-        orderBy = {
-          price: "desc",
-        };
+        orderBy.price = "desc";
         break;
-
 
       case "name-a":
-        orderBy = {
-          name: "asc",
-        };
+        orderBy.name = "asc";
         break;
-
 
       case "name-z":
-        orderBy = {
-          name: "desc",
-        };
+        orderBy.name = "desc";
         break;
 
-
       default:
-        orderBy = {
-          createdAt: "desc",
-        };
+        orderBy.createdAt = "desc";
     }
 
 
