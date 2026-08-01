@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { toastError, toastSuccess } from "@/components/ui/toast";
 
 
 export default function NewProductPage() {
@@ -20,6 +21,7 @@ export default function NewProductPage() {
 
 
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
 
 
 
@@ -42,6 +44,7 @@ export default function NewProductPage() {
 
     e.preventDefault();
 
+    setError("");
     setLoading(true);
 
 
@@ -60,8 +63,13 @@ export default function NewProductPage() {
 
 
     if (res.ok) {
+      toastSuccess("Product created successfully.");
       router.push("/admin/products");
       router.refresh();
+    } else {
+      const data = await res.json().catch(() => null);
+      setError(data?.message || "Unable to create the product right now.");
+      toastError(data?.message || "Unable to create the product right now.");
     }
 
 
@@ -136,6 +144,8 @@ export default function NewProductPage() {
           onChange={handleChange}
           className="w-full border rounded-md p-3"
         />
+
+        {error && <p className="text-sm text-red-500">{error}</p>}
 
         <button
           disabled={loading}

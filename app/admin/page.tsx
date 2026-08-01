@@ -3,6 +3,7 @@ import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { redirect } from "next/navigation";
 import Link from "next/link";
+import { formatCurrency } from "@/lib/formatCurrency";
 
 export default async function AdminDashboardPage() {
   const session = await getServerSession(authOptions);
@@ -102,7 +103,7 @@ export default async function AdminDashboardPage() {
           </p>
 
           <p className="text-3xl font-bold">
-            ${revenue._sum.total ?? 0}
+            {formatCurrency(revenue._sum.total ?? 0)}
           </p>
         </div>
       </div>
@@ -141,7 +142,7 @@ export default async function AdminDashboardPage() {
 
                 <div className="text-right">
                   <p className="font-bold">
-                    ${order.total}
+                    {formatCurrency(order.total)}
                   </p>
 
                   <p className="text-sm">

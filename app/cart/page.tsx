@@ -10,6 +10,7 @@ import {
 } from "@/components/ui/card";
 
 import { useCart } from "@/context/CartContext";
+import { formatCurrency } from "@/lib/formatCurrency";
 
 
 
@@ -52,12 +53,18 @@ export default function CartPage() {
 
     return (
 
-      <div className="flex min-h-screen items-center justify-center">
-
-        <h1 className="text-3xl font-bold">
-          Your cart is empty
-        </h1>
-
+      <div className="flex min-h-screen items-center justify-center px-6">
+        <div className="w-full max-w-md rounded-lg border border-dashed p-8 text-center">
+          <h1 className="text-3xl font-bold">
+            Your cart is empty
+          </h1>
+          <p className="mt-3 text-sm text-muted-foreground">
+            Add a few products to get started.
+          </p>
+          <Link href="/products">
+            <Button className="mt-6">Start shopping</Button>
+          </Link>
+        </div>
       </div>
 
     );
@@ -137,7 +144,7 @@ export default function CartPage() {
 
 
                     <p className="text-muted-foreground">
-                      ${product.price}
+                      {formatCurrency(product.price)}
                     </p>
 
 
@@ -205,9 +212,7 @@ export default function CartPage() {
 
 
                   <p className="font-bold">
-
-                    ${(product.price * product.quantity).toFixed(2)}
-
+                    {formatCurrency(product.price * product.quantity)}
                   </p>
 
 
@@ -271,9 +276,7 @@ export default function CartPage() {
 
 
               <span className="font-bold">
-
-                ${subtotal.toFixed(2)}
-
+                {formatCurrency(subtotal)}
               </span>
 
 

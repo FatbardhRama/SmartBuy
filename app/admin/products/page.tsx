@@ -4,6 +4,7 @@ import { prisma } from "@/lib/prisma";
 import { redirect } from "next/navigation";
 import Link from "next/link";
 import { DeleteProductButton } from "@/components/admin/DeleteProductButton";
+import { formatCurrency } from "@/lib/formatCurrency";
 
 
 async function getProducts() {
@@ -60,9 +61,10 @@ export default async function AdminProductsPage() {
 
       {products.length === 0 ? (
 
-        <p>
-          No products found.
-        </p>
+        <div className="rounded-lg border border-dashed p-10 text-center">
+          <h2 className="text-lg font-semibold">No products available</h2>
+          <p className="mt-2 text-sm text-muted-foreground">Create your first product to get started.</p>
+        </div>
 
 
       ) : (
@@ -110,7 +112,7 @@ export default async function AdminProductsPage() {
 
 
                   <p className="font-bold">
-                    €{product.price}
+                    {formatCurrency(product.price)}
                   </p>
 
 

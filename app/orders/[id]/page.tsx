@@ -1,6 +1,7 @@
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
+import { formatCurrency } from "@/lib/formatCurrency";
 import { redirect } from "next/navigation";
 
 
@@ -292,9 +293,7 @@ export default async function OrderDetailsPage({
 
 
               <p>
-
-                ${item.price}
-
+                {formatCurrency(item.price)}
               </p>
 
 
@@ -323,9 +322,7 @@ export default async function OrderDetailsPage({
 
 
         <p className="text-2xl font-bold">
-
-          Total: ${order.total}
-
+          Total: {formatCurrency(order.total)}
         </p>
 
 

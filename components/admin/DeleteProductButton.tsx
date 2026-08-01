@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 
 import { Button } from "@/components/ui/button";
+import { toastError, toastSuccess } from "@/components/ui/toast";
 
 import {
   AlertDialog,
@@ -40,7 +41,10 @@ export function DeleteProductButton({
       );
 
       if (res.ok) {
+        toastSuccess("Product deleted successfully.");
         router.refresh();
+      } else {
+        toastError("Unable to delete this product right now.");
       }
     } finally {
       setLoading(false);

@@ -12,13 +12,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-
-function formatCurrency(amount: number) {
-  return new Intl.NumberFormat("en-US", {
-    style: "currency",
-    currency: "USD",
-  }).format(amount);
-}
+import { formatCurrency } from "@/lib/formatCurrency";
 
 function formatDate(date: string | Date) {
   return new Date(date).toLocaleDateString("en-US", {

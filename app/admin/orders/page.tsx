@@ -3,6 +3,7 @@ import { authOptions } from "@/lib/auth";
 import { redirect } from "next/navigation";
 import { prisma } from "@/lib/prisma";
 import { OrderStatusSelect } from "@/components/admin/OrderStatusSelect";
+import { formatCurrency } from "@/lib/formatCurrency";
 
 export default async function AdminOrdersPage() {
   const session = await getServerSession(authOptions);
@@ -36,9 +37,10 @@ export default async function AdminOrdersPage() {
       </h1>
 
       {orders.length === 0 ? (
-        <p>
-          No orders found.
-        </p>
+        <div className="rounded-lg border border-dashed p-10 text-center">
+          <h2 className="text-lg font-semibold">No orders yet</h2>
+          <p className="mt-2 text-sm text-muted-foreground">Customer orders will appear here once they place purchases.</p>
+        </div>
       ) : (
         <div className="space-y-6">
           {orders.map((order: any) => (
@@ -63,7 +65,7 @@ export default async function AdminOrdersPage() {
 
                 <div className="text-right">
                   <p className="font-bold">
-                    ${order.total}
+                    {formatCurrency(order.total)}
                   </p>
 
                   <div className="mt-2">

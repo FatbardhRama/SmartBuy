@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
+import { toastError, toastSuccess } from "@/components/ui/toast";
 
 
 export default function EditProductPage() {
@@ -25,6 +26,7 @@ export default function EditProductPage() {
 
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
+  const [error, setError] = useState("");
 
 
 
@@ -88,6 +90,7 @@ export default function EditProductPage() {
     e.preventDefault();
 
 
+    setError("");
     setSaving(true);
 
 
@@ -106,11 +109,13 @@ export default function EditProductPage() {
 
 
     if (res.ok) {
-
+      toastSuccess("Product updated successfully.");
       router.push("/admin/products");
-
       router.refresh();
-
+    } else {
+      const data = await res.json().catch(() => null);
+      setError(data?.message || "Unable to update the product right now.");
+      toastError(data?.message || "Unable to update the product right now.");
     }
 
 
@@ -205,6 +210,8 @@ export default function EditProductPage() {
           min="0"
           className="w-full border rounded-md p-3"
         />
+
+        {error && <p className="text-sm text-red-500">{error}</p>}
 
         <button
           disabled={saving}

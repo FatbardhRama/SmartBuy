@@ -12,6 +12,8 @@ import {
 } from "@/components/ui/card";
 
 import { useCart } from "@/context/CartContext";
+import { formatCurrency } from "@/lib/formatCurrency";
+import { toastError, toastSuccess } from "@/components/ui/toast";
 import type { CheckoutData } from "./CheckoutLayout";
 
 type OrderSummaryProps = {
@@ -81,13 +83,13 @@ export function OrderSummary({
       const data = await response.json();
 
       if (!response.ok) {
-        throw new Error(
-          data.message || "Failed to create order."
-        );
+        const message = data.message || "We could not place your order right now.";
+        toastError(message);
+        throw new Error(message);
       }
 
       clearCart();
-
+      toastSuccess("Order created successfully.");
       router.push("/order-success");
     } catch (error) {
       setError(
@@ -132,8 +134,7 @@ export function OrderSummary({
                   </div>
 
                   <span className="font-medium">
-                    €
-                    {(item.price * item.quantity).toFixed(2)}
+                    {formatCurrency(item.price * item.quantity)}
                   </span>
                 </div>
               ))}
@@ -148,7 +149,7 @@ export function OrderSummary({
                 </span>
 
                 <span>
-                  €{subtotal.toFixed(2)}
+                  {formatCurrency(subtotal)}
                 </span>
               </div>
 
@@ -168,7 +169,7 @@ export function OrderSummary({
                 </span>
 
                 <span>
-                  €{total.toFixed(2)}
+                  {formatCurrency(total)}
                 </span>
               </div>
             </div>

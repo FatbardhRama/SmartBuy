@@ -1,9 +1,12 @@
 "use client";
 
+import Image from "next/image";
 import { useEffect, useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useParams } from "next/navigation";
 import { useCart } from "@/context/CartContext";
+import { formatCurrency } from "@/lib/formatCurrency";
+import { toastError, toastSuccess } from "@/components/ui/toast";
 
 type ProductDetails = {
   id: string;
@@ -57,16 +60,22 @@ export default function ProductDetailsPage() {
 
   if (loading) {
     return (
-      <div className="flex justify-center p-10">
-        Loading...
+      <div className="flex min-h-[50vh] items-center justify-center px-6 py-16">
+        <div className="flex flex-col items-center gap-3 text-center">
+          <div className="h-10 w-10 animate-spin rounded-full border-4 border-primary border-t-transparent" />
+          <p className="text-sm text-muted-foreground">Loading product...</p>
+        </div>
       </div>
     );
   }
 
   if (!product) {
     return (
-      <div className="flex justify-center p-10">
-        Product not found
+      <div className="flex min-h-[50vh] items-center justify-center px-6 py-16">
+        <div className="rounded-lg border border-dashed p-8 text-center">
+          <h2 className="text-xl font-semibold">Product not available</h2>
+          <p className="mt-2 text-sm text-muted-foreground">This product is unavailable right now. Please try another one.</p>
+        </div>
       </div>
     );
   }
@@ -77,7 +86,8 @@ export default function ProductDetailsPage() {
     }
 
     if (product.stock <= 0) {
-      setError("Product out of stock.");
+      setError("This product is currently out of stock.");
+      toastError("This product is currently out of stock.");
       return;
     }
 
@@ -90,6 +100,7 @@ export default function ProductDetailsPage() {
       stock: product.stock,
     });
     setError("");
+    toastSuccess(`${product.name} added to your cart.`);
   }
 
   return (
@@ -102,18 +113,22 @@ export default function ProductDetailsPage() {
         </CardHeader>
 
         <CardContent className="space-y-4">
-          <img
-            src={product.image}
-            alt={product.name}
-            className="w-full h-64 object-cover rounded-lg"
-          />
+          <div className="relative h-64 w-full overflow-hidden rounded-lg">
+            <Image
+              src={product.image}
+              alt={product.name}
+              fill
+              className="object-cover"
+              sizes="(max-width: 768px) 100vw, 50vw"
+            />
+          </div>
 
           <p className="text-lg">
             {product.description}
           </p>
 
           <p className="text-xl font-bold">
-            ${product.price}
+            {formatCurrency(product.price)}
           </p>
 
           <p className="text-sm text-muted-foreground">

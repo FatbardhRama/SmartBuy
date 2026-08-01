@@ -6,6 +6,7 @@ import { CartProvider } from "@/context/CartContext";
 
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
+import { ToastViewport } from "@/components/ui/toast";
 
 
 export default function AppProviders({
@@ -32,6 +33,7 @@ export default function AppProviders({
           </main>
 
           <Footer />
+          <ToastViewport />
 
         </CartProvider>
 

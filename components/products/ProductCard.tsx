@@ -7,6 +7,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { formatCurrency } from "@/lib/formatCurrency";
 
 
 type ProductProps = {
@@ -29,10 +30,7 @@ export function ProductCard({
 }: ProductProps) {
 
 
-  const formattedPrice = new Intl.NumberFormat("en-US", {
-    style: "currency",
-    currency: "USD",
-  }).format(price);
+  const formattedPrice = formatCurrency(price);
 
 
 
