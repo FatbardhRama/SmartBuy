@@ -7,9 +7,7 @@ import { ThemeToggle } from "@/components/theme-toggle";
 import { Button } from "@/components/ui/button";
 import { useCart } from "@/context/CartContext";
 
-
 export function Header() {
-
   const { data: session } = useSession();
 
   const {
@@ -17,12 +15,9 @@ export function Header() {
     loaded,
   } = useCart();
 
-
   return (
     <header className="border-b">
-
       <div className="container mx-auto flex h-16 items-center justify-between px-6">
-
 
         <Link
           href="/"
@@ -32,32 +27,25 @@ export function Header() {
         </Link>
 
 
-
         <nav className="flex items-center gap-6">
-
 
           <Link href="/">
             Home
           </Link>
 
-
           <Link href="/products">
             Products
           </Link>
-
 
           <Link href="/deals">
             Deals
           </Link>
 
-
           <Link
             href="/cart"
             className="flex items-center gap-1"
           >
-
             Cart
-
 
             {loaded && itemCount > 0 && (
               <span className="rounded-full bg-black px-2 py-0.5 text-xs text-white">
@@ -65,31 +53,32 @@ export function Header() {
               </span>
             )}
 
-
           </Link>
-
 
         </nav>
 
 
-
-
         <div className="flex items-center gap-3">
 
-
           <ThemeToggle />
-
 
 
           {session ? (
 
             <>
 
-
               <span className="text-sm">
                 Hello, {session.user?.name}
               </span>
 
+
+              <Link href="/profile">
+
+                <Button variant="outline">
+                  Profile
+                </Button>
+
+              </Link>
 
 
               <Link href="/orders">
@@ -99,7 +88,6 @@ export function Header() {
                 </Button>
 
               </Link>
-
 
 
               {session.user?.role === "ADMIN" && (
@@ -113,7 +101,6 @@ export function Header() {
                 </Link>
 
               )}
-
 
 
               <Button
@@ -130,7 +117,6 @@ export function Header() {
 
             <>
 
-
               <Link href="/login">
 
                 <Button variant="outline">
@@ -138,8 +124,6 @@ export function Header() {
                 </Button>
 
               </Link>
-
-
 
 
               <Link href="/register">
@@ -150,18 +134,13 @@ export function Header() {
 
               </Link>
 
-
             </>
 
           )}
 
-
         </div>
 
-
       </div>
-
-
     </header>
   );
 }
