@@ -73,6 +73,13 @@ export async function POST(req: Request) {
       );
     }
 
+    if (!user.emailVerified) {
+      return NextResponse.json(
+        { message: "Please verify your email before logging in" },
+        { status: 403 }
+      );
+    }
+
     return NextResponse.json(
       {
         message: "Login successful",
