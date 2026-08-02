@@ -5,6 +5,7 @@ import {
   isNonEmptyString,
   isValidEmail,
 } from "@/lib/validation";
+import { logLoginAttempt } from "@/lib/login-log";
 
 export async function POST(req: Request) {
   try {
@@ -55,6 +56,12 @@ export async function POST(req: Request) {
     });
 
     if (!user) {
+      await logLoginAttempt({
+        email: email.trim(),
+        success: false,
+        headers: req.headers,
+      });
+
       return NextResponse.json(
         { message: "Invalid email or password" },
         { status: 401 }
@@ -67,6 +74,13 @@ export async function POST(req: Request) {
     );
 
     if (!passwordMatch) {
+      await logLoginAttempt({
+        userId: user.id,
+        email: email.trim(),
+        success: false,
+        headers: req.headers,
+      });
+
       return NextResponse.json(
         { message: "Invalid email or password" },
         { status: 401 }
@@ -74,11 +88,25 @@ export async function POST(req: Request) {
     }
 
     if (!user.emailVerified) {
+      await logLoginAttempt({
+        userId: user.id,
+        email: email.trim(),
+        success: false,
+        headers: req.headers,
+      });
+
       return NextResponse.json(
         { message: "Please verify your email before logging in" },
         { status: 403 }
       );
     }
+
+    await logLoginAttempt({
+      userId: user.id,
+      email: email.trim(),
+      success: true,
+      headers: req.headers,
+    });
 
     return NextResponse.json(
       {
