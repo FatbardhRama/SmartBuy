@@ -14,90 +14,108 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 
+
 interface ProfileUser {
   id: string;
   name: string | null;
   email: string;
+  image: string | null;
   role: string;
   createdAt: string | Date;
 }
+
 
 interface ProfileFormProps {
   initialUser: ProfileUser;
 }
 
+
+
 function formatDate(date: string | Date) {
-  return new Date(date).toLocaleDateString("en-US", {
-    year: "numeric",
-    month: "short",
-    day: "numeric",
-  });
+
+  return new Date(date).toLocaleDateString(
+    "en-US",
+    {
+      year: "numeric",
+      month: "short",
+      day: "numeric",
+    }
+  );
+
 }
+
+
 
 export function ProfileForm({
   initialUser,
 }: ProfileFormProps) {
 
+
   const [name, setName] = useState(
     initialUser.name ?? ""
   );
 
+
   const [password, setPassword] = useState("");
 
-  const [loading, setLoading] = useState(false);
 
-  const [message, setMessage] = useState("");
-
-  const [error, setError] = useState("");
+  const [selectedImage, setSelectedImage] =
+    useState<File | null>(null);
 
 
-  async function handleSubmit(
-    e: React.FormEvent
-  ) {
-    e.preventDefault();
+  const [preview, setPreview] =
+    useState(
+      initialUser.image ?? ""
+    );
 
-    setLoading(true);
-    setMessage("");
-    setError("");
+
+  const [loading, setLoading] =
+    useState(false);
+
+
+  const [message, setMessage] =
+    useState("");
+
+
+  const [error, setError] =
+    useState("");
+
+
+
+
+
+  async function handleImageUpload() {
+
+    if (!selectedImage) {
+      return;
+    }
 
 
     try {
 
-      const payload: Record<string, string> = {};
+      setLoading(true);
+      setError("");
+      setMessage("");
 
 
-      if (name.trim()) {
-        payload.name = name.trim();
-      }
+      const formData = new FormData();
 
 
-      if (password.trim()) {
-        payload.password = password.trim();
-      }
-
-
-      if (
-        Object.keys(payload).length === 0
-      ) {
-        setError(
-          "Enter a name or a new password to update your profile."
-        );
-
-        return;
-      }
+      formData.append(
+        "file",
+        selectedImage
+      );
 
 
 
       const response = await fetch(
-        "/api/profile",
+        "/api/profile/upload",
         {
-          method: "PUT",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(payload),
+          method: "POST",
+          body: formData,
         }
       );
+
 
 
       const data = await response.json();
@@ -108,27 +126,32 @@ export function ProfileForm({
 
         setError(
           data.message ||
-          "Unable to update profile."
+          "Image upload failed."
         );
 
         return;
       }
 
 
+
+      setPreview(data.image);
+
+
+      setSelectedImage(null);
+
+
       setMessage(
-        data.message ||
-        "Profile updated successfully."
+        "Profile picture updated successfully."
       );
 
 
-      setPassword("");
-
-
+      window.location.reload();
     } catch {
 
       setError(
-        "Something went wrong while updating your profile."
+        "Something went wrong while uploading image."
       );
+
 
     } finally {
 
@@ -140,9 +163,143 @@ export function ProfileForm({
 
 
 
+
+
+
+  async function handleSubmit(
+    e: React.FormEvent
+  ) {
+
+    e.preventDefault();
+
+
+    setLoading(true);
+
+    setMessage("");
+
+    setError("");
+
+
+
+    try {
+
+
+      const payload: Record<string,string> = {};
+
+
+
+      if (name.trim()) {
+
+        payload.name =
+          name.trim();
+
+      }
+
+
+
+      if (password.trim()) {
+
+        payload.password =
+          password.trim();
+
+      }
+
+
+
+
+      if (
+        Object.keys(payload).length === 0
+      ) {
+
+        setError(
+          "Enter a name or a new password."
+        );
+
+        return;
+
+      }
+
+
+
+
+      const response =
+        await fetch(
+          "/api/profile",
+          {
+            method: "PUT",
+
+            headers: {
+              "Content-Type":
+                "application/json",
+            },
+
+            body:
+              JSON.stringify(payload),
+          }
+        );
+
+
+
+
+
+      const data =
+        await response.json();
+
+
+
+
+      if (!response.ok) {
+
+        setError(
+          data.message ||
+          "Profile update failed."
+        );
+
+        return;
+
+      }
+
+
+
+
+
+      setMessage(
+        "Profile updated successfully."
+      );
+
+
+      setPassword("");
+
+
+
+    } catch {
+
+
+      setError(
+        "Something went wrong."
+      );
+
+
+    } finally {
+
+
+      setLoading(false);
+
+
+    }
+
+
+  }
+
+
+
+
+
+
   return (
 
     <div className="grid gap-6 lg:grid-cols-[1.1fr_0.9fr]">
+
 
 
       <Card>
@@ -155,14 +312,100 @@ export function ProfileForm({
 
 
           <CardDescription>
-            Review your account information.
+            Your account information.
           </CardDescription>
 
         </CardHeader>
 
 
 
-        <CardContent className="space-y-4">
+        <CardContent className="space-y-6">
+
+
+          <div className="flex flex-col items-center gap-4">
+
+
+            {preview ? (
+
+              <img
+
+                src={preview}
+
+                alt="Profile picture"
+
+                className="h-32 w-32 rounded-full object-cover border"
+
+              />
+
+            ) : (
+
+              <div className="h-32 w-32 rounded-full border flex items-center justify-center text-sm">
+
+                No Image
+
+              </div>
+
+            )}
+
+
+
+
+
+            <Input
+
+              type="file"
+
+              accept="image/*"
+
+              onChange={(e)=>{
+
+                const file =
+                  e.target.files?.[0];
+
+
+                if(file){
+
+                  setSelectedImage(file);
+
+
+                  setPreview(
+                    URL.createObjectURL(file)
+                  );
+
+                }
+
+              }}
+
+            />
+
+
+
+
+
+            <Button
+
+              type="button"
+
+              onClick={handleImageUpload}
+
+              disabled={
+                !selectedImage ||
+                loading
+              }
+
+            >
+
+              {loading
+                ? "Uploading..."
+                : "Upload Picture"}
+
+            </Button>
+
+
+          </div>
+
+
+
 
 
           <div className="grid gap-2">
@@ -171,11 +414,16 @@ export function ProfileForm({
               Name
             </Label>
 
+
             <p className="rounded-md border bg-muted/40 px-3 py-2 text-sm">
+
               {initialUser.name || "Not provided"}
+
             </p>
 
           </div>
+
+
 
 
 
@@ -185,11 +433,15 @@ export function ProfileForm({
               Email
             </Label>
 
+
             <p className="rounded-md border bg-muted/40 px-3 py-2 text-sm">
+
               {initialUser.email}
+
             </p>
 
           </div>
+
 
 
 
@@ -200,11 +452,15 @@ export function ProfileForm({
               Role
             </Label>
 
+
             <p className="rounded-md border bg-muted/40 px-3 py-2 text-sm capitalize">
+
               {initialUser.role.toLowerCase()}
+
             </p>
 
           </div>
+
 
 
 
@@ -215,17 +471,22 @@ export function ProfileForm({
               Member Since
             </Label>
 
+
             <p className="rounded-md border bg-muted/40 px-3 py-2 text-sm">
+
               {formatDate(initialUser.createdAt)}
+
             </p>
 
           </div>
 
 
 
+
         </CardContent>
 
       </Card>
+
 
 
 
@@ -241,11 +502,12 @@ export function ProfileForm({
 
 
           <CardDescription>
-            Change your name or password.
+            Change name or password.
           </CardDescription>
 
 
         </CardHeader>
+
 
 
 
@@ -260,22 +522,18 @@ export function ProfileForm({
 
             <div className="space-y-2">
 
-              <Label htmlFor="name">
+              <Label>
                 Name
               </Label>
 
 
               <Input
 
-                id="name"
-
                 value={name}
 
-                onChange={(e) =>
+                onChange={(e)=>
                   setName(e.target.value)
                 }
-
-                placeholder="Enter your name"
 
               />
 
@@ -287,28 +545,22 @@ export function ProfileForm({
 
             <div className="space-y-2">
 
-
-              <Label htmlFor="password">
+              <Label>
                 New Password
               </Label>
 
 
               <Input
 
-                id="password"
-
                 type="password"
 
                 value={password}
 
-                onChange={(e) =>
+                onChange={(e)=>
                   setPassword(e.target.value)
                 }
 
-                placeholder="Leave empty to keep current"
-
               />
-
 
             </div>
 
@@ -354,7 +606,6 @@ export function ProfileForm({
 
 
 
-
           </form>
 
 
@@ -362,6 +613,7 @@ export function ProfileForm({
 
 
       </Card>
+
 
 
     </div>
