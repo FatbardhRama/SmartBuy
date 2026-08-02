@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import { signIn } from "next-auth/react";
 
 import { Input } from "@/components/ui/input";
@@ -13,8 +14,12 @@ import {
 } from "@/components/ui/card";
 
 export function LoginForm() {
+  const router = useRouter();
+
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+
+  const [rememberMe, setRememberMe] = useState(false);
 
   const [message, setMessage] = useState("");
   const [loading, setLoading] = useState(false);
@@ -30,6 +35,7 @@ export function LoginForm() {
       const result = await signIn("credentials", {
         email,
         password,
+        rememberMe,
         redirect: false,
       });
 
@@ -40,11 +46,13 @@ export function LoginForm() {
       }
 
 
-      setMessage("Login successful");
+      router.push("/");
+      router.refresh();
 
 
     } catch {
       setMessage("Something went wrong");
+
     } finally {
       setLoading(false);
     }
@@ -53,17 +61,21 @@ export function LoginForm() {
 
   return (
     <Card className="w-full max-w-md">
+
       <CardHeader>
         <CardTitle className="text-center text-2xl">
           Login
         </CardTitle>
       </CardHeader>
 
+
       <CardContent>
+
         <form
           onSubmit={handleSubmit}
           className="space-y-4"
         >
+
 
           <Input
             type="email"
@@ -81,12 +93,36 @@ export function LoginForm() {
           />
 
 
+          <div className="flex items-center gap-2">
+
+            <input
+              id="rememberMe"
+              type="checkbox"
+              checked={rememberMe}
+              onChange={(e) =>
+                setRememberMe(e.target.checked)
+              }
+            />
+
+            <label
+              htmlFor="rememberMe"
+              className="text-sm"
+            >
+              Remember me
+            </label>
+
+          </div>
+
+
           <Button
             className="w-full"
             disabled={loading}
           >
+
             {loading ? "Logging in..." : "Login"}
+
           </Button>
+
 
 
           {message && (
@@ -95,8 +131,11 @@ export function LoginForm() {
             </p>
           )}
 
+
         </form>
+
       </CardContent>
+
     </Card>
   );
 }

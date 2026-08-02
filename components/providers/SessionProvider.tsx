@@ -1,6 +1,7 @@
 "use client";
 
 import { SessionProvider as NextAuthProvider } from "next-auth/react";
+import { SessionTimeoutProvider } from "@/components/providers/SessionTimeoutProvider";
 
 export function SessionProvider({
   children,
@@ -9,7 +10,9 @@ export function SessionProvider({
 }) {
   return (
     <NextAuthProvider>
-      {children}
+      <SessionTimeoutProvider>
+        {children}
+      </SessionTimeoutProvider>
     </NextAuthProvider>
   );
 }
