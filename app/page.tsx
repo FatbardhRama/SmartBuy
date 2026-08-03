@@ -69,13 +69,34 @@ import { Categories } from "@/components/home/Categories";
 import { FeaturedProducts } from "@/components/home/FeaturedProducts";
 import { FlashDeals } from "@/components/home/FlashDeals";
 import { Newsletter } from "@/components/home/Newsletter";
+import { prisma } from "@/lib/prisma";
 
-export default function Home() {
+export default async function Home() {
+  const products = await prisma.product.findMany({
+    where: {
+      stock: {
+        gt: 0,
+      },
+    },
+    orderBy: {
+      createdAt: "desc",
+    },
+    take: 4,
+    select: {
+      id: true,
+      name: true,
+      description: true,
+      price: true,
+      image: true,
+      category: true,
+    },
+  });
+
   return (
     <>
       <HeroSection />
       <Categories />
-      <FeaturedProducts />
+      <FeaturedProducts products={products} />
       <FlashDeals />
       <Newsletter />
     </>

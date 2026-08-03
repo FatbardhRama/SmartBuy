@@ -1,39 +1,21 @@
-import {
-  Card,
-  CardContent,
-  CardFooter,
-} from "@/components/ui/card";
+import { ProductCard } from "@/components/products/ProductCard";
 
-import { Button } from "@/components/ui/button";
+type Product = {
+  id: string;
+  name: string;
+  description: string;
+  price: number;
+  image: string;
+  category: string;
+};
 
-const products = [
-  {
-    name: "iPhone 15 Pro",
-    category: "Electronics",
-    price: "$999",
-    image: "📱",
-  },
-  {
-    name: "Gaming Laptop",
-    category: "Gaming",
-    price: "$1299",
-    image: "💻",
-  },
-  {
-    name: "Smart Watch",
-    category: "Electronics",
-    price: "$199",
-    image: "⌚",
-  },
-  {
-    name: "Wireless Headphones",
-    category: "Audio",
-    price: "$149",
-    image: "🎧",
-  },
-];
+type FeaturedProductsProps = {
+  products: Product[];
+};
 
-export function FeaturedProducts() {
+export function FeaturedProducts({
+  products,
+}: FeaturedProductsProps) {
   return (
     <section className="py-16">
       <div className="container mx-auto px-4">
@@ -45,38 +27,10 @@ export function FeaturedProducts() {
         <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
 
           {products.map((product) => (
-            <Card
-              key={product.name}
-              className="overflow-hidden"
-            >
-
-              <CardContent className="p-6 text-center">
-
-                <div className="mb-4 text-6xl">
-                  {product.image}
-                </div>
-
-                <h3 className="text-lg font-semibold">
-                  {product.name}
-                </h3>
-
-                <p className="text-sm text-muted-foreground">
-                  {product.category}
-                </p>
-
-                <p className="mt-3 text-xl font-bold">
-                  {product.price}
-                </p>
-
-              </CardContent>
-
-              <CardFooter>
-                <Button className="w-full">
-                  View Product
-                </Button>
-              </CardFooter>
-
-            </Card>
+            <ProductCard
+              key={product.id}
+              {...product}
+            />
           ))}
 
         </div>
