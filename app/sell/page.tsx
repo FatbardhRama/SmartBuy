@@ -9,7 +9,7 @@ import { prisma } from "@/lib/prisma";
 
 const statusDescription: Record<string, string> = {
   PENDING: "Your application is awaiting admin review.",
-  APPROVED: "Your store is approved. Seller management will be available in the next marketplace sprint.",
+  APPROVED: "Your store is approved. You can now manage products from your seller dashboard.",
   REJECTED: "Your application was not approved. You can update your application details through the seller store API.",
   SUSPENDED: "Your store is currently suspended. Please contact support for help.",
 };

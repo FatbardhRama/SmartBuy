@@ -13,13 +13,12 @@ export function Header() {
   const { data: session } = useSession();
   const { itemCount, loaded } = useCart();
   const [menuOpen, setMenuOpen] = useState(false);
-  const [hasStore, setHasStore] = useState<boolean | null>(null);
+  const [storeStatus, setStoreStatus] = useState<string | null>(null);
 
   const closeMenu = () => setMenuOpen(false);
 
   useEffect(() => {
     if (!session?.user?.id) {
-      setHasStore(null);
       return;
     }
 
@@ -31,11 +30,11 @@ export function Header() {
         const data = await response.json();
 
         if (active && response.ok) {
-          setHasStore(Boolean(data.store));
+          setStoreStatus(data.store?.status ?? null);
         }
       } catch {
         if (active) {
-          setHasStore(false);
+          setStoreStatus(null);
         }
       }
     }
@@ -74,7 +73,13 @@ export function Header() {
           <span className="text-sm text-muted-foreground">Hello, {session.user?.name}</span>
           <Link href="/profile" onClick={closeMenu}><Button variant="outline">Profile</Button></Link>
           <Link href="/orders" onClick={closeMenu}><Button variant="outline">My Orders</Button></Link>
-          <Link href="/sell" onClick={closeMenu}><Button variant="outline">{hasStore ? "My Store" : "Become a Seller"}</Button></Link>
+          <Link href="/sell" onClick={closeMenu}><Button variant="outline">{storeStatus ? "My Store" : "Become a Seller"}</Button></Link>
+          {storeStatus === "APPROVED" && (
+            <>
+              <Link href="/seller" onClick={closeMenu}><Button variant="outline">Seller Dashboard</Button></Link>
+              <Link href="/seller/products" onClick={closeMenu}><Button variant="outline">My Products</Button></Link>
+            </>
+          )}
           {session.user?.role === "ADMIN" && (
             <>
               <Link href="/admin" onClick={closeMenu}><Button variant="outline">Admin</Button></Link>
