@@ -11,6 +11,7 @@ import { toastError, toastSuccess } from "@/components/ui/toast";
 
 import { ReviewList } from "@/components/reviews/ReviewList";
 import { WishlistButton } from "@/components/wishlist/WishlistButton";
+import { RelatedProducts } from "@/components/products/RelatedProducts";
 
 
 type ProductDetails = {
@@ -215,9 +216,11 @@ export default function ProductDetailsPage() {
 
   return (
 
-    <div className="min-h-screen flex items-center justify-center p-6">
+    <div className="min-h-screen px-6 py-10">
 
-      <Card className="w-full max-w-xl">
+      <div className="mx-auto max-w-6xl space-y-12">
+
+      <Card className="mx-auto w-full max-w-xl">
 
 
         <CardHeader>
@@ -362,6 +365,13 @@ export default function ProductDetailsPage() {
 
       </Card>
 
+      <RelatedProducts
+        productId={product.id}
+        category={product.category}
+      />
+
+
+    </div>
 
     </div>
 
