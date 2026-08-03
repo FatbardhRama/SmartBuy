@@ -12,6 +12,7 @@ import { toastError, toastSuccess } from "@/components/ui/toast";
 import { ReviewList } from "@/components/reviews/ReviewList";
 import { WishlistButton } from "@/components/wishlist/WishlistButton";
 import { RelatedProducts } from "@/components/products/RelatedProducts";
+import { RecentlyViewedProducts } from "@/components/products/RecentlyViewedProducts";
 
 
 type ProductDetails = {
@@ -23,6 +24,45 @@ type ProductDetails = {
   image: string;
   stock: number;
 };
+
+const RECENTLY_VIEWED_KEY = "recentlyViewed";
+
+function saveRecentlyViewed(product: ProductDetails) {
+  try {
+    const saved = localStorage.getItem(RECENTLY_VIEWED_KEY);
+
+    const recentlyViewed = saved
+      ? JSON.parse(saved)
+      : [];
+
+    const existingProducts = Array.isArray(recentlyViewed)
+      ? recentlyViewed
+      : [];
+
+    const productToSave = {
+      id: product.id,
+      name: product.name,
+      description: product.description,
+      price: product.price,
+      image: product.image,
+      category: product.category,
+    };
+
+    const nextRecentlyViewed = [
+      productToSave,
+      ...existingProducts.filter(
+        (item) => item?.id !== product.id
+      ),
+    ].slice(0, 4);
+
+    localStorage.setItem(
+      RECENTLY_VIEWED_KEY,
+      JSON.stringify(nextRecentlyViewed)
+    );
+  } catch {
+    // Keep the product page usable if localStorage is unavailable.
+  }
+}
 
 
 export default function ProductDetailsPage() {
@@ -57,6 +97,8 @@ export default function ProductDetailsPage() {
 
 
         if (isMounted) {
+
+          saveRecentlyViewed(data);
 
           setProduct(data);
 
@@ -368,6 +410,10 @@ export default function ProductDetailsPage() {
       <RelatedProducts
         productId={product.id}
         category={product.category}
+      />
+
+      <RecentlyViewedProducts
+        currentProductId={product.id}
       />
 
 
