@@ -114,7 +114,7 @@ export default async function OrderDetailsPage({
 
     return (
 
-      <main className="p-10">
+      <main className="p-4 sm:p-10">
 
         <h1 className="text-2xl font-bold">
           Order not found
@@ -133,11 +133,11 @@ export default async function OrderDetailsPage({
 
   return (
 
-    <main className="max-w-5xl mx-auto px-6 py-10">
+    <main className="mx-auto max-w-5xl px-4 py-8 sm:px-6 sm:py-10">
 
 
 
-      <h1 className="text-3xl font-bold mb-6">
+      <h1 className="mb-6 text-2xl font-bold sm:text-3xl">
         Order Details
       </h1>
 
@@ -145,7 +145,7 @@ export default async function OrderDetailsPage({
 
 
 
-      <div className="border rounded-lg p-6 space-y-4">
+      <div className="space-y-4 rounded-lg border p-4 sm:p-6">
 
 
 
@@ -155,7 +155,7 @@ export default async function OrderDetailsPage({
             Order ID
           </p>
 
-          <p className="font-medium">
+          <p className="break-all font-medium">
             {order.id}
           </p>
 
@@ -207,7 +207,7 @@ export default async function OrderDetailsPage({
 
 
 
-      <div className="border rounded-lg p-6 mt-6">
+      <div className="mt-6 rounded-lg border p-4 sm:p-6">
 
 
         <h2 className="text-xl font-bold mb-4">
@@ -240,7 +240,7 @@ export default async function OrderDetailsPage({
 
 
 
-      <div className="border rounded-lg p-6 mt-6">
+      <div className="mt-6 rounded-lg border p-4 sm:p-6">
 
 
         <h2 className="text-xl font-bold mb-4">
@@ -262,7 +262,7 @@ export default async function OrderDetailsPage({
 
               key={item.id}
 
-              className="flex justify-between"
+              className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between"
 
             >
 
@@ -318,7 +318,7 @@ export default async function OrderDetailsPage({
 
 
 
-      <div className="mt-6 text-right">
+      <div className="mt-6 text-left sm:text-right">
 
 
         <p className="text-2xl font-bold">

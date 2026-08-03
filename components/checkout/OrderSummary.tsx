@@ -103,7 +103,7 @@ export function OrderSummary({
   }
 
   return (
-    <Card className="sticky top-24">
+    <Card className="motion-safe:animate-in motion-safe:fade-in-0 motion-safe:slide-in-from-bottom-2 lg:sticky lg:top-24">
       <CardHeader>
         <CardTitle>
           Order Summary
@@ -123,8 +123,8 @@ export function OrderSummary({
                   key={item.id}
                   className="flex items-start justify-between gap-4"
                 >
-                  <div className="flex-1">
-                    <p className="font-medium">
+                  <div className="min-w-0 flex-1">
+                    <p className="break-words font-medium">
                       {item.name}
                     </p>
 

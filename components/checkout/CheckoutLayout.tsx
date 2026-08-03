@@ -26,8 +26,8 @@ export function CheckoutLayout() {
   const [form, setForm] = useState<CheckoutData>(initialForm);
 
   return (
-    <div className="container mx-auto px-4 py-10">
-      <h1 className="mb-8 text-3xl font-bold">
+    <div className="container mx-auto px-4 py-8 sm:px-6 sm:py-10">
+      <h1 className="mb-6 text-3xl font-bold sm:mb-8">
         Checkout
       </h1>
 

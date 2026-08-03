@@ -151,7 +151,7 @@ export default function ProductDetailsPage() {
 
     return (
 
-      <div className="flex min-h-[50vh] items-center justify-center px-6 py-16">
+      <div className="flex min-h-[50vh] items-center justify-center px-4 py-12 sm:px-6 sm:py-16">
 
         <div className="flex flex-col items-center gap-3 text-center">
 
@@ -177,9 +177,9 @@ export default function ProductDetailsPage() {
 
     return (
 
-      <div className="flex min-h-[50vh] items-center justify-center px-6 py-16">
+      <div className="flex min-h-[50vh] items-center justify-center px-4 py-12 sm:px-6 sm:py-16">
 
-        <div className="rounded-lg border border-dashed p-8 text-center">
+        <div className="w-full max-w-md rounded-lg border border-dashed p-6 text-center sm:p-8">
 
           <h2 className="text-xl font-semibold">
             Product not available
@@ -258,16 +258,16 @@ export default function ProductDetailsPage() {
 
   return (
 
-    <div className="min-h-screen px-6 py-10">
+    <div className="min-h-screen px-4 py-8 sm:px-6 sm:py-10">
 
       <div className="mx-auto max-w-6xl space-y-12">
 
-      <Card className="mx-auto w-full max-w-xl">
+      <Card className="mx-auto w-full max-w-xl motion-safe:animate-in motion-safe:fade-in-0 motion-safe:slide-in-from-bottom-2">
 
 
         <CardHeader>
 
-          <CardTitle className="text-2xl">
+          <CardTitle className="break-words text-xl sm:text-2xl">
 
             {product.name}
 
@@ -282,7 +282,7 @@ export default function ProductDetailsPage() {
         <CardContent className="space-y-4">
 
 
-          <div className="relative h-64 w-full overflow-hidden rounded-lg">
+          <div className="relative h-56 w-full overflow-hidden rounded-lg sm:h-64">
 
             <Image
 
@@ -304,7 +304,7 @@ export default function ProductDetailsPage() {
 
 
 
-          <p className="text-lg">
+          <p className="break-words text-base sm:text-lg">
 
             {product.description}
 
@@ -374,7 +374,7 @@ export default function ProductDetailsPage() {
 
               type="button"
 
-              className="w-full bg-green-600 text-white p-4 rounded-lg disabled:bg-gray-400"
+              className="min-h-12 w-full rounded-lg bg-green-600 p-4 text-white disabled:bg-gray-400"
 
               onClick={handleAddToCart}
 

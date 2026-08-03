@@ -3,6 +3,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
+import { HeartOff } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -11,6 +12,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { EmptyState } from "@/components/ui/empty-state";
 import { toastSuccess } from "@/components/ui/toast";
 import { useCart } from "@/context/CartContext";
 import { formatCurrency } from "@/lib/formatCurrency";
@@ -50,44 +52,41 @@ export function WishlistProducts({
 
   if (products.length === 0) {
     return (
-      <Card>
-        <CardContent className="p-8 text-center">
-          <p className="text-muted-foreground">
-            Your wishlist is empty.
-          </p>
-
+      <EmptyState
+        icon={<HeartOff className="size-6" aria-hidden="true" />}
+        title="Your wishlist is empty"
+        description="Save products you want to revisit later."
+        action={
           <Link href="/products">
-            <Button className="mt-4">
-              Browse products
-            </Button>
+            <Button>Browse products</Button>
           </Link>
-        </CardContent>
-      </Card>
+        }
+      />
     );
   }
 
   return (
-    <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+    <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 sm:gap-6 lg:grid-cols-3">
       {products.map((product) => (
         <Card
           key={product.id}
-          className="overflow-hidden transition hover:scale-[1.02]"
+          className="group overflow-hidden transition-[transform,box-shadow] duration-200 ease-out motion-safe:animate-in motion-safe:fade-in-0 motion-safe:slide-in-from-bottom-2 motion-safe:hover:-translate-y-0.5 motion-safe:hover:shadow-md"
         >
           <Link href={`/products/${product.id}`}>
-            <div className="relative h-48 w-full">
+            <div className="relative h-44 w-full sm:h-48">
               <Image
                 src={product.image}
                 alt={product.name}
                 fill
-                className="object-cover"
+                className="object-cover transition-transform duration-300 ease-out motion-reduce:transition-none group-hover:scale-[1.03]"
                 sizes="(max-width: 768px) 100vw, 33vw"
               />
             </div>
           </Link>
 
-          <CardHeader>
+          <CardHeader className="pb-3">
             <Link href={`/products/${product.id}`}>
-              <CardTitle>{product.name}</CardTitle>
+              <CardTitle className="break-words text-lg">{product.name}</CardTitle>
             </Link>
           </CardHeader>
 

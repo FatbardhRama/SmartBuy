@@ -35,18 +35,18 @@ export function ProductCard({
 
 
   return (
-    <Link href={`/products/${id}`}>
+    <Link href={`/products/${id}`} className="group block h-full motion-safe:animate-in motion-safe:fade-in-0 motion-safe:slide-in-from-bottom-2">
 
-      <Card className="overflow-hidden cursor-pointer transition hover:scale-[1.02]">
+      <Card className="h-full cursor-pointer overflow-hidden transition-[transform,box-shadow] duration-200 ease-out motion-safe:hover:-translate-y-0.5 motion-safe:hover:shadow-md">
 
 
-        <div className="relative h-48 w-full">
+        <div className="relative h-44 w-full sm:h-48">
 
           <Image
             src={image}
             alt={name}
             fill
-            className="object-cover"
+            className="object-cover transition-transform duration-300 ease-out motion-reduce:transition-none group-hover:scale-[1.03]"
             sizes="(max-width: 768px) 100vw, 33vw"
             priority={false}
           />
@@ -55,9 +55,9 @@ export function ProductCard({
 
 
 
-        <CardHeader>
+        <CardHeader className="pb-3">
 
-          <CardTitle>
+          <CardTitle className="break-words text-lg">
             {name}
           </CardTitle>
 
@@ -66,16 +66,16 @@ export function ProductCard({
 
 
 
-        <CardContent>
+        <CardContent className="space-y-3">
 
 
-          <p className="text-sm text-muted-foreground">
+          <p className="min-h-10 text-sm text-muted-foreground">
             {description}
           </p>
 
 
 
-          <p className="mt-3 text-lg font-bold">
+          <p className="text-lg font-bold">
             {formattedPrice}
           </p>
 

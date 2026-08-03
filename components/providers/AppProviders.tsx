@@ -5,6 +5,7 @@ import { SessionProvider } from "@/components/providers/SessionProvider";
 import { CartProvider } from "@/context/CartContext";
 
 import { Header } from "@/components/layout/Header";
+import { Breadcrumbs } from "@/components/layout/Breadcrumbs";
 import { Footer } from "@/components/layout/Footer";
 import { ToastViewport } from "@/components/ui/toast";
 
@@ -29,6 +30,7 @@ export default function AppProviders({
           <Header />
 
           <main className="flex-1">
+            <Breadcrumbs />
             {children}
           </main>
 

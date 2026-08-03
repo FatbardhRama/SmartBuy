@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 
 import ProductsGrid from "./ProductsGrid";
+import { ProductGridSkeleton } from "./ProductGridSkeleton";
 
 type Product = {
   id: string;
@@ -74,14 +75,12 @@ export function RelatedProducts({
 
   if (loading) {
     return (
-      <section>
-        <h2 className="mb-6 text-2xl font-bold">
+      <section className="space-y-4 motion-safe:animate-in motion-safe:fade-in-0 motion-safe:slide-in-from-bottom-2">
+        <h2 className="text-xl font-bold sm:text-2xl">
           Related Products
         </h2>
 
-        <p className="text-sm text-muted-foreground">
-          Loading related products...
-        </p>
+        <ProductGridSkeleton count={3} />
       </section>
     );
   }
@@ -91,8 +90,8 @@ export function RelatedProducts({
   }
 
   return (
-    <section>
-      <h2 className="mb-6 text-2xl font-bold">
+    <section className="space-y-4 motion-safe:animate-in motion-safe:fade-in-0 motion-safe:slide-in-from-bottom-2">
+      <h2 className="text-xl font-bold sm:text-2xl">
         Related Products
       </h2>
 

@@ -1,8 +1,11 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { MessageSquarePlus } from "lucide-react";
 
 import { AddReviewForm } from "./AddReviewForm";
+import { EmptyState } from "@/components/ui/empty-state";
+import { ReviewsSkeleton } from "./ReviewsSkeleton";
 
 
 type Review = {
@@ -97,20 +100,7 @@ export function ReviewList({
 
 
   if (loading) {
-
-    return (
-
-      <div className="mt-8">
-
-        <p className="text-sm text-muted-foreground">
-
-          Loading reviews...
-
-        </p>
-
-      </div>
-
-    );
+    return <ReviewsSkeleton />;
 
   }
 
@@ -153,11 +143,12 @@ export function ReviewList({
       {
         reviews.length === 0 ? (
 
-          <p className="text-sm text-muted-foreground">
-
-            No reviews yet.
-
-          </p>
+          <EmptyState
+            icon={<MessageSquarePlus className="size-6" aria-hidden="true" />}
+            title="No reviews yet"
+            description="Be the first to share your experience with this product."
+            className="py-7 sm:py-8"
+          />
 
         ) : (
 

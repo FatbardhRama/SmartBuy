@@ -3,7 +3,9 @@ import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { redirect } from "next/navigation";
 import Link from "next/link";
+import { PackageOpen } from "lucide-react";
 import { DeleteProductButton } from "@/components/admin/DeleteProductButton";
+import { EmptyState } from "@/components/ui/empty-state";
 import { formatCurrency } from "@/lib/formatCurrency";
 
 
@@ -37,19 +39,19 @@ export default async function AdminProductsPage() {
 
 
   return (
-    <main className="max-w-6xl mx-auto px-6 py-10">
+    <main className="mx-auto max-w-6xl px-4 py-8 sm:px-6 sm:py-10">
 
 
-      <div className="flex justify-between items-center mb-8">
+      <div className="mb-8 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
 
-        <h1 className="text-3xl font-bold">
+        <h1 className="text-2xl font-bold sm:text-3xl">
           Admin Products
         </h1>
 
 
         <Link href="/admin/products/new">
 
-          <button className="border rounded-md px-4 py-2">
+          <button className="min-h-10 w-full rounded-md border px-4 py-2 sm:w-auto">
             Add Product
           </button>
 
@@ -61,10 +63,18 @@ export default async function AdminProductsPage() {
 
       {products.length === 0 ? (
 
-        <div className="rounded-lg border border-dashed p-10 text-center">
-          <h2 className="text-lg font-semibold">No products available</h2>
-          <p className="mt-2 text-sm text-muted-foreground">Create your first product to get started.</p>
-        </div>
+        <EmptyState
+          icon={<PackageOpen className="size-6" aria-hidden="true" />}
+          title="No products available"
+          description="Create your first product to start building the catalog."
+          action={
+            <Link href="/admin/products/new">
+              <button className="rounded-md border px-4 py-2">
+                Add product
+              </button>
+            </Link>
+          }
+        />
 
 
       ) : (
@@ -78,17 +88,17 @@ export default async function AdminProductsPage() {
 
             <div
               key={product.id}
-              className="border rounded-lg p-6"
+              className="rounded-lg border p-4 motion-safe:animate-in motion-safe:fade-in-0 motion-safe:slide-in-from-bottom-2 sm:p-6"
             >
 
 
-              <div className="flex justify-between">
+              <div className="flex flex-col gap-5 sm:flex-row sm:justify-between">
 
 
-                <div>
+                <div className="min-w-0">
 
 
-                  <h2 className="text-xl font-semibold">
+                  <h2 className="break-words text-xl font-semibold">
                     {product.name}
                   </h2>
 
@@ -108,7 +118,7 @@ export default async function AdminProductsPage() {
 
 
 
-                <div className="text-right">
+                <div className="text-left sm:shrink-0 sm:text-right">
 
 
                   <p className="font-bold">
@@ -116,7 +126,7 @@ export default async function AdminProductsPage() {
                   </p>
 
 
-                  <p className="text-sm">
+                  <p className="break-all text-sm">
                     Stock: {product.stock}
                   </p>
 
@@ -128,7 +138,7 @@ export default async function AdminProductsPage() {
 
 
 
-                  <div className="flex gap-2 mt-4">
+                  <div className="mt-4 flex flex-wrap gap-2">
 
 
                     <Link

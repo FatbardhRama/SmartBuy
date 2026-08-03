@@ -158,28 +158,28 @@ export default async function AdminDashboardPage() {
   });
 
   return (
-    <main className="max-w-6xl mx-auto px-6 py-10">
-      <div className="flex justify-between items-center mb-10">
-        <h1 className="text-3xl font-bold">
+    <main className="mx-auto max-w-6xl px-4 py-8 sm:px-6 sm:py-10">
+      <div className="mb-8 flex flex-col gap-4 sm:mb-10 sm:flex-row sm:items-center sm:justify-between">
+        <h1 className="text-2xl font-bold sm:text-3xl">
           Admin Dashboard
         </h1>
 
-        <div className="flex gap-3">
+        <div className="flex flex-col gap-2 sm:flex-row sm:gap-3">
           <Link href="/admin/products">
-            <button className="border rounded-md px-4 py-2">
+            <button className="min-h-10 w-full rounded-md border px-4 py-2 sm:w-auto">
               Manage Products
             </button>
           </Link>
 
           <Link href="/admin/orders">
-            <button className="border rounded-md px-4 py-2">
+            <button className="min-h-10 w-full rounded-md border px-4 py-2 sm:w-auto">
               Manage Orders
             </button>
           </Link>
         </div>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-10">
+      <div className="mb-10 grid grid-cols-1 gap-4 motion-safe:animate-in motion-safe:fade-in-0 motion-safe:slide-in-from-bottom-2 sm:grid-cols-2 sm:gap-6 lg:grid-cols-4">
         <div className="border rounded-lg p-6">
           <p className="text-sm text-gray-500">
             Users
@@ -221,7 +221,7 @@ export default async function AdminDashboardPage() {
         </div>
       </div>
 
-      <section className="mb-10">
+      <section className="mb-10 motion-safe:animate-in motion-safe:fade-in-0 motion-safe:slide-in-from-bottom-2">
         <h2 className="text-2xl font-bold mb-6">
           Revenue Analytics
         </h2>
@@ -229,7 +229,7 @@ export default async function AdminDashboardPage() {
         <RevenueChart data={monthlyRevenue} />
       </section>
 
-      <section className="mb-10">
+      <section className="mb-10 motion-safe:animate-in motion-safe:fade-in-0 motion-safe:slide-in-from-bottom-2">
         <h2 className="text-2xl font-bold mb-6">
           Best Sellers
         </h2>
@@ -303,7 +303,7 @@ export default async function AdminDashboardPage() {
         )}
       </section>
 
-      <section>
+      <section className="motion-safe:animate-in motion-safe:fade-in-0 motion-safe:slide-in-from-bottom-2">
         <h2 className="text-2xl font-bold mb-6">
           Recent Orders
         </h2>
@@ -315,7 +315,7 @@ export default async function AdminDashboardPage() {
             {recentOrders.map((order: any) => (
               <div
                 key={order.id}
-                className="border rounded-lg p-5 flex justify-between items-center"
+              className="flex flex-col gap-3 rounded-lg border p-4 sm:flex-row sm:items-center sm:justify-between sm:p-5"
               >
                 <div>
                   <h3 className="font-semibold">
@@ -335,7 +335,7 @@ export default async function AdminDashboardPage() {
                   </p>
                 </div>
 
-                <div className="text-right">
+                <div className="text-left sm:text-right">
                   <p className="font-bold">
                     {formatCurrency(order.total)}
                   </p>

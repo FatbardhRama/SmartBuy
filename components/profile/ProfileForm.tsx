@@ -375,6 +375,7 @@ export function ProfileForm({
                 }
 
               }}
+              className="w-full"
 
             />
 
@@ -392,6 +393,7 @@ export function ProfileForm({
                 !selectedImage ||
                 loading
               }
+              className="w-full sm:w-auto"
 
             >
 

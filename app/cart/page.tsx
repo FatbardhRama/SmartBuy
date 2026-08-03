@@ -11,6 +11,7 @@ import {
 
 import { useCart } from "@/context/CartContext";
 import { formatCurrency } from "@/lib/formatCurrency";
+import { CartSkeleton } from "@/components/cart/CartSkeleton";
 
 
 
@@ -32,16 +33,7 @@ export default function CartPage() {
 
 
   if (!loaded) {
-
-    return (
-      <div className="flex min-h-screen items-center justify-center">
-
-        <h1 className="text-3xl font-bold">
-          Loading cart...
-        </h1>
-
-      </div>
-    );
+    return <CartSkeleton />;
 
   }
 
@@ -53,8 +45,8 @@ export default function CartPage() {
 
     return (
 
-      <div className="flex min-h-screen items-center justify-center px-6">
-        <div className="w-full max-w-md rounded-lg border border-dashed p-8 text-center">
+      <div className="flex min-h-screen items-center justify-center px-4 sm:px-6">
+        <div className="w-full max-w-md rounded-lg border border-dashed p-6 text-center sm:p-8">
           <h1 className="text-3xl font-bold">
             Your cart is empty
           </h1>
@@ -78,10 +70,10 @@ export default function CartPage() {
 
   return (
 
-    <div className="container mx-auto px-6 py-10">
+    <div className="container mx-auto px-4 py-8 sm:px-6 sm:py-10">
 
 
-      <h1 className="mb-8 text-4xl font-bold">
+      <h1 className="mb-6 text-3xl font-bold sm:mb-8 sm:text-4xl">
         Shopping Cart
       </h1>
 
@@ -101,14 +93,14 @@ export default function CartPage() {
           {cart.map((product) => (
 
 
-            <Card key={product.id}>
+            <Card key={product.id} className="motion-safe:animate-in motion-safe:fade-in-0 motion-safe:slide-in-from-bottom-2">
 
 
-              <CardContent className="flex gap-5 p-6">
+              <CardContent className="flex flex-col gap-5 p-4 sm:flex-row sm:p-6">
 
 
 
-                <div className="relative h-32 w-32 overflow-hidden rounded-lg">
+                <div className="relative h-48 w-full shrink-0 overflow-hidden rounded-lg sm:h-32 sm:w-32">
 
 
                   <Image
@@ -131,13 +123,13 @@ export default function CartPage() {
 
 
 
-                <div className="flex flex-1 flex-col justify-between">
+                <div className="flex min-w-0 flex-1 flex-col justify-between gap-4">
 
 
                   <div>
 
 
-                    <h2 className="text-xl font-bold">
+                    <h2 className="break-words text-xl font-bold">
                       {product.name}
                     </h2>
 
@@ -208,7 +200,7 @@ export default function CartPage() {
 
 
 
-                <div className="flex flex-col items-end justify-between">
+                <div className="flex items-center justify-between gap-4 sm:ml-auto sm:flex-col sm:items-end">
 
 
                   <p className="font-bold">
@@ -255,10 +247,10 @@ export default function CartPage() {
 
 
 
-        <Card className="h-fit">
+        <Card className="h-fit motion-safe:animate-in motion-safe:fade-in-0 motion-safe:slide-in-from-bottom-2">
 
 
-          <CardContent className="space-y-5 p-6">
+          <CardContent className="space-y-5 p-4 sm:p-6">
 
 
             <h2 className="text-2xl font-bold">

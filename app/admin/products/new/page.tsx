@@ -79,9 +79,9 @@ export default function NewProductPage() {
 
 
   return (
-    <main className="max-w-xl mx-auto px-6 py-10">
+    <main className="mx-auto max-w-xl px-4 py-8 sm:px-6 sm:py-10">
 
-      <h1 className="text-3xl font-bold mb-8">
+      <h1 className="mb-6 text-2xl font-bold sm:mb-8 sm:text-3xl">
         Add Product
       </h1>
 
@@ -149,7 +149,7 @@ export default function NewProductPage() {
 
         <button
           disabled={loading}
-          className="border rounded-md px-5 py-3"
+          className="min-h-11 w-full rounded-md border px-5 py-3 sm:w-auto"
         >
 
           {loading
