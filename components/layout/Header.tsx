@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useSession, signOut } from "next-auth/react";
 import { Heart, Menu, X } from "lucide-react";
 
@@ -13,8 +13,39 @@ export function Header() {
   const { data: session } = useSession();
   const { itemCount, loaded } = useCart();
   const [menuOpen, setMenuOpen] = useState(false);
+  const [hasStore, setHasStore] = useState<boolean | null>(null);
 
   const closeMenu = () => setMenuOpen(false);
+
+  useEffect(() => {
+    if (!session?.user?.id) {
+      setHasStore(null);
+      return;
+    }
+
+    let active = true;
+
+    async function loadStore() {
+      try {
+        const response = await fetch("/api/seller/store");
+        const data = await response.json();
+
+        if (active && response.ok) {
+          setHasStore(Boolean(data.store));
+        }
+      } catch {
+        if (active) {
+          setHasStore(false);
+        }
+      }
+    }
+
+    loadStore();
+
+    return () => {
+      active = false;
+    };
+  }, [session?.user?.id]);
 
   const primaryLinks = (
     <>
@@ -43,8 +74,12 @@ export function Header() {
           <span className="text-sm text-muted-foreground">Hello, {session.user?.name}</span>
           <Link href="/profile" onClick={closeMenu}><Button variant="outline">Profile</Button></Link>
           <Link href="/orders" onClick={closeMenu}><Button variant="outline">My Orders</Button></Link>
+          <Link href="/sell" onClick={closeMenu}><Button variant="outline">{hasStore ? "My Store" : "Become a Seller"}</Button></Link>
           {session.user?.role === "ADMIN" && (
-            <Link href="/admin" onClick={closeMenu}><Button variant="outline">Admin</Button></Link>
+            <>
+              <Link href="/admin" onClick={closeMenu}><Button variant="outline">Admin</Button></Link>
+              <Link href="/admin/stores" onClick={closeMenu}><Button variant="outline">Stores</Button></Link>
+            </>
           )}
           <Button onClick={() => signOut()}>Logout</Button>
         </>
