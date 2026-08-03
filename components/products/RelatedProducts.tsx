@@ -12,6 +12,8 @@ type Product = {
   price: number;
   image: string;
   category: string;
+  stock?: number;
+  store?: { name: string; slug: string } | null;
 };
 
 type RelatedProductsProps = {

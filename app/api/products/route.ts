@@ -117,6 +117,13 @@ export async function GET(req: Request) {
         image: true,
         category: true,
         stock: true,
+        store: {
+          select: {
+            name: true,
+            slug: true,
+            status: true,
+          },
+        },
       },
 
     });
@@ -131,7 +138,12 @@ export async function GET(req: Request) {
 
     return NextResponse.json({
 
-      products,
+      products: products.map((product) => ({
+        ...product,
+        store: product.store?.status === "APPROVED"
+          ? { name: product.store.name, slug: product.store.slug }
+          : null,
+      })),
 
       total,
 

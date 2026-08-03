@@ -50,6 +50,7 @@ export function Header() {
     <>
       <Link href="/" onClick={closeMenu}>Home</Link>
       <Link href="/products" onClick={closeMenu}>Products</Link>
+      <Link href="/stores" onClick={closeMenu}>Stores</Link>
       <Link href="/deals" onClick={closeMenu}>Deals</Link>
       <Link href="/wishlist" onClick={closeMenu} className="flex items-center gap-1">
         <Heart className="size-4" />
@@ -78,6 +79,7 @@ export function Header() {
             <>
               <Link href="/seller" onClick={closeMenu}><Button variant="outline">Seller Dashboard</Button></Link>
               <Link href="/seller/products" onClick={closeMenu}><Button variant="outline">My Products</Button></Link>
+              <Link href="/seller/orders" onClick={closeMenu}><Button variant="outline">Seller Orders</Button></Link>
             </>
           )}
           {session.user?.role === "ADMIN" && (

@@ -17,6 +17,8 @@ type ProductProps = {
   price: number;
   image: string;
   category: string;
+  stock?: number;
+  store?: { name: string; slug: string } | null;
 };
 
 
@@ -27,6 +29,8 @@ export function ProductCard({
   price,
   image,
   category,
+  stock,
+  store,
 }: ProductProps) {
 
 
@@ -84,6 +88,10 @@ export function ProductCard({
           <p className="text-sm text-muted-foreground">
             {category}
           </p>
+
+          {store && <p className="text-sm text-muted-foreground">Sold by {store.name}</p>}
+
+          {stock !== undefined && <p className={`text-sm font-medium ${stock > 0 ? "text-green-600" : "text-red-500"}`}>{stock > 0 ? "In stock" : "Out of stock"}</p>}
 
 
         </CardContent>

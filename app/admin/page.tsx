@@ -111,10 +111,14 @@ export default async function AdminDashboardPage() {
     take: 5,
   });
 
+  const bestSellerProductIds = bestSellerGroups
+    .map((group) => group.productId)
+    .filter((productId): productId is string => productId !== null);
+
   const bestSellerProducts = await prisma.product.findMany({
     where: {
       id: {
-        in: bestSellerGroups.map((group) => group.productId),
+        in: bestSellerProductIds,
       },
     },
     select: {
@@ -129,6 +133,10 @@ export default async function AdminDashboardPage() {
   );
 
   const bestSellers = bestSellerGroups.flatMap((group) => {
+    if (!group.productId) {
+      return [];
+    }
+
     const product = productsById.get(group.productId);
 
     if (!product) {
@@ -312,7 +320,7 @@ export default async function AdminDashboardPage() {
           <p>No orders found.</p>
         ) : (
           <div className="space-y-4">
-            {recentOrders.map((order: any) => (
+            {recentOrders.map((order) => (
               <div
                 key={order.id}
               className="flex flex-col gap-3 rounded-lg border p-4 sm:flex-row sm:items-center sm:justify-between sm:p-5"

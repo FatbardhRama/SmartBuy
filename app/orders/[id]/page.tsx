@@ -9,10 +9,8 @@ type OrderItem = {
   id: string;
   quantity: number;
   price: number;
-
-  product: {
-    name: string;
-  };
+  productName: string;
+  productImage: string;
 };
 
 
@@ -29,6 +27,11 @@ type Order = {
   postalCode: string;
 
   total: number;
+
+  store: {
+    name: string;
+    slug: string;
+  };
 
   items: OrderItem[];
 };
@@ -56,6 +59,8 @@ async function getOrder(
     },
 
     include: {
+
+      store: true,
 
       items: {
 
@@ -177,6 +182,13 @@ export default async function OrderDetailsPage({
 
         </div>
 
+        <div>
+          <p className="text-sm text-muted-foreground">Sold by</p>
+          <a href={`/stores/${order.store.slug}`} className="font-semibold hover:underline">
+            {order.store.name}
+          </a>
+        </div>
+
 
 
 
@@ -273,7 +285,7 @@ export default async function OrderDetailsPage({
 
                 <p className="font-medium">
 
-                  {item.product.name}
+                  {item.productName}
 
                 </p>
 

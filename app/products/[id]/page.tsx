@@ -1,6 +1,7 @@
 "use client";
 
 import Image from "next/image";
+import Link from "next/link";
 import { useEffect, useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useParams } from "next/navigation";
@@ -23,6 +24,7 @@ type ProductDetails = {
   category: string;
   image: string;
   stock: number;
+  store: { name: string; slug: string; status: string } | null;
 };
 
 const RECENTLY_VIEWED_KEY = "recentlyViewed";
@@ -329,6 +331,16 @@ export default function ProductDetailsPage() {
             Category: {product.category}
 
           </p>
+
+          {product.store?.status === "APPROVED" && (
+            <div className="rounded-lg border bg-muted/30 p-4">
+              <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground">Sold by</p>
+              <div className="mt-1 flex flex-wrap items-center justify-between gap-3">
+                <p className="font-semibold">{product.store.name}</p>
+                <Link href={`/stores/${product.store.slug}`} className="text-sm font-medium text-primary underline-offset-4 hover:underline">View Store</Link>
+              </div>
+            </div>
+          )}
 
 
 

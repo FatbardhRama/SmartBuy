@@ -26,6 +26,13 @@ export async function GET(
         image: true,
         category: true,
         stock: true,
+        store: {
+          select: {
+            name: true,
+            slug: true,
+            status: true,
+          },
+        },
       },
 
     });

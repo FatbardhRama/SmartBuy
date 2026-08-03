@@ -24,6 +24,7 @@ export async function GET() {
       },
 
       include: {
+        store: true,
         items: {
           include: {
             product: true,

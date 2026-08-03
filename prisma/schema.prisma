@@ -116,6 +116,7 @@ model Store {
 
   owner    User      @relation(fields: [ownerId], references: [id], onDelete: Restrict)
   products Product[]
+  orders   Order[]
 }
 
 model Order {
@@ -136,7 +137,12 @@ model Order {
   userId String?
   user   User?   @relation(fields: [userId], references: [id], onDelete: SetNull)
 
+  storeId String
+  store   Store  @relation(fields: [storeId], references: [id], onDelete: Restrict)
+
   items OrderItem[]
+
+  @@index([storeId])
 }
 
 model OrderItem {
@@ -144,12 +150,14 @@ model OrderItem {
 
   quantity Int
   price    Float
+  productName  String
+  productImage String
 
   orderId String
   order   Order  @relation(fields: [orderId], references: [id], onDelete: Cascade)
 
-  productId String
-  product   Product @relation(fields: [productId], references: [id])
+  productId String?
+  product   Product? @relation(fields: [productId], references: [id], onDelete: SetNull)
 
   @@index([orderId])
   @@index([productId])

@@ -44,6 +44,7 @@ export default async function OrdersPage() {
       userId: session.user.id,
     },
     include: {
+      store: true,
       items: {
         include: {
           product: true,
@@ -91,6 +92,7 @@ export default async function OrdersPage() {
                   <CardDescription className="mt-2">
                     Placed {formatDate(order.createdAt)}
                   </CardDescription>
+                  <p className="mt-2 text-sm">Sold by: <span className="font-medium">{order.store.name}</span></p>
                 </div>
 
                 <div className="flex flex-col items-start gap-3 sm:items-end">
@@ -109,7 +111,7 @@ export default async function OrdersPage() {
                       className="flex flex-col gap-1 border-b pb-3 last:border-b-0 last:pb-0 sm:flex-row sm:items-center sm:justify-between"
                     >
                       <div>
-                        <p className="font-medium">{item.product.name}</p>
+                        <p className="font-medium">{item.productName}</p>
                         <p className="text-sm text-muted-foreground">
                           Quantity: {item.quantity}
                         </p>

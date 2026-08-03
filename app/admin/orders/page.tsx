@@ -21,6 +21,7 @@ export default async function AdminOrdersPage() {
   const orders = await prisma.order.findMany({
     include: {
       user: true,
+      store: true,
       items: {
         include: {
           product: true,
@@ -46,7 +47,7 @@ export default async function AdminOrdersPage() {
         />
       ) : (
         <div className="space-y-6">
-          {orders.map((order: any) => (
+          {orders.map((order) => (
             <div
               key={order.id}
               className="space-y-4 rounded-lg border p-4 motion-safe:animate-in motion-safe:fade-in-0 motion-safe:slide-in-from-bottom-2 sm:p-6"
@@ -63,6 +64,10 @@ export default async function AdminOrdersPage() {
 
                   <p>
                     Email: {order.email}
+                  </p>
+
+                  <p>
+                    Store: {order.store.name}
                   </p>
                 </div>
 
@@ -89,9 +94,9 @@ export default async function AdminOrdersPage() {
                   Products
                 </h3>
 
-                {order.items.map((item: any) => (
+                {order.items.map((item) => (
                   <p key={item.id}>
-                    {item.product.name} x {item.quantity}
+                    {item.productName} x {item.quantity}
                   </p>
                 ))}
               </div>
