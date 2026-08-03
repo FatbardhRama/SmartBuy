@@ -24,6 +24,7 @@ model User {
   verificationTokens  VerificationToken[]
   reviews             Review[]
   wishlistItems       WishlistItem[]
+  store               Store?
 
   failedLoginAttempts Int       @default(0)
   lockedUntil         DateTime?
@@ -91,9 +92,30 @@ model Product {
   stock       Int      @default(0)
   createdAt   DateTime @default(now())
 
-  orderItems OrderItem[]
-  reviews    Review[]
+  storeId String?
+  store   Store?  @relation(fields: [storeId], references: [id], onDelete: Restrict)
+
+  orderItems    OrderItem[]
+  reviews       Review[]
   wishlistItems WishlistItem[]
+
+  @@index([storeId])
+}
+
+model Store {
+  id          String      @id @default(cuid())
+  ownerId     String      @unique
+  name        String
+  slug        String      @unique
+  description String?
+  logo        String?
+  banner      String?
+  status      StoreStatus @default(PENDING)
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+
+  owner    User      @relation(fields: [ownerId], references: [id], onDelete: Restrict)
+  products Product[]
 }
 
 model Order {
@@ -170,6 +192,13 @@ model WishlistItem {
 enum Role {
   CUSTOMER
   ADMIN
+}
+
+enum StoreStatus {
+  PENDING
+  APPROVED
+  REJECTED
+  SUSPENDED
 }
 
 enum OrderStatus {
