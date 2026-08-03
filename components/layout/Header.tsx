@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useSession, signOut } from "next-auth/react";
+import { Heart } from "lucide-react";
 
 import { ThemeToggle } from "@/components/theme-toggle";
 import { Button } from "@/components/ui/button";
@@ -39,6 +40,14 @@ export function Header() {
 
           <Link href="/deals">
             Deals
+          </Link>
+
+          <Link
+            href="/wishlist"
+            className="flex items-center gap-1"
+          >
+            <Heart className="h-4 w-4" />
+            Wishlist
           </Link>
 
           <Link

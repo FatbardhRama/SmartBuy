@@ -10,6 +10,7 @@ import { formatCurrency } from "@/lib/formatCurrency";
 import { toastError, toastSuccess } from "@/components/ui/toast";
 
 import { ReviewList } from "@/components/reviews/ReviewList";
+import { WishlistButton } from "@/components/wishlist/WishlistButton";
 
 
 type ProductDetails = {
@@ -323,26 +324,30 @@ export default function ProductDetailsPage() {
 
 
 
-          <button
+          <div className="grid gap-3 sm:grid-cols-2">
+            <button
 
-            type="button"
+              type="button"
 
-            className="w-full bg-green-600 text-white p-4 rounded-lg disabled:bg-gray-400"
+              className="w-full bg-green-600 text-white p-4 rounded-lg disabled:bg-gray-400"
 
-            onClick={handleAddToCart}
+              onClick={handleAddToCart}
 
-            disabled={product.stock <= 0}
+              disabled={product.stock <= 0}
 
-          >
+            >
 
-            {
-              product.stock > 0
-                ? "ADD TO CART"
-                : "OUT OF STOCK"
-            }
+              {
+                product.stock > 0
+                  ? "ADD TO CART"
+                  : "OUT OF STOCK"
+              }
 
 
-          </button>
+            </button>
+
+            <WishlistButton productId={product.id} />
+          </div>
 
 
 

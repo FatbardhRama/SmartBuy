@@ -23,6 +23,7 @@ model User {
   rememberMeTokens    RememberMeToken[]
   verificationTokens  VerificationToken[]
   reviews             Review[]
+  wishlistItems       WishlistItem[]
 
   failedLoginAttempts Int       @default(0)
   lockedUntil         DateTime?
@@ -92,6 +93,7 @@ model Product {
 
   orderItems OrderItem[]
   reviews    Review[]
+  wishlistItems WishlistItem[]
 }
 
 model Order {
@@ -135,6 +137,22 @@ model Review {
   id        String   @id @default(cuid())
   rating    Int
   comment   String
+  createdAt DateTime @default(now())
+
+  userId    String
+  productId String
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  product Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, productId])
+  @@index([productId])
+  @@index([userId])
+}
+
+model WishlistItem {
+  id        String   @id @default(cuid())
   createdAt DateTime @default(now())
 
   userId    String
