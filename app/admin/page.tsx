@@ -3,7 +3,9 @@ import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { redirect } from "next/navigation";
 import Link from "next/link";
+import Image from "next/image";
 import { formatCurrency } from "@/lib/formatCurrency";
+import { RevenueChart } from "@/components/admin/RevenueChart";
 
 export default async function AdminDashboardPage() {
   const session = await getServerSession(authOptions);
@@ -20,12 +22,123 @@ export default async function AdminDashboardPage() {
 
   const products = await prisma.product.count();
 
+  const lowStockProducts = await prisma.product.findMany({
+    where: {
+      stock: {
+        lte: 5,
+      },
+    },
+    orderBy: {
+      stock: "asc",
+    },
+    select: {
+      id: true,
+      name: true,
+      image: true,
+      stock: true,
+    },
+  });
+
   const orders = await prisma.order.count();
 
   const revenue = await prisma.order.aggregate({
+    where: {
+      status: {
+        not: "CANCELLED",
+      },
+    },
     _sum: {
       total: true,
     },
+  });
+
+  const revenueOrders = await prisma.order.findMany({
+    where: {
+      status: {
+        not: "CANCELLED",
+      },
+    },
+    select: {
+      total: true,
+      createdAt: true,
+    },
+    orderBy: {
+      createdAt: "asc",
+    },
+  });
+
+  const revenueByMonth = new Map<string, {
+    month: string;
+    revenue: number;
+  }>();
+
+  for (const order of revenueOrders) {
+    const year = order.createdAt.getUTCFullYear();
+    const month = order.createdAt.getUTCMonth();
+    const monthKey = `${year}-${String(month + 1).padStart(2, "0")}`;
+    const monthLabel = new Intl.DateTimeFormat("en-GB", {
+      month: "short",
+      year: "numeric",
+      timeZone: "UTC",
+    }).format(new Date(Date.UTC(year, month)));
+    const existingRevenue = revenueByMonth.get(monthKey);
+
+    revenueByMonth.set(monthKey, {
+      month: monthLabel,
+      revenue: (existingRevenue?.revenue ?? 0) + order.total,
+    });
+  }
+
+  const monthlyRevenue = Array.from(revenueByMonth.values());
+
+  const bestSellerGroups = await prisma.orderItem.groupBy({
+    by: ["productId"],
+    where: {
+      order: {
+        status: {
+          not: "CANCELLED",
+        },
+      },
+    },
+    _sum: {
+      quantity: true,
+    },
+    orderBy: {
+      _sum: {
+        quantity: "desc",
+      },
+    },
+    take: 5,
+  });
+
+  const bestSellerProducts = await prisma.product.findMany({
+    where: {
+      id: {
+        in: bestSellerGroups.map((group) => group.productId),
+      },
+    },
+    select: {
+      id: true,
+      name: true,
+      image: true,
+    },
+  });
+
+  const productsById = new Map(
+    bestSellerProducts.map((product) => [product.id, product])
+  );
+
+  const bestSellers = bestSellerGroups.flatMap((group) => {
+    const product = productsById.get(group.productId);
+
+    if (!product) {
+      return [];
+    }
+
+    return [{
+      ...product,
+      quantitySold: group._sum.quantity ?? 0,
+    }];
   });
 
   const recentOrders = await prisma.order.findMany({
@@ -107,6 +220,88 @@ export default async function AdminDashboardPage() {
           </p>
         </div>
       </div>
+
+      <section className="mb-10">
+        <h2 className="text-2xl font-bold mb-6">
+          Revenue Analytics
+        </h2>
+
+        <RevenueChart data={monthlyRevenue} />
+      </section>
+
+      <section className="mb-10">
+        <h2 className="text-2xl font-bold mb-6">
+          Best Sellers
+        </h2>
+
+        {bestSellers.length === 0 ? (
+          <p>No product sales found.</p>
+        ) : (
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-5">
+            {bestSellers.map((product) => (
+              <div
+                key={product.id}
+                className="border rounded-lg p-4"
+              >
+                {product.image && (
+                  <Image
+                    src={product.image}
+                    alt={product.name}
+                    width={64}
+                    height={64}
+                    className="mb-4 h-16 w-16 rounded-md object-cover"
+                  />
+                )}
+
+                <h3 className="font-semibold">
+                  {product.name}
+                </h3>
+
+                <p className="mt-2 text-sm text-gray-500">
+                  {product.quantitySold} sold
+                </p>
+              </div>
+            ))}
+          </div>
+        )}
+      </section>
+
+      <section className="mb-10">
+        <h2 className="text-2xl font-bold mb-6">
+          Low Stock Products
+        </h2>
+
+        {lowStockProducts.length === 0 ? (
+          <p>No low stock products found.</p>
+        ) : (
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+            {lowStockProducts.map((product) => (
+              <div
+                key={product.id}
+                className="border rounded-lg p-4"
+              >
+                {product.image && (
+                  <Image
+                    src={product.image}
+                    alt={product.name}
+                    width={64}
+                    height={64}
+                    className="mb-4 h-16 w-16 rounded-md object-cover"
+                  />
+                )}
+
+                <h3 className="font-semibold">
+                  {product.name}
+                </h3>
+
+                <p className="mt-2 text-sm text-gray-500">
+                  Stock: {product.stock}
+                </p>
+              </div>
+            ))}
+          </div>
+        )}
+      </section>
 
       <section>
         <h2 className="text-2xl font-bold mb-6">
