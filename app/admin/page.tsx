@@ -166,7 +166,7 @@ export default async function AdminDashboardPage() {
   });
 
   return (
-    <main className="mx-auto max-w-6xl px-4 py-8 sm:px-6 sm:py-10">
+    <main className="mx-auto w-full max-w-7xl px-6 py-10 sm:py-12">
       <div className="mb-8 flex flex-col gap-4 sm:mb-10 sm:flex-row sm:items-center sm:justify-between">
         <h1 className="text-2xl font-bold sm:text-3xl">
           Admin Dashboard
@@ -189,7 +189,7 @@ export default async function AdminDashboardPage() {
 
       <div className="mb-10 grid grid-cols-1 gap-4 motion-safe:animate-in motion-safe:fade-in-0 motion-safe:slide-in-from-bottom-2 sm:grid-cols-2 sm:gap-6 lg:grid-cols-4">
         <div className="border rounded-lg p-6">
-          <p className="text-sm text-gray-500">
+          <p className="text-sm text-muted-foreground">
             Users
           </p>
 
@@ -199,7 +199,7 @@ export default async function AdminDashboardPage() {
         </div>
 
         <div className="border rounded-lg p-6">
-          <p className="text-sm text-gray-500">
+          <p className="text-sm text-muted-foreground">
             Products
           </p>
 
@@ -209,7 +209,7 @@ export default async function AdminDashboardPage() {
         </div>
 
         <div className="border rounded-lg p-6">
-          <p className="text-sm text-gray-500">
+          <p className="text-sm text-muted-foreground">
             Orders
           </p>
 
@@ -219,7 +219,7 @@ export default async function AdminDashboardPage() {
         </div>
 
         <div className="border rounded-lg p-6">
-          <p className="text-sm text-gray-500">
+          <p className="text-sm text-muted-foreground">
             Revenue
           </p>
 
@@ -265,7 +265,7 @@ export default async function AdminDashboardPage() {
                   {product.name}
                 </h3>
 
-                <p className="mt-2 text-sm text-gray-500">
+                <p className="mt-2 text-sm text-muted-foreground">
                   {product.quantitySold} sold
                 </p>
               </div>
@@ -302,7 +302,7 @@ export default async function AdminDashboardPage() {
                   {product.name}
                 </h3>
 
-                <p className="mt-2 text-sm text-gray-500">
+                <p className="mt-2 text-sm text-muted-foreground">
                   Stock: {product.stock}
                 </p>
               </div>
@@ -332,7 +332,7 @@ export default async function AdminDashboardPage() {
 
                   <p>{order.fullName}</p>
 
-                  <p className="text-sm text-gray-500">
+                  <p className="text-sm text-muted-foreground">
                     {new Date(
                       order.createdAt
                     ).toLocaleDateString()}

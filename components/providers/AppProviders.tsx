@@ -8,6 +8,7 @@ import { Header } from "@/components/layout/Header";
 import { Breadcrumbs } from "@/components/layout/Breadcrumbs";
 import { Footer } from "@/components/layout/Footer";
 import { ToastViewport } from "@/components/ui/toast";
+import { ShoppingAssistant } from "@/components/assistant/ShoppingAssistant";
 
 
 export default function AppProviders({
@@ -29,13 +30,14 @@ export default function AppProviders({
 
           <Header />
 
-          <main className="flex-1">
+          <main className="min-w-0 flex-1 pb-10">
             <Breadcrumbs />
             {children}
           </main>
 
           <Footer />
           <ToastViewport />
+          <ShoppingAssistant />
 
         </CartProvider>
 

@@ -8,6 +8,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
+import { toastError, toastSuccess } from "@/components/ui/toast";
 
 export function SellerApplicationForm() {
   const router = useRouter();
@@ -33,13 +34,18 @@ export function SellerApplicationForm() {
       const data = await response.json().catch(() => null);
 
       if (!response.ok) {
-        setError(data?.message ?? "Unable to submit your store application.");
+        const message = data?.message ?? "Unable to submit your store application.";
+        setError(message);
+        toastError(message);
         return;
       }
 
+      toastSuccess("Your store application was submitted successfully.");
       router.refresh();
     } catch {
-      setError("Unable to submit your store application.");
+      const message = "Unable to submit your store application.";
+      setError(message);
+      toastError(message);
     } finally {
       setSubmitting(false);
     }
@@ -77,7 +83,7 @@ export function SellerApplicationForm() {
             />
           </div>
 
-          {error && <p className="text-sm text-destructive">{error}</p>}
+          {error && <p className="rounded-lg bg-destructive/5 p-3 text-sm text-destructive" role="alert">{error}</p>}
 
           <Button type="submit" disabled={submitting}>
             {submitting ? "Submitting..." : "Submit application"}

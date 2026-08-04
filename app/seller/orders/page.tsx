@@ -21,7 +21,7 @@ export default async function SellerOrdersPage() {
   });
 
   return (
-    <main className="mx-auto max-w-6xl px-4 py-8 sm:px-6 sm:py-10">
+    <main className="mx-auto w-full max-w-7xl px-6 py-10 sm:py-12">
       <div className="mb-8"><p className="text-sm text-muted-foreground">{seller.store.name}</p><h1 className="text-3xl font-bold">Seller Orders</h1></div>
       {orders.length === 0 ? (
         <EmptyState icon={<ClipboardList className="size-6" />} title="No orders yet" description="Orders containing your store's products will appear here." />

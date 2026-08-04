@@ -19,8 +19,8 @@ const geistMono = Geist_Mono({
 
 
 export const metadata: Metadata = {
-  title: "SmartBuy",
-  description: "Shop Smarter. Save More.",
+  title: "SmartBuy | Electronics Marketplace",
+  description: "Shop laptops, smartphones, monitors, audio, and accessories from trusted electronics sellers.",
 };
 
 
@@ -39,7 +39,7 @@ export default function RootLayout({
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
 
-      <body className="min-h-full flex flex-col">
+      <body className="flex min-h-full flex-col overflow-x-hidden">
 
         <AppProviders>
           {children}

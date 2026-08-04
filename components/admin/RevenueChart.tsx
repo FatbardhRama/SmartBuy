@@ -10,6 +10,8 @@ import {
   YAxis,
 } from "recharts";
 import { formatCurrency } from "@/lib/formatCurrency";
+import { BarChart3 } from "lucide-react";
+import { EmptyState } from "@/components/ui/empty-state";
 
 type RevenueData = {
   month: string;
@@ -25,9 +27,7 @@ export function RevenueChart({
 }: RevenueChartProps) {
   if (data.length === 0) {
     return (
-      <div className="border rounded-lg p-6 text-sm text-gray-500">
-        No revenue data available.
-      </div>
+      <EmptyState icon={<BarChart3 className="size-6" />} title="No revenue data yet" description="Revenue trends will appear after completed orders are recorded." />
     );
   }
 
@@ -57,7 +57,7 @@ export function RevenueChart({
           <Line
             type="monotone"
             dataKey="revenue"
-            stroke="#2563eb"
+            stroke="var(--primary)"
             strokeWidth={2}
           />
         </LineChart>

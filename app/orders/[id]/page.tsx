@@ -3,6 +3,10 @@ import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { formatCurrency } from "@/lib/formatCurrency";
 import { redirect } from "next/navigation";
+import Link from "next/link";
+import { ClipboardX } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { EmptyState } from "@/components/ui/empty-state";
 
 
 type OrderItem = {
@@ -119,12 +123,8 @@ export default async function OrderDetailsPage({
 
     return (
 
-      <main className="p-4 sm:p-10">
-
-        <h1 className="text-2xl font-bold">
-          Order not found
-        </h1>
-
+      <main className="mx-auto flex min-h-[55vh] max-w-5xl items-center justify-center px-6 py-12">
+        <EmptyState icon={<ClipboardX className="size-6" />} title="Order not found" description="This order may not exist or may not belong to your account." action={<div className="flex flex-col justify-center gap-3 sm:flex-row"><Link href="/orders"><Button>View my orders</Button></Link><Link href="/products"><Button variant="outline">Browse electronics</Button></Link></div>} className="w-full max-w-xl" />
       </main>
 
     );
@@ -138,7 +138,7 @@ export default async function OrderDetailsPage({
 
   return (
 
-    <main className="mx-auto max-w-5xl px-4 py-8 sm:px-6 sm:py-10">
+    <main className="mx-auto w-full max-w-5xl px-6 py-10 sm:py-12">
 
 
 

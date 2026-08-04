@@ -3,27 +3,30 @@ import { Button } from "@/components/ui/button";
 
 export function Newsletter() {
   return (
-    <section className="py-16">
-      <div className="container mx-auto px-4">
+    <section className="pb-16 pt-2 sm:pb-20">
+      <div className="mx-auto max-w-7xl px-6">
 
-        <div className="rounded-2xl bg-primary/10 p-8 text-center md:p-12">
+        <div className="rounded-3xl border border-primary/15 bg-primary/5 p-7 text-center shadow-sm sm:p-10 md:p-12">
 
           <h2 className="text-3xl font-bold">
-            Stay Updated with SmartBuy
+            Stay in the SmartBuy loop
           </h2>
 
           <p className="mx-auto mt-4 max-w-xl text-muted-foreground">
-            Subscribe to receive the latest deals,
-            product updates, and exclusive offers.
+            Be first to discover new electronics, product launches, and
+            limited-time tech offers.
           </p>
 
-          <div className="mx-auto mt-6 flex max-w-md flex-col gap-3 sm:flex-row">
+          <div className="mx-auto mt-7 flex max-w-lg flex-col gap-3 sm:flex-row">
 
             <Input
-              placeholder="Enter your email"
+              type="email"
+              aria-label="Email address"
+              placeholder="Enter your email address"
+              className="flex-1 bg-card"
             />
 
-            <Button>
+            <Button className="sm:px-6">
               Subscribe
             </Button>
 

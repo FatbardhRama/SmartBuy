@@ -3,11 +3,11 @@ import { Skeleton } from "@/components/ui/skeleton";
 
 export function CartSkeleton() {
   return (
-    <div className="container mx-auto px-6 py-10" aria-busy="true" aria-label="Loading cart">
+    <div className="mx-auto w-full max-w-7xl px-6 py-10" aria-busy="true" aria-label="Loading cart">
       <Skeleton className="mb-8 h-10 w-48" />
 
-      <div className="grid gap-8 lg:grid-cols-3">
-        <div className="space-y-5 lg:col-span-2">
+      <div className="grid gap-8 lg:grid-cols-[minmax(0,1fr)_360px]">
+        <div className="space-y-4">
           {Array.from({ length: 2 }, (_, index) => (
             <Card key={index}>
               <CardContent className="flex gap-5 p-6">

@@ -145,7 +145,7 @@ export default function NewProductPage() {
           className="w-full border rounded-md p-3"
         />
 
-        {error && <p className="text-sm text-red-500">{error}</p>}
+        {error && <p className="text-sm text-destructive" role="alert">{error}</p>}
 
         <button
           disabled={loading}

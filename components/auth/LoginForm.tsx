@@ -114,7 +114,7 @@ export function LoginForm() {
           </Button>
 
           {message && (
-            <p className="text-center text-sm text-red-500">
+            <p className="text-center text-sm text-destructive" role="alert">
               {message}
             </p>
           )}

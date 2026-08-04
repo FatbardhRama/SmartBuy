@@ -1,7 +1,8 @@
 "use client";
 
+import Image from "next/image";
 import { useState } from "react";
-import { useRouter } from "next/navigation";
+import { CreditCard, LockKeyhole, ShieldCheck } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -13,7 +14,7 @@ import {
 
 import { useCart } from "@/context/CartContext";
 import { formatCurrency } from "@/lib/formatCurrency";
-import { toastError, toastSuccess } from "@/components/ui/toast";
+import { toastError } from "@/components/ui/toast";
 import type { CheckoutData } from "./CheckoutLayout";
 
 type OrderSummaryProps = {
@@ -23,13 +24,10 @@ type OrderSummaryProps = {
 export function OrderSummary({
   form,
 }: OrderSummaryProps) {
-  const router = useRouter();
-
   const {
     cart,
     loaded,
     subtotal,
-    clearCart,
   } = useCart();
 
   const [error, setError] = useState("");
@@ -42,7 +40,11 @@ export function OrderSummary({
   const shipping = 0;
   const total = subtotal + shipping;
 
-  async function handleOrder() {
+  async function handleCheckout() {
+    if (loading) {
+      return;
+    }
+
     setError("");
 
     const hasEmptyField = Object.values(form).some(
@@ -50,23 +52,23 @@ export function OrderSummary({
     );
 
     if (hasEmptyField) {
-      setError(
-        "Please fill in all required fields."
-      );
+      const message = "Please fill in all required fields.";
+      setError(message);
+      toastError(message);
       return;
     }
 
     if (cart.length === 0) {
-      setError(
-        "Your shopping cart is empty."
-      );
+      const message = "Your shopping cart is empty.";
+      setError(message);
+      toastError(message);
       return;
     }
 
     try {
       setLoading(true);
 
-      const response = await fetch("/api/orders", {
+      const response = await fetch("/api/stripe/create-checkout-session", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -80,24 +82,33 @@ export function OrderSummary({
         }),
       });
 
-      const data = await response.json();
+      const data: unknown = await response.json().catch(() => null);
 
       if (!response.ok) {
-        const message = data.message || "We could not place your order right now.";
-        toastError(message);
+        const message =
+          typeof data === "object" && data !== null && "message" in data &&
+          typeof (data as { message?: unknown }).message === "string"
+            ? (data as { message: string }).message
+            : "We could not start Stripe Checkout right now.";
         throw new Error(message);
       }
 
-      clearCart();
-      toastSuccess("Order created successfully.");
-      router.push("/order-success");
-    } catch (error) {
-      setError(
-        error instanceof Error
-          ? error.message
-          : "Something went wrong."
-      );
-    } finally {
+      const url =
+        typeof data === "object" && data !== null && "url" in data
+          ? (data as { url?: unknown }).url
+          : null;
+
+      if (typeof url !== "string" || !url.startsWith("https://")) {
+        throw new Error("Stripe Checkout returned an invalid redirect URL.");
+      }
+
+      window.location.assign(url);
+    } catch (checkoutError) {
+      const message = checkoutError instanceof Error
+        ? checkoutError.message
+        : "Something went wrong while starting Stripe Checkout.";
+      setError(message);
+      toastError(message);
       setLoading(false);
     }
   }
@@ -105,26 +116,27 @@ export function OrderSummary({
   return (
     <Card className="motion-safe:animate-in motion-safe:fade-in-0 motion-safe:slide-in-from-bottom-2 lg:sticky lg:top-24">
       <CardHeader>
-        <CardTitle>
-          Order Summary
-        </CardTitle>
+        <CardTitle className="text-xl">Order summary</CardTitle>
       </CardHeader>
 
-      <CardContent className="space-y-4">
+      <CardContent className="space-y-5">
         {cart.length === 0 ? (
           <p className="text-sm text-muted-foreground">
             Your shopping cart is empty.
           </p>
         ) : (
           <>
-            <div className="space-y-4">
+            <div className="max-h-72 space-y-4 overflow-y-auto pr-1">
               {cart.map((item) => (
                 <div
                   key={item.id}
-                  className="flex items-start justify-between gap-4"
+                  className="flex items-center gap-3"
                 >
+                  <div className="relative size-14 shrink-0 overflow-hidden rounded-lg bg-muted">
+                    <Image src={item.image} alt={item.name} fill className="object-cover" sizes="56px" />
+                  </div>
                   <div className="min-w-0 flex-1">
-                    <p className="break-words font-medium">
+                    <p className="line-clamp-2 text-sm font-medium">
                       {item.name}
                     </p>
 
@@ -133,17 +145,17 @@ export function OrderSummary({
                     </p>
                   </div>
 
-                  <span className="font-medium">
+                  <span className="text-sm font-semibold">
                     {formatCurrency(item.price * item.quantity)}
                   </span>
                 </div>
               ))}
             </div>
 
-            <hr />
+            <hr className="border-border" />
 
             <div className="space-y-2">
-              <div className="flex justify-between">
+              <div className="flex justify-between text-sm text-muted-foreground">
                 <span>
                   Subtotal
                 </span>
@@ -153,7 +165,7 @@ export function OrderSummary({
                 </span>
               </div>
 
-              <div className="flex justify-between">
+              <div className="flex justify-between text-sm text-muted-foreground">
                 <span>
                   Shipping
                 </span>
@@ -163,8 +175,8 @@ export function OrderSummary({
                 </span>
               </div>
 
-              <div className="flex justify-between border-t pt-2 text-lg font-semibold">
-                <span>
+              <div className="flex items-end justify-between border-t pt-4 text-lg font-semibold">
+                <span className="text-2xl font-bold text-primary">
                   Total
                 </span>
 
@@ -177,22 +189,25 @@ export function OrderSummary({
         )}
 
         {error && (
-          <p className="text-sm text-red-500">
+          <p className="rounded-lg border border-destructive/20 bg-destructive/5 p-3 text-sm text-destructive" role="alert">
             {error}
           </p>
         )}
 
         <Button
-          className="w-full"
+          size="lg"
+          className="w-full gap-2"
           disabled={
             cart.length === 0 || loading
           }
-          onClick={handleOrder}
+          onClick={handleCheckout}
         >
-          {loading
-            ? "Processing..."
-            : "Place Order"}
+          {loading ? "Redirecting to Stripe..." : <><CreditCard className="size-5" /> Pay securely with Stripe</>}
         </Button>
+        <div className="space-y-2 border-t pt-4 text-xs text-muted-foreground">
+          <p className="flex items-center gap-2"><LockKeyhole className="size-4 text-primary" /> Payment details are handled securely by Stripe.</p>
+          <p className="flex items-center gap-2"><ShieldCheck className="size-4 text-primary" /> Prices and stock are verified before payment.</p>
+        </div>
       </CardContent>
     </Card>
   );

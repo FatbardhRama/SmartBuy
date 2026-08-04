@@ -572,7 +572,7 @@ export function ProfileForm({
 
             {error && (
 
-              <p className="text-sm text-red-500">
+              <p className="text-sm text-destructive" role="alert">
                 {error}
               </p>
 
@@ -584,7 +584,7 @@ export function ProfileForm({
 
             {message && (
 
-              <p className="text-sm text-green-600">
+              <p className="text-sm text-emerald-600 dark:text-emerald-400" role="status">
                 {message}
               </p>
 

@@ -24,11 +24,14 @@ async function authorizeProduct(id: string) {
     return { response: NextResponse.json({ message: "Invalid product id." }, { status: 400 }), store: null, product: null };
   }
 
-  const product = await prisma.product.findFirst({
-    where: { id, storeId: seller.store.id },
+  const product = await prisma.product.findUnique({
+    where: { id },
   });
   if (!product) {
     return { response: NextResponse.json({ message: "Product not found." }, { status: 404 }), store: null, product: null };
+  }
+  if (product.storeId !== seller.store.id) {
+    return { response: NextResponse.json({ message: "Forbidden" }, { status: 403 }), store: null, product: null };
   }
 
   return { response: null, store: seller.store, product };

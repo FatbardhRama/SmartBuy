@@ -31,10 +31,16 @@ export async function PATCH(request: Request, { params }: Context) {
       return NextResponse.json({ message: "Invalid seller order status." }, { status: 400 });
     }
 
-    const order = await prisma.order.findUnique({ where: { id }, select: { storeId: true, status: true } });
-    if (!order) return NextResponse.json({ message: "Order not found." }, { status: 404 });
-    if (order.storeId !== seller.store.id) {
-      return NextResponse.json({ message: "Forbidden" }, { status: 403 });
+    const order = await prisma.order.findFirst({
+      where: { id, storeId: seller.store.id },
+      select: { status: true },
+    });
+    if (!order) {
+      const exists = await prisma.order.findUnique({ where: { id }, select: { id: true } });
+      return NextResponse.json(
+        { message: exists ? "Forbidden" : "Order not found." },
+        { status: exists ? 403 : 404 }
+      );
     }
     if (order.status === "CANCELLED" || order.status === "DELIVERED") {
       return NextResponse.json({ message: "This order status can no longer be changed by the seller." }, { status: 409 });

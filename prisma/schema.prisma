@@ -24,6 +24,7 @@ model User {
   verificationTokens  VerificationToken[]
   reviews             Review[]
   wishlistItems       WishlistItem[]
+  checkoutDrafts      CheckoutDraft[]
   store               Store?
 
   failedLoginAttempts Int       @default(0)
@@ -132,6 +133,11 @@ model Order {
 
   status OrderStatus @default(PENDING)
 
+  paymentStatus     PaymentStatus @default(PENDING)
+  checkoutSessionId String?
+  paymentIntentId   String?
+  paidAt            DateTime?
+
   createdAt DateTime @default(now())
 
   userId String?
@@ -142,14 +148,37 @@ model Order {
 
   items OrderItem[]
 
+  @@unique([checkoutSessionId, storeId])
   @@index([storeId])
+  @@index([checkoutSessionId])
+  @@index([paymentIntentId])
+}
+
+model CheckoutDraft {
+  id              String    @id @default(cuid())
+  stripeSessionId String?   @unique
+  userId          String
+  fullName        String
+  email           String
+  phone           String
+  address         String
+  city            String
+  postalCode      String
+  items           Json
+  createdAt       DateTime  @default(now())
+  processedAt     DateTime?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([createdAt])
 }
 
 model OrderItem {
   id String @id @default(cuid())
 
-  quantity Int
-  price    Float
+  quantity     Int
+  price        Float
   productName  String
   productImage String
 
@@ -215,4 +244,11 @@ enum OrderStatus {
   SHIPPED
   DELIVERED
   CANCELLED
+}
+
+enum PaymentStatus {
+  PENDING
+  PAID
+  FAILED
+  REFUNDED
 }

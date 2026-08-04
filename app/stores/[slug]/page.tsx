@@ -31,17 +31,19 @@ export default async function StorePage({ params, searchParams }: StorePageProps
 
   const [products, total] = await prisma.$transaction([
     prisma.product.findMany({
-      where: { storeId: store.id },
+      where: { storeId: store.id, store: { is: { status: "APPROVED" } } },
       orderBy: { createdAt: "desc" },
       skip: (page - 1) * PAGE_SIZE,
       take: PAGE_SIZE,
     }),
-    prisma.product.count({ where: { storeId: store.id } }),
+    prisma.product.count({
+      where: { storeId: store.id, store: { is: { status: "APPROVED" } } },
+    }),
   ]);
   const totalPages = Math.ceil(total / PAGE_SIZE);
 
   return (
-    <main className="mx-auto max-w-7xl px-4 py-8 sm:px-6 sm:py-10">
+    <main className="mx-auto w-full max-w-7xl px-6 py-10 sm:py-12">
       <Card className="mb-10 overflow-hidden">
         {store.banner && <div className="relative h-40 w-full sm:h-56"><Image src={store.banner} alt={`${store.name} banner`} fill unoptimized className="object-cover" sizes="100vw" /></div>}
         <CardContent className="flex flex-col gap-5 p-6 sm:flex-row sm:items-center">

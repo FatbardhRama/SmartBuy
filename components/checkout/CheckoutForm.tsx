@@ -33,15 +33,17 @@ export function CheckoutForm({
   }
 
   return (
-    <Card>
+    <Card className="overflow-hidden">
       <CardHeader>
-        <CardTitle>
-          Customer Information
-        </CardTitle>
+        <div className="flex items-start gap-3">
+          <span className="flex size-8 shrink-0 items-center justify-center rounded-full bg-primary text-sm font-bold text-primary-foreground">1</span>
+          <div><CardTitle className="text-xl">Contact information</CardTitle><p className="mt-1 text-sm text-muted-foreground">We&apos;ll use these details for delivery updates.</p></div>
+        </div>
       </CardHeader>
 
-      <CardContent>
-        <form className="space-y-6">
+      <CardContent className="pt-1">
+        <form className="space-y-7">
+          <div className="grid gap-5 sm:grid-cols-2">
           <div className="space-y-2">
             <Label htmlFor="fullName">
               Full Name
@@ -71,7 +73,7 @@ export function CheckoutForm({
             />
           </div>
 
-          <div className="space-y-2">
+          <div className="space-y-2 sm:col-span-2">
             <Label htmlFor="phone">
               Phone
             </Label>
@@ -84,10 +86,12 @@ export function CheckoutForm({
               placeholder="+355..."
             />
           </div>
+          </div>
 
-          <h2 className="text-lg font-semibold">
-            Shipping Address
-          </h2>
+          <div className="flex items-start gap-3 border-t pt-7">
+            <span className="flex size-8 shrink-0 items-center justify-center rounded-full bg-primary text-sm font-bold text-primary-foreground">2</span>
+            <div><h2 className="text-lg font-semibold">Shipping address</h2><p className="mt-1 text-sm text-muted-foreground">Where should we deliver your order?</p></div>
+          </div>
 
           <div className="space-y-2">
             <Label htmlFor="address">

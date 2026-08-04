@@ -78,7 +78,7 @@ export function RelatedProducts({
   if (loading) {
     return (
       <section className="space-y-4 motion-safe:animate-in motion-safe:fade-in-0 motion-safe:slide-in-from-bottom-2">
-        <h2 className="text-xl font-bold sm:text-2xl">
+        <h2 className="text-2xl font-bold sm:text-3xl">
           Related Products
         </h2>
 
@@ -92,8 +92,8 @@ export function RelatedProducts({
   }
 
   return (
-    <section className="space-y-4 motion-safe:animate-in motion-safe:fade-in-0 motion-safe:slide-in-from-bottom-2">
-      <h2 className="text-xl font-bold sm:text-2xl">
+    <section className="space-y-6 border-t pt-10 motion-safe:animate-in motion-safe:fade-in-0 motion-safe:slide-in-from-bottom-2">
+      <h2 className="text-2xl font-bold sm:text-3xl">
         Related Products
       </h2>
 

@@ -67,8 +67,12 @@ export default async function ProductsPage({
   const data = await getProducts(productParams);
 
   return (
-    <div className="container mx-auto px-4 py-8 sm:px-6 sm:py-10">
-      <h1 className="mb-6 text-3xl font-bold sm:mb-8 sm:text-4xl">Products</h1>
+    <div className="mx-auto w-full max-w-7xl px-6 py-10 sm:py-12">
+      <div className="mb-8 max-w-2xl">
+        <p className="text-sm font-semibold uppercase tracking-wider text-primary">SmartBuy electronics</p>
+        <h1 className="mt-2 text-3xl font-bold sm:text-4xl">Explore electronics</h1>
+        <p className="mt-3 leading-7 text-muted-foreground">Compare laptops, smartphones, gaming gear, audio, accessories, wearables, smart-home devices, and monitors from approved sellers.</p>
+      </div>
 
       <ProductsClient
         products={data.products}

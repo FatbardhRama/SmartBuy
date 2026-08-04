@@ -1,84 +1,38 @@
-import {
-  Card,
-  CardContent,
-  CardFooter,
-} from "@/components/ui/card";
+import Link from "next/link";
+import { ArrowRight, Zap } from "lucide-react";
 
+import { ProductCard } from "@/components/products/ProductCard";
 import { Button } from "@/components/ui/button";
 
-const deals = [
-  {
-    name: "Smartphone Pro",
-    oldPrice: "$999",
-    newPrice: "$799",
-    discount: "20% OFF",
-    icon: "📱",
-  },
-  {
-    name: "Gaming Setup",
-    oldPrice: "$1500",
-    newPrice: "$1199",
-    discount: "25% OFF",
-    icon: "🎮",
-  },
-  {
-    name: "Wireless Earbuds",
-    oldPrice: "$199",
-    newPrice: "$99",
-    discount: "50% OFF",
-    icon: "🎧",
-  },
-];
+type DealProduct = {
+  id: string;
+  name: string;
+  description: string;
+  price: number;
+  image: string;
+  category: string;
+  stock: number;
+  store: { name: string; slug: string } | null;
+};
 
-export function FlashDeals() {
+export function FlashDeals({ products }: { products: DealProduct[] }) {
   return (
-    <section className="bg-muted py-16">
-      <div className="container mx-auto px-4">
+    <section className="py-16 sm:py-20">
+      <div className="mx-auto max-w-7xl px-6">
+        <div className="rounded-3xl border border-accent/60 bg-accent/20 p-5 sm:p-8 lg:p-10">
+          <div className="mb-8 flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
+            <div className="max-w-2xl">
+              <p className="flex items-center gap-2 text-sm font-semibold uppercase tracking-wider text-accent-foreground"><Zap className="size-4 fill-current" /> Smart-value tech</p>
+              <h2 className="mt-2 text-3xl font-bold sm:text-4xl">Today&apos;s deals</h2>
+              <p className="mt-3 text-muted-foreground">Discover in-stock electronics at some of the sharpest prices in the marketplace.</p>
+            </div>
+            <Link href="/deals"><Button variant="outline" className="w-full gap-2 bg-card md:w-auto">Explore all deals <ArrowRight className="size-4" /></Button></Link>
+          </div>
 
-        <h2 className="mb-8 text-3xl font-bold">
-          Flash Deals ⚡
-        </h2>
-
-        <div className="grid gap-6 md:grid-cols-3">
-
-          {deals.map((deal) => (
-            <Card key={deal.name}>
-
-              <CardContent className="p-6 text-center">
-
-                <div className="text-6xl">
-                  {deal.icon}
-                </div>
-
-                <h3 className="mt-4 text-xl font-semibold">
-                  {deal.name}
-                </h3>
-
-                <p className="mt-3 text-sm text-muted-foreground line-through">
-                  {deal.oldPrice}
-                </p>
-
-                <p className="text-2xl font-bold">
-                  {deal.newPrice}
-                </p>
-
-                <p className="mt-2 font-semibold text-green-600">
-                  {deal.discount}
-                </p>
-
-              </CardContent>
-
-              <CardFooter>
-                <Button className="w-full">
-                  Grab Deal
-                </Button>
-              </CardFooter>
-
-            </Card>
-          ))}
-
+          <div className="grid auto-rows-fr gap-5 sm:grid-cols-2 lg:grid-cols-4">
+            {products.map((product) => <ProductCard key={product.id} {...product} />)}
+          </div>
         </div>
-
       </div>
     </section>
   );

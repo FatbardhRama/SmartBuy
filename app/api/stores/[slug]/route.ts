@@ -35,7 +35,7 @@ export async function GET(request: Request, { params }: Context) {
 
     const [products, total] = await prisma.$transaction([
       prisma.product.findMany({
-        where: { storeId: store.id },
+        where: { storeId: store.id, store: { is: { status: "APPROVED" } } },
         orderBy: { createdAt: "desc" },
         skip: (page - 1) * limit,
         take: limit,
@@ -49,7 +49,9 @@ export async function GET(request: Request, { params }: Context) {
           stock: true,
         },
       }),
-      prisma.product.count({ where: { storeId: store.id } }),
+      prisma.product.count({
+        where: { storeId: store.id, store: { is: { status: "APPROVED" } } },
+      }),
     ]);
 
     return NextResponse.json({

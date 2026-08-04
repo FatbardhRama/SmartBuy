@@ -68,7 +68,7 @@ export function OrderStatusSelect({
       </select>
 
       {loading && (
-        <span className="text-sm text-gray-500">
+        <span className="text-sm text-muted-foreground">
           Saving...
         </span>
       )}

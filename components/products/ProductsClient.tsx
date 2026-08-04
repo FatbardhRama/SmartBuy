@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import { PackageSearch, Search } from "lucide-react";
+import { ChevronLeft, ChevronRight, PackageSearch, Search, SlidersHorizontal } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { EmptyState } from "@/components/ui/empty-state";
@@ -42,10 +42,12 @@ const categories = [
   "All",
   "Laptops",
   "Smartphones",
-  "Tablets",
-  "Monitors",
-  "Headphones",
+  "Gaming",
+  "Audio",
   "Accessories",
+  "Wearables",
+  "Smart Home",
+  "Monitors",
 ];
 
 const sorts = new Set(["newest", "price-low", "price-high", "name-a", "name-z"]);
@@ -133,7 +135,7 @@ export default function ProductsClient({
         });
 
         if (!response.ok) {
-          throw new Error("Unable to load products.");
+          throw new Error("Unable to load electronics.");
         }
 
         const data: ProductsResponse = await response.json();
@@ -145,7 +147,7 @@ export default function ProductsClient({
           return;
         }
 
-        setError("We couldn’t load products right now. Please try again.");
+        setError("We couldn’t load electronics right now. Please try again.");
       } finally {
         if (!controller.signal.aborted) {
           setLoading(false);
@@ -163,11 +165,15 @@ export default function ProductsClient({
 
   return (
     <>
-      <div className="mb-4 flex flex-col gap-3 sm:flex-row sm:flex-wrap">
-        <div className="relative w-full sm:max-w-md sm:flex-1">
+      <div className="mb-5 rounded-2xl border bg-card p-4 shadow-sm sm:p-5">
+        <div className="mb-4 flex items-center gap-2 text-sm font-semibold">
+          <SlidersHorizontal className="size-4 text-primary" /> Search and filter
+        </div>
+        <div className="grid gap-3 md:grid-cols-[minmax(0,1fr)_auto_auto]">
+        <div className="relative w-full md:min-w-72">
           <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
           <Input
-            placeholder="Search products..."
+            placeholder="Search electronics..."
             value={search}
             onChange={(event) =>
               updateSearchParams({
@@ -187,7 +193,7 @@ export default function ProductsClient({
               page: null,
             })
           }
-          className="min-h-10 w-full rounded-md border px-3 py-2 sm:w-auto"
+          className="min-h-10 w-full rounded-lg border border-input bg-card px-3 py-2 text-sm shadow-xs outline-none focus:border-primary focus:ring-3 focus:ring-primary/15 md:w-44"
           aria-label="Filter by category"
         >
           {categories.map((item) => (
@@ -205,7 +211,7 @@ export default function ProductsClient({
               page: null,
             })
           }
-          className="min-h-10 w-full rounded-md border px-3 py-2 sm:w-auto"
+          className="min-h-10 w-full rounded-lg border border-input bg-card px-3 py-2 text-sm shadow-xs outline-none focus:border-primary focus:ring-3 focus:ring-primary/15 md:w-52"
           aria-label="Sort products"
         >
           <option value="newest">Newest</option>
@@ -214,15 +220,16 @@ export default function ProductsClient({
           <option value="name-a">Name: A-Z</option>
           <option value="name-z">Name: Z-A</option>
         </select>
+        </div>
       </div>
 
-      <p className="mb-6 text-sm text-muted-foreground" aria-live="polite">
+      <p className="mb-6 border-b pb-4 text-sm font-medium text-muted-foreground" aria-live="polite">
         {resultLabel}
         {search ? ` — Results for '${search}'` : ""}
       </p>
 
       {error && (
-        <div className="mb-6 flex flex-col gap-3 rounded-md border border-destructive/30 bg-destructive/5 p-4 text-sm text-destructive sm:flex-row sm:items-center sm:justify-between" role="alert">
+        <div className="mb-6 flex flex-col gap-3 rounded-xl border border-destructive/30 bg-destructive/5 p-4 text-sm text-destructive sm:flex-row sm:items-center sm:justify-between" role="alert">
           <p>{error}</p>
           <Button variant="outline" size="sm" onClick={() => setRetryCount((count) => count + 1)}>
             Try again
@@ -235,11 +242,11 @@ export default function ProductsClient({
       ) : displayedProducts.length === 0 ? (
         <EmptyState
           icon={<PackageSearch className="size-6" aria-hidden="true" />}
-          title={search ? `No products found for '${search}'` : "No products found"}
+          title={search ? `No electronics found for '${search}'` : "No electronics found"}
           description={
             hasActiveFilters
               ? "Try another search or clear your filters to explore the full catalog."
-              : "New products will appear here as they are added to the catalog."
+              : "New electronics will appear here as they are added to the catalog."
           }
           action={
             hasActiveFilters ? (
@@ -254,34 +261,37 @@ export default function ProductsClient({
       )}
 
       {totalPages > 1 && (
-        <div className="mt-10 flex flex-wrap justify-center gap-2">
-          <button
+        <nav className="mt-12 flex flex-wrap justify-center gap-2" aria-label="Product pagination">
+          <Button
+            variant="outline"
             disabled={page === 1}
             onClick={() => updateSearchParams({ page: (page - 1).toString() })}
-            className="min-h-10 rounded-md border px-4 py-2 disabled:opacity-50"
+            className="gap-1.5"
           >
-            Previous
-          </button>
+            <ChevronLeft className="size-4" /> Previous
+          </Button>
 
           {Array.from({ length: totalPages }, (_, index) => index + 1).map((number) => (
-            <button
+            <Button
               key={number}
+              variant={page === number ? "default" : "outline"}
+              size="icon"
               onClick={() => updateSearchParams({ page: number === 1 ? null : number.toString() })}
-              className={`min-h-10 min-w-10 rounded-md border px-3 py-2 ${page === number ? "bg-black text-white" : ""}`}
               aria-current={page === number ? "page" : undefined}
             >
               {number}
-            </button>
+            </Button>
           ))}
 
-          <button
+          <Button
+            variant="outline"
             disabled={page === totalPages}
             onClick={() => updateSearchParams({ page: (page + 1).toString() })}
-            className="min-h-10 rounded-md border px-4 py-2 disabled:opacity-50"
+            className="gap-1.5"
           >
-            Next
-          </button>
-        </div>
+            Next <ChevronRight className="size-4" />
+          </Button>
+        </nav>
       )}
     </>
   );

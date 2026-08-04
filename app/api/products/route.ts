@@ -1,11 +1,57 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
+import { getApprovedSellerStore } from "@/lib/seller";
 import {
   isNonEmptyString,
   isValidId,
   isValidNonNegativeInteger,
   isValidPositiveNumber,
 } from "@/lib/validation";
+
+function sellerAuthorizationError(
+  error: "UNAUTHENTICATED" | "NO_STORE" | "STORE_NOT_APPROVED"
+) {
+  if (error === "UNAUTHENTICATED") {
+    return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
+  }
+
+  return NextResponse.json(
+    { message: "An approved seller store is required." },
+    { status: 403 }
+  );
+}
+
+async function authorizeSellerProduct(id: string) {
+  const seller = await getApprovedSellerStore();
+
+  if (seller.error) {
+    return {
+      response: sellerAuthorizationError(seller.error),
+      store: null,
+    };
+  }
+
+  const product = await prisma.product.findUnique({
+    where: { id },
+    select: { storeId: true },
+  });
+
+  if (!product) {
+    return {
+      response: NextResponse.json({ message: "Product not found" }, { status: 404 }),
+      store: null,
+    };
+  }
+
+  if (product.storeId !== seller.store.id) {
+    return {
+      response: NextResponse.json({ message: "Forbidden" }, { status: 403 }),
+      store: null,
+    };
+  }
+
+  return { response: null, store: seller.store };
+}
 
 
 export async function GET(req: Request) {
@@ -16,6 +62,11 @@ export async function GET(req: Request) {
     const search = searchParams.get("search")?.trim() ?? "";
 
     const category = searchParams.get("category")?.trim() ?? "";
+
+    const requestedIds = searchParams.getAll("id");
+    const productIds = requestedIds
+      .filter((id) => isValidId(id))
+      .slice(0, 20);
 
 
     const page = Number(
@@ -57,6 +108,20 @@ export async function GET(req: Request) {
 
     const where = {
       AND: [
+        {
+          store: {
+            is: {
+              status: "APPROVED" as const,
+            },
+          },
+        },
+        requestedIds.length > 0
+          ? {
+              id: {
+                in: productIds,
+              },
+            }
+          : {},
         search
           ? {
               OR: [
@@ -176,6 +241,9 @@ export async function GET(req: Request) {
 
 export async function POST(req: Request) {
   try {
+    const seller = await getApprovedSellerStore();
+    if (seller.error) return sellerAuthorizationError(seller.error);
+
     let body: Record<string, unknown>;
 
     try {
@@ -276,6 +344,7 @@ export async function POST(req: Request) {
         image: image.trim(),
         category: category.trim(),
         stock: stock === undefined ? 0 : Number(stock),
+        storeId: seller.store.id,
       },
 
     });
@@ -333,15 +402,17 @@ export async function DELETE(req: Request) {
 
     }
 
+    const productId = id.trim();
+    const authorized = await authorizeSellerProduct(productId);
+    if (authorized.response) return authorized.response;
 
-
-    await prisma.product.delete({
-
-      where: {
-        id: id.trim(),
-      },
-
+    const deleted = await prisma.product.deleteMany({
+      where: { id: productId, storeId: authorized.store!.id },
     });
+
+    if (deleted.count !== 1) {
+      return NextResponse.json({ message: "Forbidden" }, { status: 403 });
+    }
 
 
 
@@ -404,15 +475,12 @@ export async function PUT(req: Request) {
 
     }
 
+    const productId = id.trim();
+    const authorized = await authorizeSellerProduct(productId);
+    if (authorized.response) return authorized.response;
 
-
-    const product = await prisma.product.update({
-
-      where: {
-        id: id.trim(),
-      },
-
-
+    const updated = await prisma.product.updateMany({
+      where: { id: productId, storeId: authorized.store!.id },
       data: {
         name,
         description,
@@ -420,10 +488,15 @@ export async function PUT(req: Request) {
         image,
         category,
       },
-
     });
 
+    if (updated.count !== 1) {
+      return NextResponse.json({ message: "Forbidden" }, { status: 403 });
+    }
 
+    const product = await prisma.product.findFirst({
+      where: { id: productId, storeId: authorized.store!.id },
+    });
 
     return NextResponse.json(product);
 

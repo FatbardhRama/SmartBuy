@@ -12,10 +12,15 @@ export async function GET(
     const { id } = await params;
 
 
-    const product = await prisma.product.findUnique({
+    const product = await prisma.product.findFirst({
 
       where: {
         id,
+        store: {
+          is: {
+            status: "APPROVED",
+          },
+        },
       },
 
       select: {

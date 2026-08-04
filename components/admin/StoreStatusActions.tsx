@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 
 import { Button } from "@/components/ui/button";
+import { toastError, toastSuccess } from "@/components/ui/toast";
 
 type StoreStatus = "PENDING" | "APPROVED" | "REJECTED" | "SUSPENDED";
 
@@ -33,13 +34,18 @@ export function StoreStatusActions({ storeId, status }: StoreStatusActionsProps)
       const data = await response.json().catch(() => null);
 
       if (!response.ok) {
-        setError(data?.message ?? "Unable to update store status.");
+        const message = data?.message ?? "Unable to update store status.";
+        setError(message);
+        toastError(message);
         return;
       }
 
+      toastSuccess(`Store status updated to ${nextStatus.toLowerCase()}.`);
       router.refresh();
     } catch {
-      setError("Unable to update store status.");
+      const message = "Unable to update store status.";
+      setError(message);
+      toastError(message);
     } finally {
       setUpdatingStatus(null);
     }
@@ -58,7 +64,7 @@ export function StoreStatusActions({ storeId, status }: StoreStatusActionsProps)
           {updatingStatus === "SUSPENDED" ? "Suspending..." : "Suspend"}
         </Button>
       </div>
-      {error && <p className="text-sm text-destructive">{error}</p>}
+      {error && <p className="rounded-lg bg-destructive/5 p-3 text-sm text-destructive" role="alert">{error}</p>}
     </div>
   );
 }

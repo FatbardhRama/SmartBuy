@@ -98,7 +98,20 @@ export function SellerProductForm({ productId }: { productId?: string }) {
     }
   }
 
-  if (loading) return <p className="text-sm text-muted-foreground">Loading product...</p>;
+  if (loading) {
+    return (
+      <div className="space-y-5" aria-busy="true" aria-label="Loading product form">
+        <div className="space-y-2"><div className="h-4 w-16 animate-pulse rounded bg-muted" /><div className="h-8 w-full animate-pulse rounded-lg bg-muted" /></div>
+        <div className="space-y-2"><div className="h-4 w-24 animate-pulse rounded bg-muted" /><div className="h-20 w-full animate-pulse rounded-lg bg-muted" /></div>
+        <div className="grid gap-5 sm:grid-cols-2">
+          <div className="h-8 animate-pulse rounded-lg bg-muted" />
+          <div className="h-8 animate-pulse rounded-lg bg-muted" />
+        </div>
+        <div className="h-8 w-full animate-pulse rounded-lg bg-muted" />
+        <span className="sr-only" role="status">Loading product…</span>
+      </div>
+    );
+  }
 
   return (
     <form onSubmit={handleSubmit} className="space-y-5">
@@ -110,7 +123,7 @@ export function SellerProductForm({ productId }: { productId?: string }) {
       </div>
       <div className="space-y-2"><Label htmlFor="category">Category</Label><Input id="category" name="category" value={form.category} onChange={handleChange} required /></div>
       <div className="space-y-2"><Label htmlFor="image">Image URL</Label><Input id="image" name="image" type="url" value={form.image} onChange={handleChange} required /></div>
-      {error && <p className="text-sm text-destructive">{error}</p>}
+      {error && <p className="text-sm text-destructive" role="alert">{error}</p>}
       <Button type="submit" disabled={saving}>{saving ? "Saving..." : productId ? "Update Product" : "Create Product"}</Button>
     </form>
   );
