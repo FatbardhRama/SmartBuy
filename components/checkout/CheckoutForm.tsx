@@ -33,20 +33,20 @@ export function CheckoutForm({
   }
 
   return (
-    <Card className="overflow-hidden">
-      <CardHeader>
+    <Card className="overflow-hidden rounded-2xl border-0 shadow-[0_16px_42px_-30px_rgba(15,23,42,0.4)] ring-1 ring-border/80">
+      <CardHeader className="border-b border-border/70 pb-5">
         <div className="flex items-start gap-3">
-          <span className="flex size-8 shrink-0 items-center justify-center rounded-full bg-primary text-sm font-bold text-primary-foreground">1</span>
+          <span className="flex size-9 shrink-0 items-center justify-center rounded-xl bg-primary text-sm font-bold text-primary-foreground">1</span>
           <div><CardTitle className="text-xl">Contact information</CardTitle><p className="mt-1 text-sm text-muted-foreground">We&apos;ll use these details for delivery updates.</p></div>
         </div>
       </CardHeader>
 
-      <CardContent className="pt-1">
+      <CardContent className="pt-2">
         <form className="space-y-7">
           <div className="grid gap-5 sm:grid-cols-2">
           <div className="space-y-2">
             <Label htmlFor="fullName">
-              Full Name
+              Full name
             </Label>
 
             <Input
@@ -54,13 +54,15 @@ export function CheckoutForm({
               name="fullName"
               value={form.fullName}
               onChange={handleChange}
-              placeholder="John Doe"
+              placeholder="Your full name"
+              autoComplete="name"
+              className="h-11 rounded-xl bg-background"
             />
           </div>
 
           <div className="space-y-2">
             <Label htmlFor="email">
-              Email
+              Email address
             </Label>
 
             <Input
@@ -69,7 +71,9 @@ export function CheckoutForm({
               type="email"
               value={form.email}
               onChange={handleChange}
-              placeholder="john@example.com"
+              placeholder="you@example.com"
+              autoComplete="email"
+              className="h-11 rounded-xl bg-background"
             />
           </div>
 
@@ -83,19 +87,21 @@ export function CheckoutForm({
               name="phone"
               value={form.phone}
               onChange={handleChange}
-              placeholder="+355..."
+              placeholder="+355 6X XXX XXXX"
+              autoComplete="tel"
+              className="h-11 rounded-xl bg-background"
             />
           </div>
           </div>
 
-          <div className="flex items-start gap-3 border-t pt-7">
-            <span className="flex size-8 shrink-0 items-center justify-center rounded-full bg-primary text-sm font-bold text-primary-foreground">2</span>
+          <div className="flex items-start gap-3 border-t border-border/70 pt-7">
+            <span className="flex size-9 shrink-0 items-center justify-center rounded-xl bg-primary text-sm font-bold text-primary-foreground">2</span>
             <div><h2 className="text-lg font-semibold">Shipping address</h2><p className="mt-1 text-sm text-muted-foreground">Where should we deliver your order?</p></div>
           </div>
 
           <div className="space-y-2">
             <Label htmlFor="address">
-              Address
+              Street address
             </Label>
 
             <Input
@@ -103,7 +109,9 @@ export function CheckoutForm({
               name="address"
               value={form.address}
               onChange={handleChange}
-              placeholder="Street..."
+              placeholder="Street and building number"
+              autoComplete="street-address"
+              className="h-11 rounded-xl bg-background"
             />
           </div>
 
@@ -119,12 +127,14 @@ export function CheckoutForm({
                 value={form.city}
                 onChange={handleChange}
                 placeholder="Tirana"
+                autoComplete="address-level2"
+                className="h-11 rounded-xl bg-background"
               />
             </div>
 
             <div className="space-y-2">
               <Label htmlFor="postalCode">
-                Postal Code
+                Postal code
               </Label>
 
               <Input
@@ -133,6 +143,8 @@ export function CheckoutForm({
                 value={form.postalCode}
                 onChange={handleChange}
                 placeholder="1001"
+                autoComplete="postal-code"
+                className="h-11 rounded-xl bg-background"
               />
             </div>
           </div>

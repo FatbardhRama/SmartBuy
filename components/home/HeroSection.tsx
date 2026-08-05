@@ -1,91 +1,70 @@
 import Image from "next/image";
 import Link from "next/link";
-import { ArrowRight, BadgeCheck, ShieldCheck, Truck } from "lucide-react";
+import { ArrowRight, BadgeCheck, PackageCheck, ShieldCheck } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 
 export function HeroSection() {
   return (
-    <section className="relative border-b border-border/70 bg-card">
-      <div className="pointer-events-none absolute inset-y-0 right-0 hidden w-1/2 bg-primary/5 lg:block" />
-      <div className="relative mx-auto grid max-w-7xl items-center gap-12 px-6 py-14 sm:py-16 lg:grid-cols-[0.9fr_1.1fr] lg:gap-16 lg:py-20">
-        <div className="max-w-2xl">
-          <div className="mb-5 inline-flex items-center gap-2 rounded-full border border-primary/15 bg-primary/5 px-3 py-1.5 text-sm font-semibold text-primary">
+    <section className="relative isolate overflow-hidden bg-card">
+      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_82%_18%,rgba(6,182,212,0.12),transparent_28%),radial-gradient(circle_at_68%_82%,rgba(37,99,235,0.10),transparent_32%)]" />
+      <div className="relative mx-auto grid max-w-7xl items-center gap-12 px-6 pb-18 pt-12 sm:pb-22 sm:pt-16 lg:min-h-[650px] lg:grid-cols-[0.88fr_1.12fr] lg:gap-16 lg:py-20">
+        <div className="max-w-xl motion-safe:animate-in motion-safe:fade-in-0 motion-safe:slide-in-from-bottom-3 motion-safe:duration-700">
+          <div className="mb-5 inline-flex items-center gap-2 rounded-full bg-primary/8 px-3 py-1.5 text-sm font-semibold text-primary ring-1 ring-inset ring-primary/15">
             <BadgeCheck className="size-4" />
-            Your electronics marketplace
+            Electronics from approved sellers
           </div>
 
-          <h1 className="text-4xl font-bold leading-[1.08] tracking-tight sm:text-5xl lg:text-6xl">
-            Shop the latest electronics.
-            <span className="block text-primary">Upgrade your tech today.</span>
+          <h1 className="text-[2.75rem] font-bold leading-[1.02] tracking-[-0.045em] sm:text-6xl lg:text-[4.35rem]">
+            Better tech starts with a
+            <span className="text-primary"> smarter choice.</span>
           </h1>
 
-          <p className="mt-6 max-w-xl text-base leading-7 text-muted-foreground sm:text-lg sm:leading-8">
-            Discover premium laptops, smartphones, monitors, audio gear, and
-            accessories from trusted sellers—all in one place.
+          <p className="mt-6 max-w-lg text-base leading-7 text-muted-foreground sm:text-lg sm:leading-8">
+            Compare laptops, smartphones, audio, and accessories from trusted
+            sellers in one focused marketplace.
           </p>
 
-          <div className="mt-8 flex flex-col gap-3 sm:flex-row">
-            <Link href="/products">
-              <Button size="lg" className="w-full gap-2 sm:w-auto">
-                Explore All Electronics <ArrowRight className="size-4" />
+          <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:items-center">
+            <Link href="/products" className="w-full sm:w-auto">
+              <Button size="lg" className="group w-full gap-3 rounded-xl px-6 sm:w-auto">
+                Explore electronics
+                <span className="flex size-7 items-center justify-center rounded-lg bg-white/15 transition-transform duration-300 ease-[cubic-bezier(0.32,0.72,0,1)] group-hover:translate-x-0.5">
+                  <ArrowRight className="size-4" />
+                </span>
               </Button>
             </Link>
-            <Link href="/deals">
-              <Button variant="outline" size="lg" className="w-full sm:w-auto">
-                Shop Today&apos;s Deals
+            <Link href="/deals" className="w-full sm:w-auto">
+              <Button variant="outline" size="lg" className="w-full rounded-xl sm:w-auto">
+                View today&apos;s deals
               </Button>
             </Link>
           </div>
 
-          <div className="mt-9 grid max-w-xl grid-cols-1 gap-3 border-t border-border/80 pt-6 text-sm text-muted-foreground sm:grid-cols-3">
-            <span className="flex items-center gap-2"><ShieldCheck className="size-4 text-primary" /> Secure checkout</span>
-            <span className="flex items-center gap-2"><BadgeCheck className="size-4 text-primary" /> Verified sellers</span>
-            <span className="flex items-center gap-2"><Truck className="size-4 text-primary" /> Order tracking</span>
+          <div className="mt-10 flex flex-wrap gap-x-6 gap-y-3 text-sm font-medium text-muted-foreground">
+            <span className="flex items-center gap-2"><ShieldCheck className="size-4 text-success" /> Secure payment</span>
+            <span className="flex items-center gap-2"><BadgeCheck className="size-4 text-primary" /> Approved sellers</span>
+            <span className="flex items-center gap-2"><PackageCheck className="size-4 text-accent" /> Live stock status</span>
           </div>
         </div>
 
-        <div className="relative mx-auto w-full max-w-2xl lg:mx-0">
-          <div className="absolute -left-5 top-12 size-28 rounded-full bg-accent/60 blur-2xl" />
-          <div className="absolute -right-6 bottom-10 size-40 rounded-full bg-primary/15 blur-3xl" />
-
-          <div className="relative grid grid-cols-[1.15fr_0.85fr] gap-3 rounded-3xl border border-border/80 bg-background/80 p-3 shadow-xl sm:gap-4 sm:p-5">
-            <div className="relative min-h-80 overflow-hidden rounded-2xl bg-secondary sm:min-h-[430px]">
-              <Image
-                src="/products/apple-macbook-pro.jpg"
-                alt="MacBook Pro available on SmartBuy"
-                fill
-                priority
-                className="object-cover"
-                sizes="(max-width: 1024px) 55vw, 32vw"
-              />
-              <div className="absolute inset-x-3 bottom-3 rounded-xl border border-white/30 bg-white/90 p-3 shadow-md backdrop-blur dark:border-white/10 dark:bg-slate-950/85 sm:inset-x-4 sm:bottom-4 sm:p-4">
-                <p className="text-xs font-semibold uppercase tracking-wider text-primary">Laptop spotlight</p>
-                <p className="mt-1 font-semibold sm:text-lg">Performance for every idea</p>
+        <div className="relative mx-auto w-full max-w-2xl motion-safe:animate-in motion-safe:fade-in-0 motion-safe:slide-in-from-bottom-5 motion-safe:duration-700 lg:mx-0">
+          <div className="relative grid grid-cols-[1.18fr_0.82fr] gap-2 rounded-[1.75rem] bg-slate-200/70 p-2 shadow-[0_28px_80px_-36px_rgba(37,99,235,0.38)] ring-1 ring-slate-900/5 dark:bg-slate-800/70 sm:gap-3 sm:p-3">
+            <div className="relative min-h-80 overflow-hidden rounded-[1.25rem] bg-muted sm:min-h-[440px]">
+              <Image src="/products/apple-macbook-pro.jpg" alt="MacBook Pro in the SmartBuy laptop collection" fill priority className="object-cover transition-transform duration-700 ease-[cubic-bezier(0.32,0.72,0,1)] hover:scale-[1.02]" sizes="(max-width: 1024px) 55vw, 32vw" />
+              <div className="absolute inset-x-3 bottom-3 rounded-xl bg-white/92 p-3 shadow-[0_14px_32px_-18px_rgba(15,23,42,0.35)] ring-1 ring-white/70 backdrop-blur-md dark:bg-slate-950/88 dark:ring-white/10 sm:inset-x-4 sm:bottom-4 sm:p-4">
+                <p className="text-xs font-semibold text-primary">Laptop spotlight</p>
+                <p className="mt-1 font-semibold sm:text-lg">Power for work and study</p>
               </div>
             </div>
 
-            <div className="grid gap-3 sm:gap-4">
-              <div className="relative min-h-36 overflow-hidden rounded-2xl bg-secondary sm:min-h-52">
-                <Image
-                  src="/products/iphone14-pro.jpg"
-                  alt="Smartphone available on SmartBuy"
-                  fill
-                  className="object-cover"
-                  sizes="(max-width: 1024px) 40vw, 20vw"
-                />
+            <div className="grid gap-2 sm:gap-3">
+              <div className="relative min-h-36 overflow-hidden rounded-[1.25rem] bg-muted sm:min-h-52">
+                <Image src="/products/iphone14-pro.jpg" alt="iPhone in the SmartBuy smartphone collection" fill className="object-cover transition-transform duration-700 ease-[cubic-bezier(0.32,0.72,0,1)] hover:scale-[1.03]" sizes="(max-width: 1024px) 40vw, 20vw" />
               </div>
-              <div className="relative min-h-36 overflow-hidden rounded-2xl bg-secondary sm:min-h-52">
-                <Image
-                  src="/products/blue-earbuds.jpg"
-                  alt="Wireless earbuds available on SmartBuy"
-                  fill
-                  className="object-cover"
-                  sizes="(max-width: 1024px) 40vw, 20vw"
-                />
-                <span className="absolute right-3 top-3 rounded-full bg-accent px-2.5 py-1 text-xs font-bold text-accent-foreground shadow-sm">
-                  Audio deal
-                </span>
+              <div className="relative min-h-36 overflow-hidden rounded-[1.25rem] bg-muted sm:min-h-52">
+                <Image src="/products/blue-earbuds.jpg" alt="Blue wireless earbuds in the SmartBuy audio collection" fill className="object-cover transition-transform duration-700 ease-[cubic-bezier(0.32,0.72,0,1)] hover:scale-[1.03]" sizes="(max-width: 1024px) 40vw, 20vw" />
+                <span className="absolute right-3 top-3 rounded-lg bg-card/95 px-2.5 py-1 text-xs font-semibold text-primary shadow-sm ring-1 ring-black/5 backdrop-blur-sm">Audio picks</span>
               </div>
             </div>
           </div>

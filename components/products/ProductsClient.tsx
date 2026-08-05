@@ -80,8 +80,7 @@ export default function ProductsClient({
   const [error, setError] = useState<string | null>(null);
   const [retryCount, setRetryCount] = useState(0);
 
-  const hasActiveFilters =
-    search !== "" || category !== "All" || sort !== "newest";
+  const hasActiveFilters = search !== "" || category !== "All" || sort !== "newest";
 
   function updateSearchParams(updates: Record<string, string | null>) {
     const params = new URLSearchParams(searchParamsString);
@@ -99,12 +98,7 @@ export default function ProductsClient({
   }
 
   function clearFilters() {
-    updateSearchParams({
-      search: null,
-      category: null,
-      sort: null,
-      page: null,
-    });
+    updateSearchParams({ search: null, category: null, sort: null, page: null });
   }
 
   useEffect(() => {
@@ -165,75 +159,64 @@ export default function ProductsClient({
 
   return (
     <>
-      <div className="mb-5 rounded-2xl border bg-card p-4 shadow-sm sm:p-5">
-        <div className="mb-4 flex items-center gap-2 text-sm font-semibold">
-          <SlidersHorizontal className="size-4 text-primary" /> Search and filter
-        </div>
-        <div className="grid gap-3 md:grid-cols-[minmax(0,1fr)_auto_auto]">
-        <div className="relative w-full md:min-w-72">
-          <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
-          <Input
-            placeholder="Search electronics..."
-            value={search}
-            onChange={(event) =>
-              updateSearchParams({
-                search: event.target.value || null,
-                page: null,
-              })
-            }
-            className="pl-10"
-          />
+      <div className="mb-6 rounded-2xl bg-card p-4 shadow-[0_12px_35px_-26px_rgba(15,23,42,0.35)] ring-1 ring-border/80 sm:p-5">
+        <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
+          <div className="flex items-center gap-2 text-sm font-semibold">
+            <span className="flex size-8 items-center justify-center rounded-lg bg-primary/8 text-primary"><SlidersHorizontal className="size-4" /></span>
+            Search and filter
+          </div>
+          {hasActiveFilters && (
+            <Button variant="ghost" size="sm" onClick={clearFilters} className="h-8 text-muted-foreground hover:text-primary">Clear all</Button>
+          )}
         </div>
 
-        <select
-          value={category}
-          onChange={(event) =>
-            updateSearchParams({
-              category: event.target.value === "All" ? null : event.target.value,
-              page: null,
-            })
-          }
-          className="min-h-10 w-full rounded-lg border border-input bg-card px-3 py-2 text-sm shadow-xs outline-none focus:border-primary focus:ring-3 focus:ring-primary/15 md:w-44"
-          aria-label="Filter by category"
-        >
-          {categories.map((item) => (
-            <option key={item} value={item}>
-              {item}
-            </option>
-          ))}
-        </select>
+        <div className="grid gap-3 md:grid-cols-[minmax(0,1fr)_12rem_14rem]">
+          <div className="relative w-full">
+            <Search className="pointer-events-none absolute left-3.5 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" aria-hidden="true" />
+            <Input
+              type="search"
+              placeholder="Search by product, category, or description"
+              value={search}
+              onChange={(event) => updateSearchParams({ search: event.target.value || null, page: null })}
+              className="h-11 rounded-xl bg-background pl-10 shadow-none"
+            />
+          </div>
 
-        <select
-          value={sorts.has(sort) ? sort : "newest"}
-          onChange={(event) =>
-            updateSearchParams({
-              sort: event.target.value === "newest" ? null : event.target.value,
-              page: null,
-            })
-          }
-          className="min-h-10 w-full rounded-lg border border-input bg-card px-3 py-2 text-sm shadow-xs outline-none focus:border-primary focus:ring-3 focus:ring-primary/15 md:w-52"
-          aria-label="Sort products"
-        >
-          <option value="newest">Newest</option>
-          <option value="price-low">Price: Low to High</option>
-          <option value="price-high">Price: High to Low</option>
-          <option value="name-a">Name: A-Z</option>
-          <option value="name-z">Name: Z-A</option>
-        </select>
+          <select
+            value={category}
+            onChange={(event) => updateSearchParams({ category: event.target.value === "All" ? null : event.target.value, page: null })}
+            className="min-h-11 w-full rounded-xl border border-input bg-background px-3 py-2 text-sm font-medium shadow-none outline-none transition-[border-color,box-shadow] focus:border-primary focus:ring-3 focus:ring-primary/15"
+            aria-label="Filter by category"
+          >
+            {categories.map((item) => <option key={item} value={item}>{item === "All" ? "All categories" : item}</option>)}
+          </select>
+
+          <select
+            value={sorts.has(sort) ? sort : "newest"}
+            onChange={(event) => updateSearchParams({ sort: event.target.value === "newest" ? null : event.target.value, page: null })}
+            className="min-h-11 w-full rounded-xl border border-input bg-background px-3 py-2 text-sm font-medium shadow-none outline-none transition-[border-color,box-shadow] focus:border-primary focus:ring-3 focus:ring-primary/15"
+            aria-label="Sort products"
+          >
+            <option value="newest">Newest first</option>
+            <option value="price-low">Price: Low to High</option>
+            <option value="price-high">Price: High to Low</option>
+            <option value="name-a">Name: A-Z</option>
+            <option value="name-z">Name: Z-A</option>
+          </select>
         </div>
       </div>
 
-      <p className="mb-6 border-b pb-4 text-sm font-medium text-muted-foreground" aria-live="polite">
-        {resultLabel}
-        {search ? ` — Results for '${search}'` : ""}
-      </p>
+      <div className="mb-6 flex flex-wrap items-center justify-between gap-3 border-b border-border/70 pb-4 text-sm" aria-live="polite">
+        <p className="font-semibold text-foreground">{resultLabel}</p>
+        <p className="text-muted-foreground">
+          {search ? `Results for “${search}”` : category !== "All" ? `${category} products` : "All available electronics"}
+        </p>
+      </div>
 
       {error && (
-        <div className="mb-6 flex flex-col gap-3 rounded-xl border border-destructive/30 bg-destructive/5 p-4 text-sm text-destructive sm:flex-row sm:items-center sm:justify-between" role="alert">
+        <div className="mb-6 flex flex-col gap-3 rounded-xl border border-destructive/25 bg-destructive/5 p-4 text-sm text-destructive sm:flex-row sm:items-center sm:justify-between" role="alert">
           <p>{error}</p>
-          <Button variant="outline" size="sm" onClick={() => setRetryCount((count) => count + 1)}>
-            Try again
-          </Button>
+          <Button variant="outline" size="sm" onClick={() => setRetryCount((count) => count + 1)}>Try again</Button>
         </div>
       )}
 
@@ -243,52 +226,26 @@ export default function ProductsClient({
         <EmptyState
           icon={<PackageSearch className="size-6" aria-hidden="true" />}
           title={search ? `No electronics found for '${search}'` : "No electronics found"}
-          description={
-            hasActiveFilters
-              ? "Try another search or clear your filters to explore the full catalog."
-              : "New electronics will appear here as they are added to the catalog."
-          }
-          action={
-            hasActiveFilters ? (
-              <Button variant="outline" onClick={clearFilters}>
-                Clear filters
-              </Button>
-            ) : undefined
-          }
+          description={hasActiveFilters ? "Try another search or clear your filters to explore the full catalog." : "New electronics will appear here as they are added to the catalog."}
+          action={hasActiveFilters ? <Button variant="outline" onClick={clearFilters}>Clear filters</Button> : undefined}
         />
       ) : (
         <ProductsGrid products={displayedProducts} />
       )}
 
       {totalPages > 1 && (
-        <nav className="mt-12 flex flex-wrap justify-center gap-2" aria-label="Product pagination">
-          <Button
-            variant="outline"
-            disabled={page === 1}
-            onClick={() => updateSearchParams({ page: (page - 1).toString() })}
-            className="gap-1.5"
-          >
+        <nav className="mt-14 flex flex-wrap items-center justify-center gap-2 border-t border-border/70 pt-8" aria-label="Product pagination">
+          <Button variant="outline" disabled={page === 1} onClick={() => updateSearchParams({ page: (page - 1).toString() })} className="gap-1.5 rounded-xl">
             <ChevronLeft className="size-4" /> Previous
           </Button>
 
           {Array.from({ length: totalPages }, (_, index) => index + 1).map((number) => (
-            <Button
-              key={number}
-              variant={page === number ? "default" : "outline"}
-              size="icon"
-              onClick={() => updateSearchParams({ page: number === 1 ? null : number.toString() })}
-              aria-current={page === number ? "page" : undefined}
-            >
+            <Button key={number} variant={page === number ? "default" : "outline"} size="icon" onClick={() => updateSearchParams({ page: number === 1 ? null : number.toString() })} aria-current={page === number ? "page" : undefined} className="rounded-xl">
               {number}
             </Button>
           ))}
 
-          <Button
-            variant="outline"
-            disabled={page === totalPages}
-            onClick={() => updateSearchParams({ page: (page + 1).toString() })}
-            className="gap-1.5"
-          >
+          <Button variant="outline" disabled={page === totalPages} onClick={() => updateSearchParams({ page: (page + 1).toString() })} className="gap-1.5 rounded-xl">
             Next <ChevronRight className="size-4" />
           </Button>
         </nav>

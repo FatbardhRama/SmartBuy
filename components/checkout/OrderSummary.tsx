@@ -15,6 +15,7 @@ import {
 import { useCart } from "@/context/CartContext";
 import { formatCurrency } from "@/lib/formatCurrency";
 import { toastError } from "@/components/ui/toast";
+import { Skeleton } from "@/components/ui/skeleton";
 import type { CheckoutData } from "./CheckoutLayout";
 
 type OrderSummaryProps = {
@@ -34,7 +35,7 @@ export function OrderSummary({
   const [loading, setLoading] = useState(false);
 
   if (!loaded) {
-    return null;
+    return <Skeleton className="h-[460px] w-full rounded-2xl" />;
   }
 
   const shipping = 0;
@@ -114,25 +115,23 @@ export function OrderSummary({
   }
 
   return (
-    <Card className="motion-safe:animate-in motion-safe:fade-in-0 motion-safe:slide-in-from-bottom-2 lg:sticky lg:top-24">
-      <CardHeader>
-        <CardTitle className="text-xl">Order summary</CardTitle>
+    <Card className="rounded-2xl border-0 shadow-[0_18px_45px_-30px_rgba(15,23,42,0.4)] ring-1 ring-border/80 motion-safe:animate-in motion-safe:fade-in-0 motion-safe:slide-in-from-bottom-2 lg:sticky lg:top-24">
+      <CardHeader className="border-b border-border/70 pb-5">
+        <CardTitle className="text-xl tracking-tight">Order summary</CardTitle>
       </CardHeader>
 
       <CardContent className="space-y-5">
         {cart.length === 0 ? (
-          <p className="text-sm text-muted-foreground">
-            Your shopping cart is empty.
-          </p>
+          <div className="rounded-xl bg-muted/45 p-5 text-center"><p className="text-sm font-medium">Your shopping cart is empty.</p><p className="mt-1 text-xs text-muted-foreground">Add a product before continuing to payment.</p></div>
         ) : (
           <>
             <div className="max-h-72 space-y-4 overflow-y-auto pr-1">
               {cart.map((item) => (
                 <div
                   key={item.id}
-                  className="flex items-center gap-3"
+                  className="flex items-center gap-3 rounded-xl bg-muted/25 p-2"
                 >
-                  <div className="relative size-14 shrink-0 overflow-hidden rounded-lg bg-muted">
+                  <div className="relative size-14 shrink-0 overflow-hidden rounded-xl bg-muted">
                     <Image src={item.image} alt={item.name} fill className="object-cover" sizes="56px" />
                   </div>
                   <div className="min-w-0 flex-1">
@@ -140,8 +139,8 @@ export function OrderSummary({
                       {item.name}
                     </p>
 
-                    <p className="text-sm text-muted-foreground">
-                      Quantity: {item.quantity}
+                    <p className="text-xs text-muted-foreground">
+                      Qty {item.quantity}
                     </p>
                   </div>
 
@@ -152,7 +151,7 @@ export function OrderSummary({
               ))}
             </div>
 
-            <hr className="border-border" />
+            <hr className="border-border/70" />
 
             <div className="space-y-2">
               <div className="flex justify-between text-sm text-muted-foreground">
@@ -175,12 +174,12 @@ export function OrderSummary({
                 </span>
               </div>
 
-              <div className="flex items-end justify-between border-t pt-4 text-lg font-semibold">
-                <span className="text-2xl font-bold text-primary">
+              <div className="flex items-end justify-between border-t border-border/70 pt-4 text-lg font-semibold">
+                <span className="font-semibold">
                   Total
                 </span>
 
-                <span>
+                <span className="text-2xl font-bold tracking-[-0.03em]">
                   {formatCurrency(total)}
                 </span>
               </div>
@@ -189,14 +188,14 @@ export function OrderSummary({
         )}
 
         {error && (
-          <p className="rounded-lg border border-destructive/20 bg-destructive/5 p-3 text-sm text-destructive" role="alert">
+          <p className="rounded-xl border border-destructive/20 bg-destructive/5 p-3 text-sm text-destructive" role="alert">
             {error}
           </p>
         )}
 
         <Button
           size="lg"
-          className="w-full gap-2"
+          className="h-12 w-full gap-2 rounded-xl"
           disabled={
             cart.length === 0 || loading
           }
@@ -204,9 +203,9 @@ export function OrderSummary({
         >
           {loading ? "Redirecting to Stripe..." : <><CreditCard className="size-5" /> Pay securely with Stripe</>}
         </Button>
-        <div className="space-y-2 border-t pt-4 text-xs text-muted-foreground">
-          <p className="flex items-center gap-2"><LockKeyhole className="size-4 text-primary" /> Payment details are handled securely by Stripe.</p>
-          <p className="flex items-center gap-2"><ShieldCheck className="size-4 text-primary" /> Prices and stock are verified before payment.</p>
+        <div className="space-y-2 border-t border-border/70 pt-4 text-xs text-muted-foreground">
+          <p className="flex items-center gap-2"><LockKeyhole className="size-4 text-success" /> Payment details are handled securely by Stripe.</p>
+          <p className="flex items-center gap-2"><ShieldCheck className="size-4 text-accent" /> Prices and stock are verified before payment.</p>
         </div>
       </CardContent>
     </Card>

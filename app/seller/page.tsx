@@ -34,10 +34,10 @@ export default async function SellerDashboardPage() {
 
   if (store.status !== "APPROVED") {
     return (
-      <main className="mx-auto max-w-3xl px-4 py-10 sm:px-6">
-        <Card>
+      <main className="mx-auto max-w-3xl px-6 py-16 sm:py-24">
+        <Card className="border-0 shadow-[0_24px_70px_-45px_rgba(15,23,42,0.55)] ring-1 ring-border">
           <CardHeader><div className="flex items-center justify-between gap-4"><CardTitle>{store.name}</CardTitle><Badge variant="secondary">{store.status}</Badge></div></CardHeader>
-          <CardContent className="space-y-5"><p>{statusMessages[store.status]}</p><Link href="/sell" className={buttonVariants()}>View store application</Link></CardContent>
+          <CardContent className="space-y-5"><p className="leading-7 text-muted-foreground">{statusMessages[store.status]}</p><Link href="/sell" className={buttonVariants({ className: "rounded-xl" })}>View store application</Link></CardContent>
         </Card>
       </main>
     );
@@ -82,17 +82,17 @@ export default async function SellerDashboardPage() {
   ]);
 
   return (
-    <main className="mx-auto w-full max-w-7xl px-6 py-10 sm:py-12">
-      <div className="mb-8 flex flex-wrap items-end justify-between gap-4"><div><p className="text-sm text-muted-foreground">Seller Dashboard</p><h1 className="text-3xl font-bold">{store.name}</h1></div><Link href="/seller/products/new" className={buttonVariants()}>Add Product</Link></div>
+    <main className="mx-auto w-full max-w-7xl px-6 pb-20 pt-10 sm:pb-24 sm:pt-12">
+      <div className="mb-9 flex flex-wrap items-end justify-between gap-4 border-b border-border pb-8"><div><p className="text-sm font-semibold text-primary">Seller dashboard</p><h1 className="mt-2 text-4xl font-bold tracking-[-0.04em] sm:text-5xl">{store.name}</h1><p className="mt-3 text-muted-foreground">A clear view of your catalog, orders, and store performance.</p></div><Link href="/seller/products/new" className={buttonVariants({ className: "rounded-xl" })}>Add product</Link></div>
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-        <Card><CardHeader><CardDescription className="flex items-center gap-2"><Package className="size-4" /> Total Products</CardDescription><CardTitle className="text-3xl">{productSummary._count._all}</CardTitle></CardHeader></Card>
-        <Card><CardHeader><CardDescription className="flex items-center gap-2"><ShoppingCart className="size-4" /> Total Orders</CardDescription><CardTitle className="text-3xl">{totalOrders}</CardTitle></CardHeader></Card>
-        <Card><CardHeader><CardDescription className="flex items-center gap-2"><Clock3 className="size-4" /> Pending Orders</CardDescription><CardTitle className="text-3xl">{pendingOrders}</CardTitle></CardHeader></Card>
-        <Card><CardHeader><CardDescription className="flex items-center gap-2"><CheckCircle2 className="size-4" /> Delivered Orders</CardDescription><CardTitle className="text-3xl">{deliveredOrders}</CardTitle></CardHeader></Card>
-        <Card><CardHeader><CardDescription className="flex items-center gap-2"><Banknote className="size-4" /> Revenue</CardDescription><CardTitle className="text-3xl">{formatCurrency(revenue._sum.total ?? 0)}</CardTitle></CardHeader></Card>
-        <Card><CardHeader><CardDescription className="flex items-center gap-2"><Warehouse className="size-4" /> Total stock</CardDescription><CardTitle className="text-3xl">{productSummary._sum.stock ?? 0}</CardTitle></CardHeader></Card>
+        <Card className="border-0 shadow-sm ring-1 ring-border"><CardHeader><CardDescription className="flex items-center gap-2"><Package className="size-4 text-primary" /> Total products</CardDescription><CardTitle className="text-3xl tracking-[-0.03em]">{productSummary._count._all}</CardTitle></CardHeader></Card>
+        <Card className="border-0 shadow-sm ring-1 ring-border"><CardHeader><CardDescription className="flex items-center gap-2"><ShoppingCart className="size-4 text-primary" /> Total orders</CardDescription><CardTitle className="text-3xl tracking-[-0.03em]">{totalOrders}</CardTitle></CardHeader></Card>
+        <Card className="border-0 shadow-sm ring-1 ring-border"><CardHeader><CardDescription className="flex items-center gap-2"><Clock3 className="size-4 text-warning" /> Pending orders</CardDescription><CardTitle className="text-3xl tracking-[-0.03em]">{pendingOrders}</CardTitle></CardHeader></Card>
+        <Card className="border-0 shadow-sm ring-1 ring-border"><CardHeader><CardDescription className="flex items-center gap-2"><CheckCircle2 className="size-4 text-success" /> Delivered orders</CardDescription><CardTitle className="text-3xl tracking-[-0.03em]">{deliveredOrders}</CardTitle></CardHeader></Card>
+        <Card className="border-0 shadow-sm ring-1 ring-border"><CardHeader><CardDescription className="flex items-center gap-2"><Banknote className="size-4 text-success" /> Revenue</CardDescription><CardTitle className="text-3xl tracking-[-0.03em]">{formatCurrency(revenue._sum.total ?? 0)}</CardTitle></CardHeader></Card>
+        <Card className="border-0 shadow-sm ring-1 ring-border"><CardHeader><CardDescription className="flex items-center gap-2"><Warehouse className="size-4 text-primary" /> Total stock</CardDescription><CardTitle className="text-3xl tracking-[-0.03em]">{productSummary._sum.stock ?? 0}</CardTitle></CardHeader></Card>
       </div>
-      <Card className="mt-6">
+      <Card className="mt-6 border-0 shadow-sm ring-1 ring-border">
         <CardHeader><div className="flex items-center justify-between gap-4"><div><CardTitle>Recent products</CardTitle><CardDescription>A quick summary of your latest listings.</CardDescription></div><Link href="/seller/products" className={buttonVariants({ variant: "outline" })}>My Products</Link></div></CardHeader>
         <CardContent>
           {products.length === 0 ? <div className="flex items-center gap-3 text-muted-foreground"><PackageCheck className="size-5" /><p>No products yet.</p></div> : (
@@ -101,7 +101,7 @@ export default async function SellerDashboardPage() {
         </CardContent>
       </Card>
       <div className="mt-6 grid gap-6 lg:grid-cols-2">
-        <Card>
+        <Card className="border-0 shadow-sm ring-1 ring-border">
           <CardHeader><div className="flex items-center justify-between gap-4"><div><CardTitle>Recent Orders</CardTitle><CardDescription>Your latest five customer orders.</CardDescription></div><Link href="/seller/orders" className={buttonVariants({ variant: "outline" })}>View Orders</Link></div></CardHeader>
           <CardContent>
             {recentOrders.length === 0 ? <div className="flex items-center gap-3 text-muted-foreground"><ShoppingCart className="size-5" /><p>No orders yet.</p></div> : (
@@ -109,7 +109,7 @@ export default async function SellerDashboardPage() {
             )}
           </CardContent>
         </Card>
-        <Card>
+        <Card className="border-0 shadow-sm ring-1 ring-border">
           <CardHeader><div className="flex items-center justify-between gap-4"><div><CardTitle>Low Stock</CardTitle><CardDescription>Products with five or fewer units remaining.</CardDescription></div><Link href="/seller/products" className={buttonVariants({ variant: "outline" })}>Manage Products</Link></div></CardHeader>
           <CardContent>
             {lowStockProducts.length === 0 ? <div className="flex items-center gap-3 text-muted-foreground"><PackageCheck className="size-5" /><p>All products are well stocked.</p></div> : (

@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 
 import { Button } from "@/components/ui/button";
 import { toastError, toastSuccess } from "@/components/ui/toast";
+import { Trash2 } from "lucide-react";
 
 import {
   AlertDialog,
@@ -56,23 +57,22 @@ export function DeleteProductButton({
 
       <AlertDialogTrigger
   render={
-    <Button variant="destructive">
-      Delete
+    <Button variant="destructive" size="sm" className="gap-1.5 rounded-lg">
+      <Trash2 className="size-3.5" /> Delete
     </Button>
   }
 />
 
-      <AlertDialogContent>
+      <AlertDialogContent className="rounded-2xl">
 
         <AlertDialogHeader>
 
           <AlertDialogTitle>
-            Delete Product?
+            Delete product?
           </AlertDialogTitle>
 
           <AlertDialogDescription>
-            This action cannot be undone.
-            The product will be permanently removed.
+            This action cannot be undone. The product will be permanently removed from the catalog.
           </AlertDialogDescription>
 
         </AlertDialogHeader>

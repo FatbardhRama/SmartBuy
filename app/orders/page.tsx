@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { ClipboardList } from "lucide-react";
+import { ArrowRight, CalendarDays, ClipboardList, Store } from "lucide-react";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { redirect } from "next/navigation";
@@ -57,16 +57,17 @@ export default async function OrdersPage() {
   });
 
   return (
-    <main className="mx-auto w-full max-w-7xl px-6 py-10 sm:py-12">
-      <div className="mb-8 flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
+    <main className="mx-auto w-full max-w-6xl px-6 pb-20 pt-10 sm:pb-24 sm:pt-12">
+      <div className="mb-10 flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
         <div>
-          <h1 className="text-2xl font-bold sm:text-3xl">My Orders</h1>
-          <p className="text-sm text-muted-foreground">
+          <p className="text-sm font-semibold text-primary">Purchase history</p>
+          <h1 className="mt-3 text-4xl font-bold tracking-[-0.04em] sm:text-5xl">My orders</h1>
+          <p className="mt-3 text-muted-foreground">
             Review your recent purchases and current order status.
           </p>
         </div>
 
-        <p className="text-sm text-muted-foreground">
+        <p className="w-fit rounded-xl bg-card px-3 py-2 text-sm font-medium text-muted-foreground ring-1 ring-border/80">
           {orders.length} {orders.length === 1 ? "order" : "orders"}
         </p>
       </div>
@@ -78,42 +79,40 @@ export default async function OrdersPage() {
           description="When you place an order, its details and status will appear here."
           action={
             <Link href="/products">
-              <Button>Browse electronics</Button>
+              <Button className="rounded-xl">Browse electronics</Button>
             </Link>
           }
         />
       ) : (
-        <div className="space-y-6">
+        <div className="space-y-5">
           {orders.map((order) => (
-            <Card key={order.id} className="motion-safe:animate-in motion-safe:fade-in-0 motion-safe:slide-in-from-bottom-2">
-              <CardHeader className="flex flex-col gap-4 border-b sm:flex-row sm:items-start sm:justify-between">
+            <Card key={order.id} className="rounded-2xl border-0 shadow-[0_14px_38px_-28px_rgba(15,23,42,0.4)] ring-1 ring-border/80 motion-safe:animate-in motion-safe:fade-in-0">
+              <CardHeader className="flex flex-col gap-4 border-b border-border/70 sm:flex-row sm:items-start sm:justify-between">
                 <div>
-                  <CardTitle className="break-all text-lg">Order #{order.id}</CardTitle>
-                  <CardDescription className="mt-2">
-                    Placed {formatDate(order.createdAt)}
-                  </CardDescription>
-                  <p className="mt-2 text-sm">Sold by: <span className="font-medium">{order.store.name}</span></p>
+                  <CardDescription>Order reference</CardDescription>
+                  <CardTitle className="mt-1 break-all text-lg">#{order.id}</CardTitle>
+                  <div className="mt-3 flex flex-wrap gap-x-5 gap-y-2 text-sm text-muted-foreground"><p className="flex items-center gap-2"><CalendarDays className="size-4 text-primary" /> {formatDate(order.createdAt)}</p><p className="flex items-center gap-2"><Store className="size-4 text-primary" /> {order.store.name}</p></div>
                 </div>
 
                 <div className="flex flex-col items-start gap-3 sm:items-end">
-                  <Badge variant={statusBadgeVariant[order.status] ?? "outline"}>
-                    {order.status}
+                  <Badge variant={statusBadgeVariant[order.status] ?? "outline"} className="rounded-lg">
+                    {order.status.charAt(0) + order.status.slice(1).toLowerCase()}
                   </Badge>
-                  <p className="text-lg font-semibold">{formatCurrency(order.total)}</p>
+                  <p className="text-xl font-bold tracking-[-0.03em] tabular-nums">{formatCurrency(order.total)}</p>
                 </div>
               </CardHeader>
 
-              <CardContent className="space-y-4 py-6">
+              <CardContent className="space-y-5 py-1">
                 <div className="space-y-3">
                   {order.items.map((item) => (
                     <div
                       key={item.id}
-                      className="flex flex-col gap-1 border-b pb-3 last:border-b-0 last:pb-0 sm:flex-row sm:items-center sm:justify-between"
+                      className="flex flex-col gap-1 rounded-xl bg-muted/35 px-3 py-2.5 sm:flex-row sm:items-center sm:justify-between"
                     >
                       <div>
                         <p className="font-medium">{item.productName}</p>
                         <p className="text-sm text-muted-foreground">
-                          Quantity: {item.quantity}
+                          Qty {item.quantity}
                         </p>
                       </div>
 
@@ -123,8 +122,8 @@ export default async function OrdersPage() {
                 </div>
 
                 <div className="flex justify-stretch sm:justify-end">
-                  <Link href={`/orders/${order.id}`}>
-                    <Button variant="outline" className="w-full sm:w-auto">View Details</Button>
+                  <Link href={`/orders/${order.id}`} className="w-full sm:w-auto">
+                    <Button variant="outline" className="w-full gap-2 rounded-xl sm:w-auto">View details <ArrowRight className="size-4" /></Button>
                   </Link>
                 </div>
               </CardContent>

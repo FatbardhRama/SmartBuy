@@ -29,7 +29,7 @@ export default async function Home() {
   ]);
 
   return (
-    <div className="overflow-hidden">
+    <div className="overflow-hidden bg-background">
       <HeroSection />
       <Categories />
       <FlashDeals products={dealProducts} />

@@ -97,19 +97,14 @@ export function RecentlyViewedProducts({
   }
 
   return (
-    <section className="border-t pt-10">
-      <h2 className="mb-6 text-2xl font-bold sm:text-3xl">
-        Recently Viewed Products
-      </h2>
+    <section className="border-t border-border/70 pt-12">
+      <div className="mb-6"><p className="text-sm font-semibold text-primary">Continue browsing</p><h2 className="mt-2 text-2xl font-bold tracking-[-0.03em] sm:text-3xl">Recently viewed</h2></div>
 
-      <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 xl:gap-6">
+      <ul className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 xl:gap-6" aria-label="Recently viewed products">
         {products.map((product) => (
-          <ProductCard
-            key={product.id}
-            {...product}
-          />
+          <li key={product.id} className="h-full"><ProductCard {...product} /></li>
         ))}
-      </div>
+      </ul>
     </section>
   );
 }

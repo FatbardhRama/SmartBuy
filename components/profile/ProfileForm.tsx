@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { CalendarDays, LockKeyhole, Mail, ShieldCheck, UploadCloud, UserRound } from "lucide-react";
 
 import {
   Card,
@@ -298,31 +299,32 @@ export function ProfileForm({
 
   return (
 
-    <div className="grid gap-6 lg:grid-cols-[1.1fr_0.9fr]">
+    <div className="grid items-start gap-6 lg:grid-cols-[1.05fr_0.95fr]">
 
 
 
-      <Card>
+      <Card className="rounded-2xl border-0 shadow-[0_16px_42px_-30px_rgba(15,23,42,0.4)] ring-1 ring-border/80">
 
-        <CardHeader>
+        <CardHeader className="border-b border-border/70 pb-5">
 
           <CardTitle>
-            Account Details
+            Account details
           </CardTitle>
 
 
           <CardDescription>
-            Your account information.
+            Your identity and membership information.
           </CardDescription>
 
         </CardHeader>
 
 
 
-        <CardContent className="space-y-6">
+        <CardContent className="space-y-6 pt-1">
 
 
-          <div className="flex flex-col items-center gap-4">
+          <div className="rounded-2xl bg-muted/35 p-5 ring-1 ring-border/70">
+          <div className="flex flex-col items-center gap-4 sm:flex-row sm:items-center">
 
 
             {preview ? (
@@ -333,24 +335,21 @@ export function ProfileForm({
 
                 alt="Profile picture"
 
-                className="h-32 w-32 rounded-full object-cover border"
+                className="size-28 shrink-0 rounded-2xl object-cover ring-1 ring-border"
 
               />
 
             ) : (
 
-              <div className="h-32 w-32 rounded-full border flex items-center justify-center text-sm">
-
-                No Image
-
+              <div className="flex size-28 shrink-0 items-center justify-center rounded-2xl bg-card text-muted-foreground ring-1 ring-border">
+                <UserRound className="size-9" aria-label="No profile picture" />
               </div>
 
             )}
 
 
-
-
-
+            <div className="w-full min-w-0 space-y-3">
+            <div><p className="text-sm font-semibold">Profile picture</p><p className="mt-1 text-xs leading-5 text-muted-foreground">Choose an image, preview it, then upload to save.</p></div>
             <Input
 
               type="file"
@@ -375,7 +374,7 @@ export function ProfileForm({
                 }
 
               }}
-              className="w-full"
+              className="h-11 w-full rounded-xl bg-card file:mr-3"
 
             />
 
@@ -393,93 +392,60 @@ export function ProfileForm({
                 !selectedImage ||
                 loading
               }
-              className="w-full sm:w-auto"
+              className="w-full gap-2 rounded-xl sm:w-auto"
 
             >
 
               {loading
                 ? "Uploading..."
-                : "Upload Picture"}
+                : <><UploadCloud className="size-4" aria-hidden="true" /> Upload picture</>}
 
             </Button>
-
-
+            </div>
+          </div>
           </div>
 
 
 
 
 
-          <div className="grid gap-2">
-
-            <Label>
-              Name
-            </Label>
-
-
-            <p className="rounded-md border bg-muted/40 px-3 py-2 text-sm">
+          <div className="grid gap-3 sm:grid-cols-2">
+          <div className="rounded-xl bg-background p-4 ring-1 ring-border/70">
+            <Label className="flex items-center gap-2 text-xs text-muted-foreground"><UserRound className="size-4 text-primary" aria-hidden="true" /> Name</Label>
+            <p className="mt-2 truncate text-sm font-semibold">
 
               {initialUser.name || "Not provided"}
 
             </p>
 
           </div>
-
-
-
-
-
-          <div className="grid gap-2">
-
-            <Label>
-              Email
-            </Label>
-
-
-            <p className="rounded-md border bg-muted/40 px-3 py-2 text-sm">
+          <div className="rounded-xl bg-background p-4 ring-1 ring-border/70">
+            <Label className="flex items-center gap-2 text-xs text-muted-foreground"><Mail className="size-4 text-primary" aria-hidden="true" /> Email</Label>
+            <p className="mt-2 truncate text-sm font-semibold">
 
               {initialUser.email}
 
             </p>
 
           </div>
-
-
-
-
-
-          <div className="grid gap-2">
-
-            <Label>
-              Role
-            </Label>
-
-
-            <p className="rounded-md border bg-muted/40 px-3 py-2 text-sm capitalize">
+          <div className="rounded-xl bg-background p-4 ring-1 ring-border/70">
+            <Label className="flex items-center gap-2 text-xs text-muted-foreground"><ShieldCheck className="size-4 text-primary" aria-hidden="true" /> Role</Label>
+            <p className="mt-2 text-sm font-semibold capitalize">
 
               {initialUser.role.toLowerCase()}
 
             </p>
 
           </div>
-
-
-
-
-
-          <div className="grid gap-2">
-
-            <Label>
-              Member Since
-            </Label>
-
-
-            <p className="rounded-md border bg-muted/40 px-3 py-2 text-sm">
+          <div className="rounded-xl bg-background p-4 ring-1 ring-border/70">
+            <Label className="flex items-center gap-2 text-xs text-muted-foreground"><CalendarDays className="size-4 text-primary" aria-hidden="true" /> Member since</Label>
+            <p className="mt-2 text-sm font-semibold">
 
               {formatDate(initialUser.createdAt)}
 
             </p>
 
+          </div>
           </div>
 
 
@@ -494,17 +460,17 @@ export function ProfileForm({
 
 
 
-      <Card>
+      <Card className="rounded-2xl border-0 shadow-[0_16px_42px_-30px_rgba(15,23,42,0.4)] ring-1 ring-border/80 lg:sticky lg:top-24">
 
-        <CardHeader>
+        <CardHeader className="border-b border-border/70 pb-5">
 
           <CardTitle>
-            Update Profile
+            Update profile
           </CardTitle>
 
 
           <CardDescription>
-            Change name or password.
+            Change your display name or account password.
           </CardDescription>
 
 
@@ -513,7 +479,7 @@ export function ProfileForm({
 
 
 
-        <CardContent>
+        <CardContent className="pt-1">
 
 
           <form
@@ -524,19 +490,21 @@ export function ProfileForm({
 
             <div className="space-y-2">
 
-              <Label>
+              <Label htmlFor="profile-name">
                 Name
               </Label>
 
 
               <Input
-
+                id="profile-name"
                 value={name}
 
                 onChange={(e)=>
                   setName(e.target.value)
                 }
 
+                autoComplete="name"
+                className="h-11 rounded-xl bg-background"
               />
 
             </div>
@@ -547,13 +515,13 @@ export function ProfileForm({
 
             <div className="space-y-2">
 
-              <Label>
-                New Password
+              <Label htmlFor="profile-password" className="flex items-center gap-2">
+                <LockKeyhole className="size-4 text-primary" aria-hidden="true" /> New password
               </Label>
 
 
               <Input
-
+                id="profile-password"
                 type="password"
 
                 value={password}
@@ -562,6 +530,9 @@ export function ProfileForm({
                   setPassword(e.target.value)
                 }
 
+                autoComplete="new-password"
+                placeholder="Leave blank to keep your current password"
+                className="h-11 rounded-xl bg-background"
               />
 
             </div>
@@ -572,7 +543,7 @@ export function ProfileForm({
 
             {error && (
 
-              <p className="text-sm text-destructive" role="alert">
+              <p className="rounded-xl bg-destructive/8 p-3 text-sm text-destructive" role="alert">
                 {error}
               </p>
 
@@ -584,7 +555,7 @@ export function ProfileForm({
 
             {message && (
 
-              <p className="text-sm text-emerald-600 dark:text-emerald-400" role="status">
+              <p className="rounded-xl bg-success/8 p-3 text-sm text-green-700 dark:text-green-300" role="status">
                 {message}
               </p>
 
@@ -596,13 +567,13 @@ export function ProfileForm({
 
             <Button
               type="submit"
-              className="w-full"
+              className="h-11 w-full rounded-xl"
               disabled={loading}
             >
 
               {loading
                 ? "Saving..."
-                : "Save Changes"}
+                : "Save changes"}
 
             </Button>
 

@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
+import { LoaderCircle, Save } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -101,7 +102,7 @@ export function SellerProductForm({ productId }: { productId?: string }) {
   if (loading) {
     return (
       <div className="space-y-5" aria-busy="true" aria-label="Loading product form">
-        <div className="space-y-2"><div className="h-4 w-16 animate-pulse rounded bg-muted" /><div className="h-8 w-full animate-pulse rounded-lg bg-muted" /></div>
+        <div className="space-y-2"><div className="h-4 w-16 animate-pulse rounded bg-muted" /><div className="h-11 w-full animate-pulse rounded-xl bg-muted" /></div>
         <div className="space-y-2"><div className="h-4 w-24 animate-pulse rounded bg-muted" /><div className="h-20 w-full animate-pulse rounded-lg bg-muted" /></div>
         <div className="grid gap-5 sm:grid-cols-2">
           <div className="h-8 animate-pulse rounded-lg bg-muted" />
@@ -115,16 +116,16 @@ export function SellerProductForm({ productId }: { productId?: string }) {
 
   return (
     <form onSubmit={handleSubmit} className="space-y-5">
-      <div className="space-y-2"><Label htmlFor="name">Name</Label><Input id="name" name="name" value={form.name} onChange={handleChange} required /></div>
-      <div className="space-y-2"><Label htmlFor="description">Description</Label><Textarea id="description" name="description" value={form.description} onChange={handleChange} required /></div>
+      <div className="space-y-2"><Label htmlFor="name">Product name</Label><Input className="h-11 rounded-xl" id="name" name="name" value={form.name} onChange={handleChange} placeholder="e.g. Wireless noise-cancelling headphones" required /></div>
+      <div className="space-y-2"><Label htmlFor="description">Description</Label><Textarea className="min-h-32 rounded-xl" id="description" name="description" value={form.description} onChange={handleChange} placeholder="Describe the product's key features and condition." required /></div>
       <div className="grid gap-5 sm:grid-cols-2">
-        <div className="space-y-2"><Label htmlFor="price">Price</Label><Input id="price" name="price" type="number" min="0.01" step="0.01" value={form.price} onChange={handleChange} required /></div>
-        <div className="space-y-2"><Label htmlFor="stock">Stock</Label><Input id="stock" name="stock" type="number" min="0" step="1" value={form.stock} onChange={handleChange} required /></div>
+        <div className="space-y-2"><Label htmlFor="price">Price</Label><Input className="h-11 rounded-xl" id="price" name="price" type="number" min="0.01" step="0.01" value={form.price} onChange={handleChange} required /></div>
+        <div className="space-y-2"><Label htmlFor="stock">Stock</Label><Input className="h-11 rounded-xl" id="stock" name="stock" type="number" min="0" step="1" value={form.stock} onChange={handleChange} required /></div>
       </div>
-      <div className="space-y-2"><Label htmlFor="category">Category</Label><Input id="category" name="category" value={form.category} onChange={handleChange} required /></div>
-      <div className="space-y-2"><Label htmlFor="image">Image URL</Label><Input id="image" name="image" type="url" value={form.image} onChange={handleChange} required /></div>
-      {error && <p className="text-sm text-destructive" role="alert">{error}</p>}
-      <Button type="submit" disabled={saving}>{saving ? "Saving..." : productId ? "Update Product" : "Create Product"}</Button>
+      <div className="space-y-2"><Label htmlFor="category">Category</Label><Input className="h-11 rounded-xl" id="category" name="category" value={form.category} onChange={handleChange} placeholder="e.g. Audio" required /></div>
+      <div className="space-y-2"><Label htmlFor="image">Image URL</Label><Input className="h-11 rounded-xl" id="image" name="image" type="url" value={form.image} onChange={handleChange} placeholder="https://..." required /></div>
+      {error && <p className="rounded-xl bg-destructive/5 p-3 text-sm text-destructive" role="alert">{error}</p>}
+      <Button type="submit" disabled={saving} className="rounded-xl">{saving ? <LoaderCircle className="size-4 animate-spin" aria-hidden="true" /> : <Save className="size-4" aria-hidden="true" />}{saving ? "Saving..." : productId ? "Update product" : "Create product"}</Button>
     </form>
   );
 }

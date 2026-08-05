@@ -6,7 +6,7 @@ import { EmptyState } from "@/components/ui/empty-state";
 
 export default function NotFound() {
   return (
-    <main className="flex min-h-[50vh] items-center justify-center px-6 py-16">
+    <main className="flex min-h-[60vh] items-center justify-center px-6 py-16 sm:py-24">
       <EmptyState
         icon={<SearchX className="size-6" aria-hidden="true" />}
         title="Page not found"
@@ -14,10 +14,10 @@ export default function NotFound() {
         action={
           <div className="flex flex-col justify-center gap-3 sm:flex-row">
             <Link href="/products">
-              <Button>Browse Products</Button>
+              <Button className="rounded-xl">Browse products</Button>
             </Link>
             <Link href="/">
-              <Button variant="outline">Back to Home</Button>
+              <Button className="rounded-xl" variant="outline">Back to home</Button>
             </Link>
           </div>
         }

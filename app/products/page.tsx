@@ -67,11 +67,14 @@ export default async function ProductsPage({
   const data = await getProducts(productParams);
 
   return (
-    <div className="mx-auto w-full max-w-7xl px-6 py-10 sm:py-12">
-      <div className="mb-8 max-w-2xl">
-        <p className="text-sm font-semibold uppercase tracking-wider text-primary">SmartBuy electronics</p>
-        <h1 className="mt-2 text-3xl font-bold sm:text-4xl">Explore electronics</h1>
-        <p className="mt-3 leading-7 text-muted-foreground">Compare laptops, smartphones, gaming gear, audio, accessories, wearables, smart-home devices, and monitors from approved sellers.</p>
+    <div className="mx-auto w-full max-w-7xl px-6 pb-18 pt-10 sm:pb-24 sm:pt-12">
+      <div className="relative mb-10 overflow-hidden rounded-[1.75rem] bg-card px-6 py-9 ring-1 ring-border/80 sm:px-9 sm:py-11">
+        <div className="pointer-events-none absolute -right-16 -top-24 size-72 rounded-full bg-primary/6" />
+        <div className="relative max-w-3xl">
+          <p className="text-sm font-semibold text-primary">SmartBuy electronics</p>
+          <h1 className="mt-3 text-4xl font-bold tracking-[-0.04em] sm:text-5xl">Find tech that fits your day</h1>
+          <p className="mt-4 max-w-2xl text-base leading-7 text-muted-foreground sm:text-lg">Compare laptops, smartphones, gaming gear, audio, accessories, wearables, smart-home devices, and monitors from approved sellers.</p>
+        </div>
       </div>
 
       <ProductsClient

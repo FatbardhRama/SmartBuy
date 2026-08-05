@@ -77,10 +77,8 @@ export function RelatedProducts({
 
   if (loading) {
     return (
-      <section className="space-y-4 motion-safe:animate-in motion-safe:fade-in-0 motion-safe:slide-in-from-bottom-2">
-        <h2 className="text-2xl font-bold sm:text-3xl">
-          Related Products
-        </h2>
+      <section className="space-y-6 motion-safe:animate-in motion-safe:fade-in-0 motion-safe:slide-in-from-bottom-2">
+        <div><p className="text-sm font-semibold text-primary">More in {category}</p><h2 className="mt-2 text-2xl font-bold tracking-[-0.03em] sm:text-3xl">You may also like</h2></div>
 
         <ProductGridSkeleton count={3} />
       </section>
@@ -92,10 +90,8 @@ export function RelatedProducts({
   }
 
   return (
-    <section className="space-y-6 border-t pt-10 motion-safe:animate-in motion-safe:fade-in-0 motion-safe:slide-in-from-bottom-2">
-      <h2 className="text-2xl font-bold sm:text-3xl">
-        Related Products
-      </h2>
+    <section className="space-y-6 border-t border-border/70 pt-12 motion-safe:animate-in motion-safe:fade-in-0 motion-safe:slide-in-from-bottom-2">
+      <div><p className="text-sm font-semibold text-primary">More in {category}</p><h2 className="mt-2 text-2xl font-bold tracking-[-0.03em] sm:text-3xl">You may also like</h2></div>
 
       <ProductsGrid products={products} />
     </section>

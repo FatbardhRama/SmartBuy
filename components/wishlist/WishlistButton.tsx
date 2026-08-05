@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useSession } from "next-auth/react";
+import { Heart } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -104,15 +105,12 @@ export function WishlistButton({
     <Button
       type="button"
       variant={isWishlisted ? "destructive" : "outline"}
-      className="w-full"
+      className="h-12 w-full gap-2 rounded-xl"
       onClick={handleWishlist}
       disabled={loading || status === "loading"}
     >
-      {loading
-        ? "Updating..."
-        : isWishlisted
-          ? "Remove from Wishlist"
-          : "Add to Wishlist"}
+      {!loading && <Heart className={`size-5 ${isWishlisted ? "fill-current" : ""}`} aria-hidden="true" />}
+      {loading ? "Updating..." : isWishlisted ? "Remove from wishlist" : "Add to wishlist"}
     </Button>
   );
 }

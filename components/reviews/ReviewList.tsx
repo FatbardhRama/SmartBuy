@@ -1,233 +1,89 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { MessageSquarePlus } from "lucide-react";
+import { MessageSquarePlus, Star } from "lucide-react";
 
 import { AddReviewForm } from "./AddReviewForm";
 import { EmptyState } from "@/components/ui/empty-state";
 import { ReviewsSkeleton } from "./ReviewsSkeleton";
-
 
 type Review = {
   id: string;
   rating: number;
   comment: string;
   createdAt: string;
-  user: {
-    name: string | null;
-    image: string | null;
-  };
+  user: { name: string | null; image: string | null };
 };
 
+type ReviewListProps = { productId: string };
 
-type ReviewListProps = {
-  productId: string;
-};
-
-
-
-export function ReviewList({
-  productId,
-}: ReviewListProps) {
-
-
+export function ReviewList({ productId }: ReviewListProps) {
   const [reviews, setReviews] = useState<Review[]>([]);
-
   const [averageRating, setAverageRating] = useState(0);
-
   const [totalReviews, setTotalReviews] = useState(0);
-
   const [loading, setLoading] = useState(true);
 
-
-
   async function fetchReviews() {
-
     try {
-
       setLoading(true);
-
-
-      const res = await fetch(
-        `/api/reviews?productId=${productId}`
-      );
-
-
+      const res = await fetch(`/api/reviews?productId=${productId}`);
       const data = await res.json();
-
-
       setReviews(data.reviews || []);
-
-      setAverageRating(
-        data.averageRating || 0
-      );
-
-      setTotalReviews(
-        data.totalReviews || 0
-      );
-
-
+      setAverageRating(data.averageRating || 0);
+      setTotalReviews(data.totalReviews || 0);
     } catch {
-
       setReviews([]);
-
-
     } finally {
-
       setLoading(false);
-
     }
-
   }
-
-
-
-
 
   useEffect(() => {
-
-    if (productId) {
-
-      fetchReviews();
-
-    }
-
+    if (productId) fetchReviews();
   }, [productId]);
 
-
-
-
-
-
-  if (loading) {
-    return <ReviewsSkeleton />;
-
-  }
-
-
-
-
-
+  if (loading) return <ReviewsSkeleton />;
 
   return (
-
-    <div className="mt-8 space-y-6">
-
-
-      <div>
-
-        <h2 className="text-xl font-semibold">
-
-          Reviews
-
-        </h2>
-
-
-        <p className="text-sm text-muted-foreground">
-
-          ⭐ {averageRating.toFixed(1)} / 5
-
-          {" "}
-
-          ({totalReviews} reviews)
-
-        </p>
-
-
+    <section className="rounded-[1.75rem] bg-card p-6 ring-1 ring-border/80 sm:p-8 lg:p-10" aria-labelledby="reviews-heading">
+      <div className="flex flex-col gap-5 border-b border-border/70 pb-7 sm:flex-row sm:items-end sm:justify-between">
+        <div>
+          <p className="text-sm font-semibold text-primary">Customer feedback</p>
+          <h2 id="reviews-heading" className="mt-2 text-2xl font-bold tracking-[-0.03em] sm:text-3xl">Reviews</h2>
+        </div>
+        <div className="flex items-center gap-3">
+          <span className="flex size-11 items-center justify-center rounded-xl bg-warning/10 text-warning"><Star className="size-5 fill-current" aria-hidden="true" /></span>
+          <div><p className="text-xl font-bold tabular-nums">{averageRating.toFixed(1)} <span className="text-sm font-medium text-muted-foreground">/ 5</span></p><p className="text-xs text-muted-foreground">{totalReviews} {totalReviews === 1 ? "review" : "reviews"}</p></div>
+        </div>
       </div>
 
-
-
-
-
-      {
-        reviews.length === 0 ? (
-
-          <EmptyState
-            icon={<MessageSquarePlus className="size-6" aria-hidden="true" />}
-            title="No reviews yet"
-            description="Be the first to share your experience with this product."
-            className="py-7 sm:py-8"
-          />
-
+      <div className="mt-7 grid gap-8 lg:grid-cols-[1fr_0.8fr] lg:gap-10">
+        {reviews.length === 0 ? (
+          <EmptyState icon={<MessageSquarePlus className="size-6" aria-hidden="true" />} title="No reviews yet" description="Be the first to share your experience with this product." className="py-8 shadow-none" />
         ) : (
-
-
-          <div className="space-y-4">
-
-            {
-              reviews.map((review) => (
-
-                <div
-                  key={review.id}
-                  className="rounded-lg border p-4"
-                >
-
-                  <div className="flex justify-between">
-
-                    <p className="font-medium">
-
-                      {review.user.name || "Anonymous"}
-
-                    </p>
-
-
-                    <p>
-
-                      {"⭐".repeat(review.rating)}
-
-                    </p>
-
-
+          <div className="space-y-3">
+            {reviews.map((review) => {
+              const reviewerName = review.user.name || "Anonymous";
+              return (
+                <article key={review.id} className="rounded-2xl bg-background p-5 ring-1 ring-border/70">
+                  <div className="flex items-start justify-between gap-4">
+                    <div className="flex items-center gap-3">
+                      <span className="flex size-9 items-center justify-center rounded-xl bg-primary/10 text-sm font-bold text-primary" aria-hidden="true">{reviewerName.charAt(0).toUpperCase()}</span>
+                      <div><p className="font-semibold">{reviewerName}</p><p className="text-xs text-muted-foreground">{new Date(review.createdAt).toLocaleDateString()}</p></div>
+                    </div>
+                    <div className="flex gap-0.5" aria-label={`${review.rating} out of 5 stars`}>
+                      {Array.from({ length: 5 }, (_, index) => <Star key={index} className={`size-4 ${index < review.rating ? "fill-warning text-warning" : "text-border"}`} aria-hidden="true" />)}
+                    </div>
                   </div>
-
-
-
-                  <p className="mt-2 text-sm">
-
-                    {review.comment}
-
-                  </p>
-
-
-
-
-                  <p className="mt-2 text-xs text-muted-foreground">
-
-                    {
-                      new Date(
-                        review.createdAt
-                      ).toLocaleDateString()
-                    }
-
-                  </p>
-
-
-                </div>
-
-              ))
-            }
-
+                  <p className="mt-4 text-sm leading-6 text-foreground/85">{review.comment}</p>
+                </article>
+              );
+            })}
           </div>
+        )}
 
-
-        )
-      }
-
-
-
-
-      <AddReviewForm
-
-        productId={productId}
-
-        onReviewAdded={fetchReviews}
-
-      />
-
-
-    </div>
-
+        <AddReviewForm productId={productId} onReviewAdded={fetchReviews} />
+      </div>
+    </section>
   );
-
 }

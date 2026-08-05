@@ -2,7 +2,6 @@ import Link from "next/link";
 import { ArrowRight, PackageSearch } from "lucide-react";
 
 import { ProductCard } from "@/components/products/ProductCard";
-import { Button } from "@/components/ui/button";
 
 type Product = {
   id: string;
@@ -33,18 +32,14 @@ export function FeaturedProducts({
   tone = "default",
 }: FeaturedProductsProps) {
   return (
-    <section className={tone === "muted" ? "border-y border-border/70 bg-card py-14 sm:py-18" : "py-14 sm:py-18"}>
+    <section className={tone === "muted" ? "bg-slate-100/65 py-18 dark:bg-slate-900/35 sm:py-24" : "py-18 sm:py-24"}>
       <div className="mx-auto max-w-7xl px-6">
-        <div className="mb-8 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
-          <div className="max-w-2xl">
-            <p className="text-sm font-semibold uppercase tracking-wider text-primary">{eyebrow}</p>
-            <h2 className="mt-2 text-3xl font-bold sm:text-4xl">{title}</h2>
-            <p className="mt-3 text-muted-foreground">{description}</p>
-          </div>
-          <Link href="/products">
-            <Button variant="outline" className="w-full gap-2 sm:w-auto">
-              {actionLabel} <ArrowRight className="size-4" />
-            </Button>
+        <div className="mb-10 max-w-2xl">
+          <p className="text-sm font-semibold text-primary">{eyebrow}</p>
+          <h2 className="mt-3 text-3xl font-bold tracking-[-0.035em] sm:text-4xl">{title}</h2>
+          <p className="mt-4 max-w-xl leading-7 text-muted-foreground">{description}</p>
+          <Link href="/products" className="mt-5 inline-flex items-center gap-2 text-sm font-semibold text-primary transition-colors hover:text-blue-700 dark:hover:text-blue-300">
+            {actionLabel} <ArrowRight className="size-4" />
           </Link>
         </div>
 
@@ -53,8 +48,8 @@ export function FeaturedProducts({
             {products.map((product) => <ProductCard key={product.id} {...product} />)}
           </div>
         ) : (
-          <div className="flex min-h-56 flex-col items-center justify-center rounded-2xl border border-dashed bg-muted/40 p-8 text-center">
-            <PackageSearch className="size-9 text-primary" />
+          <div className="flex min-h-60 flex-col items-center justify-center rounded-2xl border border-dashed border-border bg-card p-8 text-center">
+            <span className="flex size-14 items-center justify-center rounded-2xl bg-primary/8 text-primary"><PackageSearch className="size-7" /></span>
             <h3 className="mt-4 text-lg font-semibold">More electronics are on the way</h3>
             <p className="mt-2 text-sm text-muted-foreground">Check back soon for new devices and accessories.</p>
           </div>

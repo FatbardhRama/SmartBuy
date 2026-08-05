@@ -28,6 +28,10 @@
   --color-border: var(--border);
   --color-destructive: var(--destructive);
   --color-destructive-foreground: var(--destructive-foreground);
+  --color-success: var(--success);
+  --color-success-foreground: var(--success-foreground);
+  --color-warning: var(--warning);
+  --color-warning-foreground: var(--warning-foreground);
   --color-accent-foreground: var(--accent-foreground);
   --color-accent: var(--accent);
   --color-muted-foreground: var(--muted-foreground);
@@ -55,25 +59,29 @@
 }
 
 :root {
-  --background: oklch(0.985 0.004 255);
-  --foreground: oklch(0.21 0.035 260);
-  --card: oklch(1 0 0);
-  --card-foreground: oklch(0.21 0.035 260);
-  --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.21 0.035 260);
-  --primary: oklch(0.546 0.245 263);
-  --primary-foreground: oklch(0.985 0.005 255);
-  --secondary: oklch(0.95 0.025 255);
-  --secondary-foreground: oklch(0.28 0.09 260);
-  --muted: oklch(0.96 0.01 255);
-  --muted-foreground: oklch(0.5 0.035 260);
-  --accent: oklch(0.94 0.105 88);
-  --accent-foreground: oklch(0.36 0.1 65);
-  --destructive: oklch(0.577 0.245 27.325);
-  --destructive-foreground: oklch(0.985 0.005 255);
-  --border: oklch(0.9 0.018 255);
-  --input: oklch(0.88 0.022 255);
-  --ring: oklch(0.546 0.245 263);
+  --background: #f8fafc;
+  --foreground: #0f172a;
+  --card: #ffffff;
+  --card-foreground: #0f172a;
+  --popover: #ffffff;
+  --popover-foreground: #0f172a;
+  --primary: #2563eb;
+  --primary-foreground: #ffffff;
+  --secondary: #eff6ff;
+  --secondary-foreground: #1e3a8a;
+  --muted: #f1f5f9;
+  --muted-foreground: #64748b;
+  --accent: #06b6d4;
+  --accent-foreground: #083344;
+  --destructive: #ef4444;
+  --destructive-foreground: #ffffff;
+  --success: #22c55e;
+  --success-foreground: #052e16;
+  --warning: #f59e0b;
+  --warning-foreground: #451a03;
+  --border: #e2e8f0;
+  --input: #cbd5e1;
+  --ring: #2563eb;
   --chart-1: oklch(0.546 0.245 263);
   --chart-2: oklch(0.68 0.17 245);
   --chart-3: oklch(0.77 0.17 75);
@@ -135,6 +143,7 @@
   }
   html {
     @apply font-sans;
+    scroll-behavior: smooth;
   }
   h1,
   h2,

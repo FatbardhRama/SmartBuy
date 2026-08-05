@@ -6,6 +6,9 @@ import Link from "next/link";
 import Image from "next/image";
 import { formatCurrency } from "@/lib/formatCurrency";
 import { RevenueChart } from "@/components/admin/RevenueChart";
+import { AlertTriangle, ArrowRight, DollarSign, Package, ShoppingBag, TrendingUp, Users } from "lucide-react";
+import { buttonVariants } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
 
 export default async function AdminDashboardPage() {
   const session = await getServerSession(authOptions);
@@ -166,197 +169,33 @@ export default async function AdminDashboardPage() {
   });
 
   return (
-    <main className="mx-auto w-full max-w-7xl px-6 py-10 sm:py-12">
-      <div className="mb-8 flex flex-col gap-4 sm:mb-10 sm:flex-row sm:items-center sm:justify-between">
-        <h1 className="text-2xl font-bold sm:text-3xl">
-          Admin Dashboard
-        </h1>
-
-        <div className="flex flex-col gap-2 sm:flex-row sm:gap-3">
-          <Link href="/admin/products">
-            <button className="min-h-10 w-full rounded-md border px-4 py-2 sm:w-auto">
-              Manage Products
-            </button>
-          </Link>
-
-          <Link href="/admin/orders">
-            <button className="min-h-10 w-full rounded-md border px-4 py-2 sm:w-auto">
-              Manage Orders
-            </button>
-          </Link>
-        </div>
+    <main className="mx-auto w-full max-w-7xl px-6 pb-20 pt-10 sm:pb-24 sm:pt-12">
+      <div className="mb-10 flex flex-col gap-5 sm:flex-row sm:items-end sm:justify-between">
+        <div><p className="text-sm font-semibold text-primary">Administration</p><h1 className="mt-3 text-4xl font-bold tracking-[-0.04em] sm:text-5xl">Dashboard overview</h1><p className="mt-3 text-muted-foreground">Monitor marketplace activity, sales performance, and inventory health.</p></div>
+        <div className="flex flex-col gap-2 sm:flex-row"><Link href="/admin/products" className={cn(buttonVariants({ variant: "outline" }), "rounded-xl")}>Manage products</Link><Link href="/admin/orders" className={cn(buttonVariants(), "gap-2 rounded-xl")}>Manage orders <ArrowRight className="size-4" /></Link></div>
       </div>
 
-      <div className="mb-10 grid grid-cols-1 gap-4 motion-safe:animate-in motion-safe:fade-in-0 motion-safe:slide-in-from-bottom-2 sm:grid-cols-2 sm:gap-6 lg:grid-cols-4">
-        <div className="border rounded-lg p-6">
-          <p className="text-sm text-muted-foreground">
-            Users
-          </p>
-
-          <p className="text-3xl font-bold">
-            {users}
-          </p>
-        </div>
-
-        <div className="border rounded-lg p-6">
-          <p className="text-sm text-muted-foreground">
-            Products
-          </p>
-
-          <p className="text-3xl font-bold">
-            {products}
-          </p>
-        </div>
-
-        <div className="border rounded-lg p-6">
-          <p className="text-sm text-muted-foreground">
-            Orders
-          </p>
-
-          <p className="text-3xl font-bold">
-            {orders}
-          </p>
-        </div>
-
-        <div className="border rounded-lg p-6">
-          <p className="text-sm text-muted-foreground">
-            Revenue
-          </p>
-
-          <p className="text-3xl font-bold">
-            {formatCurrency(revenue._sum.total ?? 0)}
-          </p>
-        </div>
+      <div className="mb-10 grid grid-cols-1 gap-4 motion-safe:animate-in motion-safe:fade-in-0 sm:grid-cols-2 lg:grid-cols-4">
+        {[
+          { label: "Users", value: users.toLocaleString(), icon: Users, tone: "text-primary bg-primary/10" },
+          { label: "Products", value: products.toLocaleString(), icon: Package, tone: "text-cyan-700 bg-accent/10 dark:text-cyan-300" },
+          { label: "Orders", value: orders.toLocaleString(), icon: ShoppingBag, tone: "text-amber-700 bg-warning/10 dark:text-amber-300" },
+          { label: "Revenue", value: formatCurrency(revenue._sum.total ?? 0), icon: DollarSign, tone: "text-green-700 bg-success/10 dark:text-green-300" },
+        ].map((metric) => { const Icon = metric.icon; return <div key={metric.label} className="rounded-2xl bg-card p-5 shadow-[0_12px_35px_-26px_rgba(15,23,42,0.35)] ring-1 ring-border/80"><div className="flex items-center justify-between gap-4"><span className={`flex size-10 items-center justify-center rounded-xl ${metric.tone}`}><Icon className="size-5" /></span><TrendingUp className="size-4 text-muted-foreground" /></div><p className="mt-6 text-sm text-muted-foreground">{metric.label}</p><p className="mt-1 text-3xl font-bold tracking-[-0.035em] tabular-nums">{metric.value}</p></div>; })}
       </div>
 
-      <section className="mb-10 motion-safe:animate-in motion-safe:fade-in-0 motion-safe:slide-in-from-bottom-2">
-        <h2 className="text-2xl font-bold mb-6">
-          Revenue Analytics
-        </h2>
+      <section className="mb-12 motion-safe:animate-in motion-safe:fade-in-0"><div className="mb-6"><p className="text-sm font-semibold text-primary">Performance</p><h2 className="mt-2 text-2xl font-bold tracking-[-0.03em] sm:text-3xl">Revenue analytics</h2></div><RevenueChart data={monthlyRevenue} /></section>
 
-        <RevenueChart data={monthlyRevenue} />
-      </section>
+      <div className="mb-12 grid gap-8 lg:grid-cols-2">
+        <section><div className="mb-5"><p className="text-sm font-semibold text-primary">Sales</p><h2 className="mt-2 text-2xl font-bold tracking-[-0.03em]">Best sellers</h2></div>{bestSellers.length === 0 ? <AdminEmpty message="No product sales found." /> : <div className="overflow-hidden rounded-2xl bg-card ring-1 ring-border/80">{bestSellers.map((product, index) => <div key={product.id} className="flex items-center gap-4 border-b border-border/70 p-4 last:border-0"><span className="w-5 text-sm font-bold text-muted-foreground">{index + 1}</span>{product.image && <Image src={product.image} alt={product.name} width={48} height={48} className="size-12 rounded-xl object-cover" />}<div className="min-w-0 flex-1"><h3 className="truncate font-semibold">{product.name}</h3><p className="text-sm text-muted-foreground">{product.quantitySold} sold</p></div></div>)}</div>}</section>
+        <section><div className="mb-5"><p className="flex items-center gap-2 text-sm font-semibold text-amber-700 dark:text-amber-300"><AlertTriangle className="size-4" /> Inventory attention</p><h2 className="mt-2 text-2xl font-bold tracking-[-0.03em]">Low-stock products</h2></div>{lowStockProducts.length === 0 ? <AdminEmpty message="No low-stock products found." /> : <div className="overflow-hidden rounded-2xl bg-card ring-1 ring-border/80">{lowStockProducts.map((product) => <div key={product.id} className="flex items-center gap-4 border-b border-border/70 p-4 last:border-0">{product.image && <Image src={product.image} alt={product.name} width={48} height={48} className="size-12 rounded-xl object-cover" />}<div className="min-w-0 flex-1"><h3 className="truncate font-semibold">{product.name}</h3><p className="text-sm text-muted-foreground">Inventory requires review</p></div><span className="rounded-lg bg-warning/10 px-2.5 py-1 text-xs font-semibold text-amber-700 dark:text-amber-300">{product.stock} left</span></div>)}</div>}</section>
+      </div>
 
-      <section className="mb-10 motion-safe:animate-in motion-safe:fade-in-0 motion-safe:slide-in-from-bottom-2">
-        <h2 className="text-2xl font-bold mb-6">
-          Best Sellers
-        </h2>
-
-        {bestSellers.length === 0 ? (
-          <p>No product sales found.</p>
-        ) : (
-          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-5">
-            {bestSellers.map((product) => (
-              <div
-                key={product.id}
-                className="border rounded-lg p-4"
-              >
-                {product.image && (
-                  <Image
-                    src={product.image}
-                    alt={product.name}
-                    width={64}
-                    height={64}
-                    className="mb-4 h-16 w-16 rounded-md object-cover"
-                  />
-                )}
-
-                <h3 className="font-semibold">
-                  {product.name}
-                </h3>
-
-                <p className="mt-2 text-sm text-muted-foreground">
-                  {product.quantitySold} sold
-                </p>
-              </div>
-            ))}
-          </div>
-        )}
-      </section>
-
-      <section className="mb-10">
-        <h2 className="text-2xl font-bold mb-6">
-          Low Stock Products
-        </h2>
-
-        {lowStockProducts.length === 0 ? (
-          <p>No low stock products found.</p>
-        ) : (
-          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
-            {lowStockProducts.map((product) => (
-              <div
-                key={product.id}
-                className="border rounded-lg p-4"
-              >
-                {product.image && (
-                  <Image
-                    src={product.image}
-                    alt={product.name}
-                    width={64}
-                    height={64}
-                    className="mb-4 h-16 w-16 rounded-md object-cover"
-                  />
-                )}
-
-                <h3 className="font-semibold">
-                  {product.name}
-                </h3>
-
-                <p className="mt-2 text-sm text-muted-foreground">
-                  Stock: {product.stock}
-                </p>
-              </div>
-            ))}
-          </div>
-        )}
-      </section>
-
-      <section className="motion-safe:animate-in motion-safe:fade-in-0 motion-safe:slide-in-from-bottom-2">
-        <h2 className="text-2xl font-bold mb-6">
-          Recent Orders
-        </h2>
-
-        {recentOrders.length === 0 ? (
-          <p>No orders found.</p>
-        ) : (
-          <div className="space-y-4">
-            {recentOrders.map((order) => (
-              <div
-                key={order.id}
-              className="flex flex-col gap-3 rounded-lg border p-4 sm:flex-row sm:items-center sm:justify-between sm:p-5"
-              >
-                <div>
-                  <h3 className="font-semibold">
-                    Order #{order.id}
-                  </h3>
-
-                  <p>{order.fullName}</p>
-
-                  <p className="text-sm text-muted-foreground">
-                    {new Date(
-                      order.createdAt
-                    ).toLocaleDateString()}
-                  </p>
-
-                  <p className="text-sm">
-                    Status: {order.status}
-                  </p>
-                </div>
-
-                <div className="text-left sm:text-right">
-                  <p className="font-bold">
-                    {formatCurrency(order.total)}
-                  </p>
-
-                  <p className="text-sm">
-                    {order.items.length} item(s)
-                  </p>
-                </div>
-              </div>
-            ))}
-          </div>
-        )}
-      </section>
+      <section><div className="mb-5 flex items-end justify-between gap-4"><div><p className="text-sm font-semibold text-primary">Latest activity</p><h2 className="mt-2 text-2xl font-bold tracking-[-0.03em]">Recent orders</h2></div><Link href="/admin/orders" className="text-sm font-semibold text-primary hover:underline">View all</Link></div>{recentOrders.length === 0 ? <AdminEmpty message="No orders found." /> : <div className="overflow-hidden rounded-2xl bg-card ring-1 ring-border/80">{recentOrders.map((order) => <div key={order.id} className="grid gap-3 border-b border-border/70 p-4 last:border-0 sm:grid-cols-[minmax(0,1fr)_auto_auto] sm:items-center sm:p-5"><div className="min-w-0"><h3 className="truncate font-semibold">Order #{order.id}</h3><p className="text-sm text-muted-foreground">{order.fullName} · {new Date(order.createdAt).toLocaleDateString()}</p></div><span className="w-fit rounded-lg bg-muted px-2.5 py-1 text-xs font-semibold capitalize">{order.status.toLowerCase()}</span><div className="sm:text-right"><p className="font-bold tabular-nums">{formatCurrency(order.total)}</p><p className="text-xs text-muted-foreground">{order.items.length} {order.items.length === 1 ? "item" : "items"}</p></div></div>)}</div>}</section>
     </main>
   );
+}
+
+function AdminEmpty({ message }: { message: string }) {
+  return <div className="rounded-2xl border border-dashed border-border bg-card p-8 text-center text-sm text-muted-foreground">{message}</div>;
 }

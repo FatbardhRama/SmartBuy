@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { LoaderCircle, Trash2 } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { toastError, toastSuccess } from "@/components/ui/toast";
@@ -32,15 +33,15 @@ export function DeleteSellerProductButton({ productId }: { productId: string }) 
 
   return (
     <AlertDialog>
-      <AlertDialogTrigger render={<Button variant="destructive" size="sm">Delete</Button>} />
-      <AlertDialogContent>
+      <AlertDialogTrigger render={<Button variant="destructive" size="sm" className="rounded-xl"><Trash2 className="size-4" aria-hidden="true" /> Delete</Button>} />
+      <AlertDialogContent className="rounded-2xl">
         <AlertDialogHeader>
           <AlertDialogTitle>Delete product?</AlertDialogTitle>
           <AlertDialogDescription>This permanently removes the product from your store.</AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>
           <AlertDialogCancel>Cancel</AlertDialogCancel>
-          <AlertDialogAction onClick={handleDelete} disabled={deleting}>{deleting ? "Deleting..." : "Delete"}</AlertDialogAction>
+          <AlertDialogAction onClick={handleDelete} disabled={deleting}>{deleting ? <LoaderCircle className="size-4 animate-spin" aria-hidden="true" /> : null}{deleting ? "Deleting..." : "Delete product"}</AlertDialogAction>
         </AlertDialogFooter>
       </AlertDialogContent>
     </AlertDialog>

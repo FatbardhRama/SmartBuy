@@ -148,17 +148,17 @@ export function ShoppingAssistant() {
           aria-labelledby="shopping-assistant-title"
           aria-describedby="shopping-assistant-description"
           onKeyDown={handlePanelKeyDown}
-          className="flex h-[min(620px,calc(100dvh-2rem))] w-[calc(100vw-2rem)] flex-col overflow-hidden rounded-2xl border border-border bg-card shadow-xl motion-safe:animate-in motion-safe:fade-in-0 motion-safe:slide-in-from-bottom-3 motion-safe:duration-200 sm:h-[600px] sm:w-[390px]"
+          className="flex h-[min(620px,calc(100dvh-2rem))] w-[calc(100vw-2rem)] flex-col overflow-hidden rounded-2xl border border-border bg-card shadow-[0_30px_90px_-30px_rgba(15,23,42,0.55)] motion-safe:animate-in motion-safe:fade-in-0 motion-safe:slide-in-from-bottom-3 motion-safe:duration-200 sm:h-[600px] sm:w-[400px]"
         >
-          <header className="flex items-center gap-3 border-b bg-primary px-4 py-3.5 text-primary-foreground">
-            <span className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-primary-foreground/15">
+          <header className="flex items-center gap-3 border-b border-white/10 bg-slate-950 px-4 py-4 text-white">
+            <span className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-cyan-400/15 text-cyan-300 ring-1 ring-cyan-300/20">
               <Bot className="size-5" aria-hidden="true" />
             </span>
             <div className="min-w-0 flex-1">
               <h2 id="shopping-assistant-title" className="truncate text-base font-semibold tracking-normal text-current">
                 SmartBuy AI Assistant
               </h2>
-              <p id="shopping-assistant-description" className="text-xs text-primary-foreground/80">
+              <p id="shopping-assistant-description" className="text-xs text-slate-300">
                 Electronics shopping support
               </p>
             </div>
@@ -167,7 +167,7 @@ export function ShoppingAssistant() {
               variant="ghost"
               size="icon"
               onClick={closePanel}
-              className="text-primary-foreground hover:bg-primary-foreground/15 hover:text-primary-foreground"
+              className="rounded-xl text-white hover:bg-white/10 hover:text-white"
               aria-label="Close AI shopping assistant"
             >
               <X className="size-5" />
@@ -175,7 +175,7 @@ export function ShoppingAssistant() {
           </header>
 
           <div
-            className="min-h-0 flex-1 space-y-4 overflow-y-auto overscroll-contain bg-muted/35 p-4"
+            className="min-h-0 flex-1 space-y-4 overflow-y-auto overscroll-contain bg-slate-50 p-4"
             aria-live="polite"
             aria-label="Conversation"
           >
@@ -191,12 +191,12 @@ export function ShoppingAssistant() {
                 )}
                 <div
                   className={cn(
-                    "max-w-[82%] whitespace-pre-line rounded-2xl px-3.5 py-3 text-sm leading-6 shadow-xs",
+                    "max-w-[84%] whitespace-pre-line rounded-2xl px-3.5 py-3 text-sm leading-6 shadow-sm",
                     message.role === "user"
                       ? "rounded-br-md bg-primary text-primary-foreground"
                       : message.error
                         ? "rounded-bl-md border border-destructive/30 bg-destructive/5 text-foreground"
-                        : "rounded-bl-md border bg-card text-card-foreground",
+                        : "rounded-bl-md border border-border bg-card text-card-foreground",
                   )}
                 >
                   <p>{message.content}</p>
@@ -205,7 +205,7 @@ export function ShoppingAssistant() {
                       type="button"
                       size="sm"
                       variant="outline"
-                      className="mt-3"
+                      className="mt-3 rounded-xl"
                       onClick={() => retryMessage(message)}
                       disabled={loading}
                     >
@@ -236,7 +236,7 @@ export function ShoppingAssistant() {
             <div ref={conversationEndRef} />
           </div>
 
-          <form onSubmit={handleSubmit} className="border-t bg-card p-3">
+          <form onSubmit={handleSubmit} className="border-t border-border bg-card p-3.5">
             <div className="flex items-center gap-2">
               <label htmlFor="shopping-assistant-input" className="sr-only">Message the AI shopping assistant</label>
               <Input
@@ -248,12 +248,13 @@ export function ShoppingAssistant() {
                 autoComplete="off"
                 maxLength={2000}
                 disabled={loading}
-                className="bg-background"
+                className="h-11 rounded-xl bg-background"
               />
               <Button
                 type="submit"
                 size="icon"
                 disabled={!draft.trim() || loading}
+                className="size-11 rounded-xl"
                 aria-label="Send message"
               >
                 <Send className="size-4" />
@@ -272,7 +273,7 @@ export function ShoppingAssistant() {
         size="lg"
         onClick={() => setOpen(true)}
         className={cn(
-          "ml-auto mt-3 h-14 rounded-full px-4 shadow-xl transition-transform hover:scale-[1.03] motion-reduce:transform-none sm:px-5",
+          "ml-auto mt-3 h-14 rounded-full bg-slate-950 px-4 text-white shadow-[0_18px_45px_-20px_rgba(15,23,42,0.65)] transition-[transform,background-color,box-shadow] hover:scale-[1.03] hover:bg-slate-800 motion-reduce:transform-none motion-reduce:transition-none sm:px-5",
           open && "sr-only",
         )}
         aria-label="Open SmartBuy AI shopping assistant"

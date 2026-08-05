@@ -3,7 +3,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
-import { HeartOff } from "lucide-react";
+import { ArrowRight, HeartOff, PackageCheck, ShoppingCart, Tag } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -58,7 +58,7 @@ export function WishlistProducts({
         description="Save products you want to revisit later."
         action={
           <Link href="/products">
-            <Button>Browse products</Button>
+            <Button className="rounded-xl">Browse products <ArrowRight className="size-4" aria-hidden="true" /></Button>
           </Link>
         }
       />
@@ -70,10 +70,10 @@ export function WishlistProducts({
       {products.map((product) => (
         <Card
           key={product.id}
-          className="group overflow-hidden transition-[transform,box-shadow] duration-200 ease-out motion-safe:animate-in motion-safe:fade-in-0 motion-safe:slide-in-from-bottom-2 motion-safe:hover:-translate-y-0.5 motion-safe:hover:shadow-md"
+          className="group overflow-hidden border-0 py-0 shadow-[0_18px_50px_-38px_rgba(15,23,42,0.45)] ring-1 ring-border transition-[transform,box-shadow] duration-200 ease-out motion-safe:animate-in motion-safe:fade-in-0 motion-safe:slide-in-from-bottom-2 motion-safe:hover:-translate-y-1 motion-safe:hover:shadow-[0_24px_60px_-36px_rgba(37,99,235,0.3)]"
         >
           <Link href={`/products/${product.id}`}>
-            <div className="relative h-44 w-full sm:h-48">
+            <div className="relative aspect-[4/3] w-full overflow-hidden bg-muted">
               <Image
                 src={product.image}
                 alt={product.name}
@@ -84,36 +84,28 @@ export function WishlistProducts({
             </div>
           </Link>
 
-          <CardHeader className="pb-3">
+          <CardHeader className="px-5 pb-3 pt-5">
             <Link href={`/products/${product.id}`}>
-              <CardTitle className="break-words text-lg">{product.name}</CardTitle>
+              <CardTitle className="line-clamp-2 break-words text-lg tracking-[-0.02em] transition-colors group-hover:text-primary">{product.name}</CardTitle>
             </Link>
           </CardHeader>
 
-          <CardContent className="space-y-4">
-            <p className="text-sm text-muted-foreground">
+          <CardContent className="flex flex-1 flex-col px-5 pb-5">
+            <p className="line-clamp-2 min-h-10 text-sm leading-5 text-muted-foreground">
               {product.description}
             </p>
-
-            <p className="text-lg font-bold">
-              {formatCurrency(product.price)}
-            </p>
-
-            <p className="text-sm text-muted-foreground">
-              {product.category}
-            </p>
+            <div className="mt-4 flex items-center justify-between gap-3"><p className="text-xl font-bold tracking-[-0.02em]">{formatCurrency(product.price)}</p><span className="inline-flex items-center gap-1.5 rounded-full bg-muted px-2.5 py-1 text-xs font-medium text-muted-foreground"><Tag className="size-3" aria-hidden="true" /> {product.category}</span></div>
+            <p className={`mt-3 flex items-center gap-1.5 text-xs font-semibold ${product.stock > 0 ? "text-success" : "text-destructive"}`}><PackageCheck className="size-3.5" aria-hidden="true" /> {product.stock > 0 ? "In stock and ready to order" : "Currently out of stock"}</p>
 
             <Button
-              className="w-full"
+              className="mt-5 w-full rounded-xl"
               onClick={() => handleAddToCart(product)}
               disabled={product.stock <= 0}
             >
-              {product.stock > 0
-                ? "Add to Cart"
-                : "Out of Stock"}
+              <ShoppingCart className="size-4" aria-hidden="true" />
+              {product.stock > 0 ? "Add to cart" : "Out of stock"}
             </Button>
-
-            <WishlistButton
+            <div className="mt-2 [&_button]:w-full [&_button]:rounded-xl"><WishlistButton
               productId={product.id}
               onWishlistChange={(isWishlisted) => {
                 if (!isWishlisted) {
@@ -124,7 +116,7 @@ export function WishlistProducts({
                   );
                 }
               }}
-            />
+            /></div>
           </CardContent>
         </Card>
       ))}

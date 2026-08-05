@@ -20,7 +20,7 @@ export function EmptyState({
   return (
     <div
       className={cn(
-        "rounded-2xl border border-dashed border-border bg-card p-8 text-center shadow-xs motion-safe:animate-in motion-safe:fade-in-0 motion-safe:slide-in-from-bottom-2 sm:p-10",
+        "rounded-2xl border border-dashed border-border bg-card p-8 text-center shadow-[0_20px_50px_-42px_rgba(15,23,42,0.35)] motion-safe:animate-in motion-safe:fade-in-0 motion-safe:slide-in-from-bottom-2 sm:p-12",
         className
       )}
     >
@@ -28,7 +28,7 @@ export function EmptyState({
         {icon}
       </div>
 
-      <h2 className="mt-5 text-xl font-semibold">{title}</h2>
+      <h2 className="mt-5 text-xl font-semibold tracking-[-0.02em]">{title}</h2>
 
       <p className="mx-auto mt-2 max-w-md text-sm leading-6 text-muted-foreground">
         {description}

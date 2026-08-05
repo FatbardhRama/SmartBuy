@@ -1,43 +1,37 @@
 import Link from "next/link";
 import { Gamepad2, Headphones, Keyboard, Laptop, Monitor, Smartphone, Watch, Wifi } from "lucide-react";
 
-import { Card, CardContent } from "@/components/ui/card";
-
 const categories = [
-  { name: "Laptops", icon: Laptop, description: "Portable performance for work and play" },
-  { name: "Smartphones", icon: Smartphone, description: "Powerful phones for every lifestyle" },
-  { name: "Gaming", icon: Gamepad2, description: "Responsive gear for console and PC players" },
-  { name: "Audio", icon: Headphones, description: "Immersive sound at home or on the go" },
-  { name: "Accessories", icon: Keyboard, description: "Keyboards, mice and everyday tech essentials" },
-  { name: "Wearables", icon: Watch, description: "Connected health, fitness and notifications" },
-  { name: "Smart Home", icon: Wifi, description: "Connected devices for a smarter living space" },
-  { name: "Monitors", icon: Monitor, description: "Crisp displays for productive setups" },
+  { name: "Laptops", icon: Laptop, description: "Portable performance for work and play", className: "lg:col-span-6" },
+  { name: "Smartphones", icon: Smartphone, description: "Powerful phones for every lifestyle", className: "lg:col-span-3" },
+  { name: "Gaming", icon: Gamepad2, description: "Responsive gear for console and PC", className: "lg:col-span-3" },
+  { name: "Audio", icon: Headphones, description: "Immersive sound wherever you listen", className: "lg:col-span-3" },
+  { name: "Accessories", icon: Keyboard, description: "Essentials for a better setup", className: "lg:col-span-3" },
+  { name: "Wearables", icon: Watch, description: "Health, fitness, and notifications", className: "lg:col-span-2" },
+  { name: "Smart Home", icon: Wifi, description: "Connected devices for daily life", className: "lg:col-span-2" },
+  { name: "Monitors", icon: Monitor, description: "Crisp displays for focused work", className: "lg:col-span-2" },
 ];
 
 export function Categories() {
   return (
-    <section className="py-14 sm:py-18">
+    <section className="py-18 sm:py-24">
       <div className="mx-auto max-w-7xl px-6">
-        <div className="mb-8 max-w-2xl">
-          <p className="text-sm font-semibold uppercase tracking-wider text-primary">Find your next upgrade</p>
-          <h2 className="mt-2 text-3xl font-bold sm:text-4xl">Top categories</h2>
-          <p className="mt-3 text-muted-foreground">Find the devices and accessories that fit your setup, workflow, and lifestyle.</p>
+        <div className="mb-10 max-w-2xl">
+          <p className="text-sm font-semibold text-primary">Shop by category</p>
+          <h2 className="mt-3 text-3xl font-bold tracking-[-0.035em] sm:text-4xl">Find the right tech, faster</h2>
+          <p className="mt-4 max-w-xl leading-7 text-muted-foreground">Go straight to the devices and accessories that fit your setup, studies, work, and downtime.</p>
         </div>
 
-        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+        <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-12">
           {categories.map((category) => {
             const Icon = category.icon;
             return (
-              <Link key={category.name} href={`/products?category=${encodeURIComponent(category.name)}`} className="group">
-                <Card className="h-full transition-[transform,border-color,box-shadow] duration-200 hover:-translate-y-1 hover:border-primary/25 hover:shadow-md">
-                  <CardContent className="flex h-full flex-col p-5">
-                    <span className="mb-8 flex size-12 items-center justify-center rounded-xl bg-primary/10 text-primary transition-colors group-hover:bg-primary group-hover:text-primary-foreground">
-                      <Icon className="size-6" />
-                    </span>
-                    <h3 className="text-lg font-semibold">{category.name}</h3>
-                    <p className="mt-2 text-sm leading-6 text-muted-foreground">{category.description}</p>
-                  </CardContent>
-                </Card>
+              <Link key={category.name} href={`/products?category=${encodeURIComponent(category.name)}`} className={`group flex min-h-44 flex-col justify-between rounded-2xl bg-card p-5 shadow-[0_12px_35px_-24px_rgba(15,23,42,0.3)] ring-1 ring-slate-200 transition-[transform,box-shadow,background-color] duration-500 ease-[cubic-bezier(0.32,0.72,0,1)] motion-safe:hover:-translate-y-1 hover:bg-primary/[0.03] hover:shadow-[0_22px_45px_-24px_rgba(37,99,235,0.28)] dark:ring-white/10 ${category.className}`}>
+                <span className="flex size-11 items-center justify-center rounded-xl bg-primary/8 text-primary transition-[transform,background-color,color] duration-500 ease-[cubic-bezier(0.32,0.72,0,1)] group-hover:scale-105 group-hover:bg-primary group-hover:text-primary-foreground"><Icon className="size-5" /></span>
+                <div className="mt-8">
+                  <h3 className="text-lg font-semibold tracking-tight">{category.name}</h3>
+                  <p className="mt-1.5 text-sm leading-6 text-muted-foreground">{category.description}</p>
+                </div>
               </Link>
             );
           })}

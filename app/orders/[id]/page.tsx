@@ -4,7 +4,7 @@ import { prisma } from "@/lib/prisma";
 import { formatCurrency } from "@/lib/formatCurrency";
 import { redirect } from "next/navigation";
 import Link from "next/link";
-import { ClipboardX } from "lucide-react";
+import { ArrowLeft, ClipboardX } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { EmptyState } from "@/components/ui/empty-state";
 
@@ -138,19 +138,21 @@ export default async function OrderDetailsPage({
 
   return (
 
-    <main className="mx-auto w-full max-w-5xl px-6 py-10 sm:py-12">
+    <main className="mx-auto w-full max-w-5xl px-6 pb-20 pt-10 sm:pb-24 sm:pt-12">
 
 
 
-      <h1 className="mb-6 text-2xl font-bold sm:text-3xl">
-        Order Details
+      <Link href="/orders" className="mb-6 inline-flex items-center gap-2 rounded-md text-sm font-medium text-muted-foreground hover:text-primary focus-visible:outline-none focus-visible:ring-3 focus-visible:ring-primary/15"><ArrowLeft className="size-4" /> Back to orders</Link>
+
+      <h1 className="mb-8 text-4xl font-bold tracking-[-0.04em] sm:text-5xl">
+        Order details
       </h1>
 
 
 
 
 
-      <div className="space-y-4 rounded-lg border p-4 sm:p-6">
+      <div className="grid gap-5 rounded-2xl bg-card p-5 shadow-[0_14px_38px_-28px_rgba(15,23,42,0.4)] ring-1 ring-border/80 sm:grid-cols-2 sm:p-6 lg:grid-cols-4">
 
 
 
@@ -176,17 +178,17 @@ export default async function OrderDetailsPage({
             Status
           </p>
 
-          <p className="font-semibold">
-            {order.status}
+          <p className="mt-1 w-fit rounded-lg bg-primary/10 px-2.5 py-1 text-sm font-semibold text-primary">
+            {order.status.charAt(0) + order.status.slice(1).toLowerCase()}
           </p>
 
         </div>
 
         <div>
           <p className="text-sm text-muted-foreground">Sold by</p>
-          <a href={`/stores/${order.store.slug}`} className="font-semibold hover:underline">
+          <Link href={`/stores/${order.store.slug}`} className="font-semibold text-primary hover:underline">
             {order.store.name}
-          </a>
+          </Link>
         </div>
 
 
@@ -219,11 +221,11 @@ export default async function OrderDetailsPage({
 
 
 
-      <div className="mt-6 rounded-lg border p-4 sm:p-6">
+      <div className="mt-6 rounded-2xl bg-card p-5 ring-1 ring-border/80 sm:p-6">
 
 
-        <h2 className="text-xl font-bold mb-4">
-          Shipping Information
+        <h2 className="mb-4 text-xl font-bold tracking-tight">
+          Shipping information
         </h2>
 
 
@@ -252,10 +254,10 @@ export default async function OrderDetailsPage({
 
 
 
-      <div className="mt-6 rounded-lg border p-4 sm:p-6">
+      <div className="mt-6 rounded-2xl bg-card p-5 ring-1 ring-border/80 sm:p-6">
 
 
-        <h2 className="text-xl font-bold mb-4">
+        <h2 className="mb-4 text-xl font-bold tracking-tight">
           Products
         </h2>
 
@@ -274,7 +276,7 @@ export default async function OrderDetailsPage({
 
               key={item.id}
 
-              className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between"
+              className="flex flex-col gap-2 rounded-xl bg-muted/35 p-3 sm:flex-row sm:items-center sm:justify-between"
 
             >
 
@@ -330,10 +332,10 @@ export default async function OrderDetailsPage({
 
 
 
-      <div className="mt-6 text-left sm:text-right">
+      <div className="mt-6 rounded-2xl bg-primary/5 p-5 text-left ring-1 ring-primary/10 sm:text-right">
 
 
-        <p className="text-2xl font-bold">
+        <p className="text-2xl font-bold tracking-[-0.03em]">
           Total: {formatCurrency(order.total)}
         </p>
 

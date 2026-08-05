@@ -57,19 +57,21 @@ redirect("/login");
 
 return(
 
-<main className="mx-auto max-w-5xl px-4 py-8 sm:px-6 sm:py-10">
+<main className="mx-auto w-full max-w-6xl px-6 pb-20 pt-10 sm:pb-24 sm:pt-12">
 
 
-<div className="mb-8">
+<div className="mb-10 max-w-2xl">
 
 
-<h1 className="text-3xl font-bold">
-My Profile
+<p className="text-sm font-semibold text-primary">Account settings</p>
+
+<h1 className="mt-3 text-4xl font-bold tracking-[-0.04em] sm:text-5xl">
+My profile
 </h1>
 
 
-<p className="text-sm text-muted-foreground">
-Update your account details and profile picture.
+<p className="mt-4 text-base leading-7 text-muted-foreground sm:text-lg">
+Manage your personal details, profile picture, and account security.
 </p>
 
 

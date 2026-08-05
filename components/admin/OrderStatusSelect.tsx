@@ -50,25 +50,26 @@ export function OrderStatusSelect({
   }
 
   return (
-    <div className="flex items-center gap-3">
+    <div className="flex flex-wrap items-center gap-2 sm:justify-end">
       <select
         value={status}
         disabled={loading}
         onChange={(e) => updateStatus(e.target.value)}
-        className="border rounded-md px-3 py-2"
+        className="h-10 rounded-xl border border-input bg-background px-3 py-2 text-sm font-semibold capitalize outline-none transition-[border-color,box-shadow] focus:border-primary focus:ring-3 focus:ring-primary/15 disabled:cursor-wait disabled:opacity-60"
+        aria-label={`Update status for order ${orderId}`}
       >
         {statuses.map((item) => (
           <option
             key={item}
             value={item}
           >
-            {item}
+            {item.charAt(0) + item.slice(1).toLowerCase()}
           </option>
         ))}
       </select>
 
       {loading && (
-        <span className="text-sm text-muted-foreground">
+        <span className="text-xs text-muted-foreground" role="status">
           Saving...
         </span>
       )}

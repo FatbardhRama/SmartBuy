@@ -4,9 +4,11 @@ import Link from "next/link";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { signIn } from "next-auth/react";
+import { LogIn, ShieldCheck } from "lucide-react";
 
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import { Label } from "@/components/ui/label";
 import {
   Card,
   CardContent,
@@ -53,31 +55,20 @@ export function LoginForm() {
   }
 
   return (
-    <Card className="w-full max-w-md">
-      <CardHeader>
-        <CardTitle className="text-center text-2xl">
-          Login
-        </CardTitle>
+    <Card className="mx-6 w-full max-w-md rounded-[1.75rem] border-0 shadow-[0_24px_60px_-38px_rgba(15,23,42,0.4)] ring-1 ring-border/80">
+      <CardHeader className="items-center px-6 pb-3 pt-2 text-center">
+        <span className="mb-2 flex size-12 items-center justify-center rounded-2xl bg-primary/10 text-primary"><LogIn className="size-5" aria-hidden="true" /></span>
+        <CardTitle className="text-3xl font-bold tracking-[-0.035em]">Welcome back</CardTitle>
+        <p className="mt-2 max-w-sm text-sm leading-6 text-muted-foreground">Sign in to manage your orders, wishlist, and SmartBuy account.</p>
       </CardHeader>
 
       <CardContent>
         <form
           onSubmit={handleSubmit}
-          className="space-y-4"
+          className="space-y-5"
         >
-          <Input
-            type="email"
-            placeholder="Email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-          />
-
-          <Input
-            type="password"
-            placeholder="Password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-          />
+          <div className="space-y-2"><Label htmlFor="login-email">Email address</Label><Input id="login-email" type="email" placeholder="you@example.com" value={email} onChange={(e) => setEmail(e.target.value)} autoComplete="email" className="h-11 rounded-xl bg-background" /></div>
+          <div className="space-y-2"><Label htmlFor="login-password">Password</Label><Input id="login-password" type="password" placeholder="Enter your password" value={password} onChange={(e) => setPassword(e.target.value)} autoComplete="current-password" className="h-11 rounded-xl bg-background" /></div>
 
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
@@ -85,14 +76,13 @@ export function LoginForm() {
                 id="rememberMe"
                 type="checkbox"
                 checked={rememberMe}
-                onChange={(e) =>
-                  setRememberMe(e.target.checked)
-                }
+                onChange={(e) => setRememberMe(e.target.checked)}
+                className="size-4 rounded border-input accent-primary focus-visible:outline-none focus-visible:ring-3 focus-visible:ring-primary/20"
               />
 
               <label
                 htmlFor="rememberMe"
-                className="text-sm"
+                className="text-sm text-muted-foreground"
               >
                 Remember me
               </label>
@@ -100,24 +90,25 @@ export function LoginForm() {
 
             <Link
               href="/forgot-password"
-              className="text-sm text-blue-600 hover:underline"
+              className="rounded-md text-sm font-medium text-primary hover:underline focus-visible:outline-none focus-visible:ring-3 focus-visible:ring-primary/15"
             >
               Forgot password?
             </Link>
           </div>
 
           <Button
-            className="w-full"
+            className="h-11 w-full rounded-xl"
             disabled={loading}
           >
-            {loading ? "Logging in..." : "Login"}
+            {loading ? "Signing in..." : "Sign in"}
           </Button>
 
           {message && (
-            <p className="text-center text-sm text-destructive" role="alert">
+            <p className="rounded-xl bg-destructive/8 p-3 text-center text-sm text-destructive" role="alert">
               {message}
             </p>
           )}
+          <p className="flex items-center justify-center gap-2 border-t border-border/70 pt-5 text-xs text-muted-foreground"><ShieldCheck className="size-4 text-success" aria-hidden="true" /> Your account is protected by secure authentication.</p>
         </form>
       </CardContent>
     </Card>
