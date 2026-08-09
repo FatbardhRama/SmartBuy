@@ -57,19 +57,22 @@ export default async function OrdersPage() {
   });
 
   return (
-    <main className="mx-auto w-full max-w-6xl px-6 pb-20 pt-10 sm:pb-24 sm:pt-12">
-      <div className="mb-10 flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
+    <main className="mx-auto w-full max-w-6xl px-6 pb-20 pt-8 sm:pb-24 sm:pt-12">
+      <div className="relative mb-8 overflow-hidden rounded-[2rem] bg-[linear-gradient(118deg,#FFFFFF_0%,#F1F7FF_56%,#ECFEFF_100%)] px-6 py-8 shadow-[0_24px_64px_-46px_rgba(37,99,235,0.42)] ring-1 ring-border/80 sm:mb-10 sm:px-9 sm:py-10">
+        <div className="pointer-events-none absolute -right-14 -top-20 size-64 rounded-full bg-primary/10 blur-2xl" />
+        <div className="relative flex flex-col gap-5 sm:flex-row sm:items-end sm:justify-between">
         <div>
-          <p className="text-sm font-semibold text-primary">Purchase history</p>
-          <h1 className="mt-3 text-4xl font-bold tracking-[-0.04em] sm:text-5xl">My orders</h1>
+          <p className="sb-eyebrow">Purchase history</p>
+          <h1 className="sb-heading-xl">My orders</h1>
           <p className="mt-3 text-muted-foreground">
             Review your recent purchases and current order status.
           </p>
         </div>
 
-        <p className="w-fit rounded-xl bg-card px-3 py-2 text-sm font-medium text-muted-foreground ring-1 ring-border/80">
+        <p className="w-fit rounded-xl bg-primary/[0.06] px-3 py-2 text-sm font-medium text-muted-foreground ring-1 ring-primary/10">
           {orders.length} {orders.length === 1 ? "order" : "orders"}
         </p>
+        </div>
       </div>
 
       {orders.length === 0 ? (
@@ -86,7 +89,7 @@ export default async function OrdersPage() {
       ) : (
         <div className="space-y-5">
           {orders.map((order) => (
-            <Card key={order.id} className="rounded-2xl border-0 shadow-[0_14px_38px_-28px_rgba(15,23,42,0.4)] ring-1 ring-border/80 motion-safe:animate-in motion-safe:fade-in-0">
+            <Card key={order.id} className="overflow-hidden rounded-[1.5rem] border-0 ring-1 ring-border/80 transition-shadow duration-300 motion-safe:animate-in motion-safe:fade-in-0 motion-safe:hover:shadow-[0_24px_54px_-38px_rgba(37,99,235,0.28)]">
               <CardHeader className="flex flex-col gap-4 border-b border-border/70 sm:flex-row sm:items-start sm:justify-between">
                 <div>
                   <CardDescription>Order reference</CardDescription>
@@ -105,10 +108,7 @@ export default async function OrdersPage() {
               <CardContent className="space-y-5 py-1">
                 <div className="space-y-3">
                   {order.items.map((item) => (
-                    <div
-                      key={item.id}
-                      className="flex flex-col gap-1 rounded-xl bg-muted/35 px-3 py-2.5 sm:flex-row sm:items-center sm:justify-between"
-                    >
+                    <div key={item.id} className="flex flex-col gap-1 rounded-xl bg-muted/35 px-3 py-2.5 sm:flex-row sm:items-center sm:justify-between">
                       <div>
                         <p className="font-medium">{item.productName}</p>
                         <p className="text-sm text-muted-foreground">
@@ -116,7 +116,7 @@ export default async function OrdersPage() {
                         </p>
                       </div>
 
-                      <p className="text-sm font-medium">{formatCurrency(item.price)}</p>
+                      <p className="text-sm font-medium tabular-nums">{formatCurrency(item.price * item.quantity)}</p>
                     </div>
                   ))}
                 </div>

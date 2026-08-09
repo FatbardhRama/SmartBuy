@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { MessageSquarePlus, Star } from "lucide-react";
 
 import { AddReviewForm } from "./AddReviewForm";
@@ -23,9 +23,11 @@ export function ReviewList({ productId }: ReviewListProps) {
   const [totalReviews, setTotalReviews] = useState(0);
   const [loading, setLoading] = useState(true);
 
-  async function fetchReviews() {
+  const fetchReviews = useCallback(async (showLoading = true) => {
     try {
-      setLoading(true);
+      if (showLoading) {
+        setLoading(true);
+      }
       const res = await fetch(`/api/reviews?productId=${productId}`);
       const data = await res.json();
       setReviews(data.reviews || []);
@@ -36,10 +38,41 @@ export function ReviewList({ productId }: ReviewListProps) {
     } finally {
       setLoading(false);
     }
-  }
+  }, [productId]);
 
   useEffect(() => {
-    if (productId) fetchReviews();
+    if (!productId) {
+      return;
+    }
+
+    let active = true;
+
+    async function loadReviews() {
+      try {
+        const res = await fetch(`/api/reviews?productId=${productId}`);
+        const data = await res.json();
+
+        if (active) {
+          setReviews(data.reviews || []);
+          setAverageRating(data.averageRating || 0);
+          setTotalReviews(data.totalReviews || 0);
+        }
+      } catch {
+        if (active) {
+          setReviews([]);
+        }
+      } finally {
+        if (active) {
+          setLoading(false);
+        }
+      }
+    }
+
+    void loadReviews();
+
+    return () => {
+      active = false;
+    };
   }, [productId]);
 
   if (loading) return <ReviewsSkeleton />;
@@ -82,7 +115,7 @@ export function ReviewList({ productId }: ReviewListProps) {
           </div>
         )}
 
-        <AddReviewForm productId={productId} onReviewAdded={fetchReviews} />
+        <AddReviewForm productId={productId} onReviewAdded={() => void fetchReviews()} />
       </div>
     </section>
   );

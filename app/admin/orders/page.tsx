@@ -1,11 +1,21 @@
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { redirect } from "next/navigation";
-import { CalendarDays, ClipboardList, Mail, Package, Store, UserRound } from "lucide-react";
+import { CalendarDays, ClipboardList, Mail, Store, UserRound } from "lucide-react";
 import { prisma } from "@/lib/prisma";
 import { OrderStatusSelect } from "@/components/admin/OrderStatusSelect";
 import { EmptyState } from "@/components/ui/empty-state";
 import { formatCurrency } from "@/lib/formatCurrency";
+import { Badge } from "@/components/ui/badge";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+
+const statusBadgeVariant = {
+  PENDING: "secondary",
+  PROCESSING: "default",
+  SHIPPED: "default",
+  DELIVERED: "default",
+  CANCELLED: "destructive",
+} as const;
 
 export default async function AdminOrdersPage() {
   const session = await getServerSession(authOptions);
@@ -34,8 +44,8 @@ export default async function AdminOrdersPage() {
   });
 
   return (
-    <main className="mx-auto w-full max-w-7xl px-6 pb-20 pt-10 sm:pb-24 sm:pt-12">
-      <div className="mb-10 max-w-2xl"><p className="text-sm font-semibold text-primary">Order administration</p><h1 className="mt-3 text-4xl font-bold tracking-[-0.04em] sm:text-5xl">Order management</h1><p className="mt-3 text-muted-foreground">Review customer purchases and keep fulfillment statuses current.</p></div>
+    <main className="mx-auto w-full max-w-7xl px-6 pb-20 pt-8 sm:pb-24 sm:pt-12">
+      <section className="relative mb-8 overflow-hidden rounded-[2rem] bg-[linear-gradient(118deg,#FFFFFF_0%,#F1F7FF_56%,#ECFEFF_100%)] px-6 py-8 shadow-[0_24px_64px_-46px_rgba(37,99,235,0.42)] ring-1 ring-border/80 sm:mb-10 sm:px-9 sm:py-10"><div className="pointer-events-none absolute -right-14 -top-20 size-64 rounded-full bg-primary/10 blur-2xl" /><div className="relative"><p className="sb-eyebrow">Order administration</p><h1 className="sb-heading-xl">Order management</h1><p className="mt-3 sb-muted-copy">Review customer purchases and keep fulfillment statuses current.</p></div></section>
 
       {orders.length === 0 ? (
         <EmptyState
@@ -44,24 +54,28 @@ export default async function AdminOrdersPage() {
           description="Customer orders will appear here once they place purchases."
         />
       ) : (
-        <div className="space-y-5">
-          {orders.map((order) => (
-            <div
-              key={order.id}
-              className="overflow-hidden rounded-2xl bg-card shadow-[0_14px_38px_-28px_rgba(15,23,42,0.4)] ring-1 ring-border/80 motion-safe:animate-in motion-safe:fade-in-0"
-            >
-              <div className="flex flex-col gap-5 border-b border-border/70 p-5 sm:flex-row sm:items-start sm:justify-between sm:p-6">
-                <div className="min-w-0"><p className="text-xs font-medium text-muted-foreground">Order reference</p><h2 className="mt-1 break-all font-semibold tracking-tight">#{order.id}</h2><div className="mt-4 grid gap-x-6 gap-y-2 text-sm text-muted-foreground sm:grid-cols-2"><p className="flex items-center gap-2"><UserRound className="size-4 text-primary" /> {order.fullName}</p><p className="flex items-center gap-2"><Mail className="size-4 text-primary" /> {order.email}</p><p className="flex items-center gap-2"><Store className="size-4 text-primary" /> {order.store.name}</p><p className="flex items-center gap-2"><CalendarDays className="size-4 text-primary" /> {new Date(order.createdAt).toLocaleDateString()}</p></div></div>
-                <div className="shrink-0 sm:text-right"><p className="text-xs text-muted-foreground">Order total</p><p className="mt-1 text-2xl font-bold tracking-[-0.03em] tabular-nums">{formatCurrency(order.total)}</p><div className="mt-3"><OrderStatusSelect orderId={order.id} currentStatus={order.status} /></div></div>
-              </div>
-
-              <div className="p-5 sm:p-6">
-                <h3 className="mb-3 flex items-center gap-2 text-sm font-semibold"><Package className="size-4 text-primary" /> Products <span className="font-normal text-muted-foreground">({order.items.length})</span></h3>
-                <div className="grid gap-2 sm:grid-cols-2">{order.items.map((item) => <div key={item.id} className="flex items-center justify-between gap-4 rounded-xl bg-muted/40 px-3 py-2.5 text-sm"><span className="min-w-0 truncate font-medium">{item.productName}</span><span className="shrink-0 text-muted-foreground">Qty {item.quantity}</span></div>)}</div>
-              </div>
-            </div>
-          ))}
-        </div>
+        <section className="overflow-hidden rounded-[1.5rem] sb-surface">
+          <div className="flex flex-col gap-2 border-b border-border/70 px-5 py-4 sm:flex-row sm:items-center sm:justify-between sm:px-6">
+            <div><h2 className="font-semibold tracking-tight">Fulfillment queue</h2><p className="mt-1 text-sm text-muted-foreground">{orders.length} {orders.length === 1 ? "order" : "orders"} requiring visibility and status control.</p></div>
+            <p className="text-xs font-medium text-muted-foreground">Use the control in each row to update fulfillment.</p>
+          </div>
+          <Table className="min-w-[1050px]">
+            <TableHeader><TableRow><TableHead>Order</TableHead><TableHead>Customer</TableHead><TableHead>Store & items</TableHead><TableHead>Date</TableHead><TableHead className="text-right">Total</TableHead><TableHead>Status</TableHead><TableHead className="text-right">Control</TableHead></TableRow></TableHeader>
+            <TableBody>
+              {orders.map((order) => (
+                <TableRow key={order.id} className="motion-safe:animate-in motion-safe:fade-in-0">
+                  <TableCell className="max-w-44 whitespace-normal"><p className="font-semibold tracking-tight">#{order.id}</p><p className="mt-1 text-xs text-muted-foreground">{order.items.length} {order.items.length === 1 ? "item" : "items"}</p></TableCell>
+                  <TableCell className="max-w-56 whitespace-normal"><p className="flex items-center gap-2 font-medium"><UserRound className="size-4 shrink-0 text-primary" /> <span className="truncate">{order.fullName}</span></p><p className="mt-1 flex items-center gap-2 text-xs text-muted-foreground"><Mail className="size-3.5 shrink-0 text-primary" /> <span className="truncate">{order.email}</span></p></TableCell>
+                  <TableCell className="max-w-xs whitespace-normal"><p className="flex items-center gap-2 font-medium"><Store className="size-4 shrink-0 text-primary" /> <span className="truncate">{order.store.name}</span></p><div className="mt-2 flex flex-wrap gap-1.5">{order.items.map((item) => <span key={item.id} className="max-w-44 truncate rounded-lg bg-muted px-2 py-1 text-xs text-muted-foreground" title={item.productName}>{item.productName} × {item.quantity}</span>)}</div></TableCell>
+                  <TableCell><span className="flex items-center gap-2 text-muted-foreground"><CalendarDays className="size-4 text-primary" />{new Date(order.createdAt).toLocaleDateString()}</span></TableCell>
+                  <TableCell className="text-right text-base font-bold tabular-nums">{formatCurrency(order.total)}</TableCell>
+                  <TableCell><Badge variant={statusBadgeVariant[order.status]}>{order.status.charAt(0) + order.status.slice(1).toLowerCase()}</Badge></TableCell>
+                  <TableCell><OrderStatusSelect orderId={order.id} currentStatus={order.status} /></TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </section>
       )}
     </main>
   );

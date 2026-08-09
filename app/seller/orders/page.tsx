@@ -21,16 +21,17 @@ export default async function SellerOrdersPage() {
   });
 
   return (
-    <main className="mx-auto w-full max-w-7xl px-6 pb-20 pt-10 sm:pb-24 sm:pt-12">
-      <div className="mb-9 flex flex-wrap items-end justify-between gap-4 border-b border-border pb-8">
-        <div><p className="text-sm font-semibold text-primary">{seller.store.name}</p><h1 className="mt-2 text-4xl font-bold tracking-[-0.04em] sm:text-5xl">Seller orders</h1><p className="mt-3 text-muted-foreground">Review purchases and keep customers informed as orders progress.</p></div>
-        <div className="rounded-2xl bg-primary/[0.06] px-5 py-4 ring-1 ring-primary/10"><span className="text-2xl font-bold text-primary">{orders.length}</span> <span className="text-sm text-muted-foreground">{orders.length === 1 ? "order" : "orders"}</span></div>
+    <main className="mx-auto w-full max-w-7xl px-6 pb-20 pt-8 sm:pb-24 sm:pt-12">
+      <section className="relative mb-8 overflow-hidden rounded-[2rem] bg-[linear-gradient(118deg,#FFFFFF_0%,#F1F7FF_56%,#ECFEFF_100%)] px-6 py-8 shadow-[0_24px_64px_-46px_rgba(37,99,235,0.42)] ring-1 ring-border/80 sm:mb-10 sm:px-9 sm:py-10"><div className="pointer-events-none absolute -right-14 -top-20 size-64 rounded-full bg-primary/10 blur-2xl" /><div className="relative flex flex-col gap-5 sm:flex-row sm:items-end sm:justify-between">
+        <div><p className="sb-eyebrow">{seller.store.name}</p><h1 className="sb-heading-xl">Seller orders</h1><p className="mt-3 sb-muted-copy">Review purchases and keep customers informed as orders progress.</p></div>
+        <div className="rounded-xl bg-primary/[0.06] px-5 py-4 ring-1 ring-primary/10"><span className="text-2xl font-bold text-primary">{orders.length}</span> <span className="text-sm text-muted-foreground">{orders.length === 1 ? "order" : "orders"}</span></div>
       </div>
+      </section>
       {orders.length === 0 ? (
         <EmptyState icon={<ClipboardList className="size-6" />} title="No orders yet" description="Orders containing your store's products will appear here." />
       ) : (
         <div className="space-y-5">{orders.map((order) => (
-          <Card key={order.id} className="overflow-hidden border-0 py-0 shadow-sm ring-1 ring-border">
+          <Card key={order.id} className="overflow-hidden rounded-[1.5rem] border-0 py-0 sb-surface sb-surface-hover">
             <CardHeader className="flex flex-col gap-4 border-b border-border bg-muted/25 p-5 sm:flex-row sm:items-start sm:justify-between sm:p-6">
               <div><p className="text-xs font-semibold uppercase tracking-[0.12em] text-muted-foreground">Order</p><CardTitle className="mt-1 break-all text-lg tracking-[-0.02em]">#{order.id}</CardTitle><div className="mt-3 flex flex-wrap gap-x-4 gap-y-2 text-sm text-muted-foreground"><span className="flex items-center gap-1.5"><UserRound className="size-4" aria-hidden="true" /> {order.fullName}</span><span className="flex items-center gap-1.5"><MapPin className="size-4" aria-hidden="true" /> {order.createdAt.toLocaleDateString()}</span></div></div>
               <div className="flex flex-wrap items-center gap-3"><Badge variant="outline" className="rounded-full bg-background px-3 py-1">{order.status}</Badge><SellerOrderStatusSelect orderId={order.id} currentStatus={order.status} /></div>

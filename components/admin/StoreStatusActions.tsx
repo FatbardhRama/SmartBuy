@@ -54,7 +54,7 @@ export function StoreStatusActions({ storeId, status }: StoreStatusActionsProps)
 
   return (
     <div className="space-y-3 border-t border-border/70 pt-4">
-      <p className="text-xs font-medium text-muted-foreground">Update store availability</p>
+      <div className="flex items-center justify-between gap-3"><p className="text-xs font-semibold uppercase tracking-[0.08em] text-muted-foreground">Application decision</p><span className="text-xs text-muted-foreground">Current: {status.toLowerCase()}</span></div>
       <div className="flex flex-wrap gap-2">
         <Button size="sm" className="gap-1.5 rounded-lg" onClick={() => updateStatus("APPROVED")} disabled={updatingStatus !== null || status === "APPROVED"}>
           <Check className="size-3.5" /> {updatingStatus === "APPROVED" ? "Approving..." : "Approve"}

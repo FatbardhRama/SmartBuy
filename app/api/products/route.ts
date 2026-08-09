@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
+import { getApprovedProducts } from "@/lib/products-query";
 import { getApprovedSellerStore } from "@/lib/seller";
 import {
   isNonEmptyString,
@@ -64,10 +65,6 @@ export async function GET(req: Request) {
     const category = searchParams.get("category")?.trim() ?? "";
 
     const requestedIds = searchParams.getAll("id");
-    const productIds = requestedIds
-      .filter((id) => isValidId(id))
-      .slice(0, 20);
-
 
     const page = Number(
       searchParams.get("page") ?? "1"
@@ -81,143 +78,16 @@ export async function GET(req: Request) {
 
     const sort = searchParams.get("sort") ?? "newest";
 
-
-    const orderBy: Record<string, "asc" | "desc"> = {};
-
-    switch (sort) {
-      case "price-low":
-        orderBy.price = "asc";
-        break;
-
-      case "price-high":
-        orderBy.price = "desc";
-        break;
-
-      case "name-a":
-        orderBy.name = "asc";
-        break;
-
-      case "name-z":
-        orderBy.name = "desc";
-        break;
-
-      default:
-        orderBy.createdAt = "desc";
-    }
-
-
-    const where = {
-      AND: [
-        {
-          store: {
-            is: {
-              status: "APPROVED" as const,
-            },
-          },
-        },
-        requestedIds.length > 0
-          ? {
-              id: {
-                in: productIds,
-              },
-            }
-          : {},
-        search
-          ? {
-              OR: [
-                {
-                  name: {
-                    contains: search,
-                    mode: "insensitive" as const,
-                  },
-                },
-                {
-                  description: {
-                    contains: search,
-                    mode: "insensitive" as const,
-                  },
-                },
-                {
-                  category: {
-                    contains: search,
-                    mode: "insensitive" as const,
-                  },
-                },
-              ],
-            }
-          : {},
-
-
-        category && category !== "All"
-          ? {
-              category: {
-                equals: category,
-                mode: "insensitive" as const,
-              },
-            }
-          : {},
-      ],
-    };
-
-
-    const products = await prisma.product.findMany({
-
-      where,
-
-
-      orderBy,
-
-
-      skip: (page - 1) * limit,
-
-
-      take: limit,
-
-
-      select: {
-        id: true,
-        name: true,
-        description: true,
-        price: true,
-        image: true,
-        category: true,
-        stock: true,
-        store: {
-          select: {
-            name: true,
-            slug: true,
-            status: true,
-          },
-        },
-      },
-
-    });
-
-
-
-    const total = await prisma.product.count({
-      where,
-    });
-
-
-
     return NextResponse.json({
-
-      products: products.map((product) => ({
-        ...product,
-        store: product.store?.status === "APPROVED"
-          ? { name: product.store.name, slug: product.store.slug }
-          : null,
+      ...(await getApprovedProducts({
+        search,
+        category,
+        sort,
+        page,
+        limit,
+        ids: requestedIds,
+        idsRequested: requestedIds.length > 0,
       })),
-
-      total,
-
-      page,
-
-      totalPages: Math.ceil(
-        total / limit
-      ),
-
     });
 
 

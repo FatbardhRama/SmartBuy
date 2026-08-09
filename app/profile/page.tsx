@@ -57,15 +57,17 @@ redirect("/login");
 
 return(
 
-<main className="mx-auto w-full max-w-6xl px-6 pb-20 pt-10 sm:pb-24 sm:pt-12">
+<main className="mx-auto w-full max-w-6xl px-6 pb-20 pt-8 sm:pb-24 sm:pt-12">
 
 
-<div className="mb-10 max-w-2xl">
+<div className="relative mb-8 overflow-hidden rounded-[2rem] bg-[linear-gradient(118deg,#FFFFFF_0%,#F1F7FF_56%,#ECFEFF_100%)] px-6 py-8 shadow-[0_24px_64px_-46px_rgba(37,99,235,0.42)] ring-1 ring-border/80 sm:mb-10 sm:px-9 sm:py-10">
+<div className="pointer-events-none absolute -right-14 -top-20 size-64 rounded-full bg-primary/10 blur-2xl" />
+<div className="relative max-w-2xl">
 
 
-<p className="text-sm font-semibold text-primary">Account settings</p>
+<p className="sb-eyebrow">Account settings</p>
 
-<h1 className="mt-3 text-4xl font-bold tracking-[-0.04em] sm:text-5xl">
+<h1 className="sb-heading-xl">
 My profile
 </h1>
 
@@ -75,6 +77,7 @@ Manage your personal details, profile picture, and account security.
 </p>
 
 
+</div>
 </div>
 
 

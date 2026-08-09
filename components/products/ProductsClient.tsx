@@ -102,12 +102,6 @@ export default function ProductsClient({
   }
 
   useEffect(() => {
-    setDisplayedProducts(products);
-    setTotal(initialTotal);
-    setTotalPages(initialTotalPages);
-  }, [products, initialTotal, initialTotalPages]);
-
-  useEffect(() => {
     if (initialRequest.current) {
       initialRequest.current = false;
       return;
@@ -141,7 +135,7 @@ export default function ProductsClient({
           return;
         }
 
-        setError("We couldn’t load electronics right now. Please try again.");
+        setError("We couldn't load electronics right now. Please try again.");
       } finally {
         if (!controller.signal.aborted) {
           setLoading(false);
@@ -159,11 +153,11 @@ export default function ProductsClient({
 
   return (
     <>
-      <div className="mb-6 rounded-2xl bg-card p-4 shadow-[0_12px_35px_-26px_rgba(15,23,42,0.35)] ring-1 ring-border/80 sm:p-5">
+      <div className="mb-8 rounded-[1.5rem] p-4 sb-surface sm:p-5">
         <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
-          <div className="flex items-center gap-2 text-sm font-semibold">
-            <span className="flex size-8 items-center justify-center rounded-lg bg-primary/8 text-primary"><SlidersHorizontal className="size-4" /></span>
-            Search and filter
+          <div className="flex items-center gap-2 text-sm font-semibold tracking-[-0.01em]">
+            <span className="flex size-9 items-center justify-center rounded-xl bg-primary/8 text-primary"><SlidersHorizontal className="size-4" /></span>
+            Refine the catalog
           </div>
           {hasActiveFilters && (
             <Button variant="ghost" size="sm" onClick={clearFilters} className="h-8 text-muted-foreground hover:text-primary">Clear all</Button>
@@ -178,14 +172,14 @@ export default function ProductsClient({
               placeholder="Search by product, category, or description"
               value={search}
               onChange={(event) => updateSearchParams({ search: event.target.value || null, page: null })}
-              className="h-11 rounded-xl bg-background pl-10 shadow-none"
+              className="h-12 rounded-xl bg-background/75 pl-10 shadow-none"
             />
           </div>
 
           <select
             value={category}
             onChange={(event) => updateSearchParams({ category: event.target.value === "All" ? null : event.target.value, page: null })}
-            className="min-h-11 w-full rounded-xl border border-input bg-background px-3 py-2 text-sm font-medium shadow-none outline-none transition-[border-color,box-shadow] focus:border-primary focus:ring-3 focus:ring-primary/15"
+            className="min-h-12 w-full rounded-xl border border-input/90 bg-background/75 px-3 py-2 text-sm font-medium shadow-none outline-none transition-[border-color,box-shadow] focus:border-primary focus:ring-3 focus:ring-primary/15"
             aria-label="Filter by category"
           >
             {categories.map((item) => <option key={item} value={item}>{item === "All" ? "All categories" : item}</option>)}
@@ -194,7 +188,7 @@ export default function ProductsClient({
           <select
             value={sorts.has(sort) ? sort : "newest"}
             onChange={(event) => updateSearchParams({ sort: event.target.value === "newest" ? null : event.target.value, page: null })}
-            className="min-h-11 w-full rounded-xl border border-input bg-background px-3 py-2 text-sm font-medium shadow-none outline-none transition-[border-color,box-shadow] focus:border-primary focus:ring-3 focus:ring-primary/15"
+            className="min-h-12 w-full rounded-xl border border-input/90 bg-background/75 px-3 py-2 text-sm font-medium shadow-none outline-none transition-[border-color,box-shadow] focus:border-primary focus:ring-3 focus:ring-primary/15"
             aria-label="Sort products"
           >
             <option value="newest">Newest first</option>
@@ -206,10 +200,10 @@ export default function ProductsClient({
         </div>
       </div>
 
-      <div className="mb-6 flex flex-wrap items-center justify-between gap-3 border-b border-border/70 pb-4 text-sm" aria-live="polite">
-        <p className="font-semibold text-foreground">{resultLabel}</p>
+      <div className="mb-7 flex flex-wrap items-center justify-between gap-3 border-b border-border/70 pb-5 text-sm" aria-live="polite">
+        <p className="font-semibold tracking-[-0.01em] text-foreground"><span className="mr-1 text-primary">Catalog</span>{resultLabel}</p>
         <p className="text-muted-foreground">
-          {search ? `Results for “${search}”` : category !== "All" ? `${category} products` : "All available electronics"}
+          {search ? `Results for "${search}"` : category !== "All" ? `${category} products` : "All available electronics"}
         </p>
       </div>
 

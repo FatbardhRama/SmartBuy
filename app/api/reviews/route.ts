@@ -3,6 +3,7 @@ import { getServerSession } from "next-auth";
 
 import { prisma } from "@/lib/prisma";
 import { authOptions } from "@/lib/auth";
+import { isNonEmptyString, isValidId } from "@/lib/validation";
 
 
 export async function GET(request: Request) {
@@ -11,10 +12,10 @@ export async function GET(request: Request) {
 
     const productId = searchParams.get("productId");
 
-    if (!productId) {
+    if (!isNonEmptyString(productId) || !isValidId(productId)) {
       return NextResponse.json(
         {
-          message: "Product id is required.",
+          message: "Invalid product id.",
         },
         {
           status: 400,
@@ -25,7 +26,7 @@ export async function GET(request: Request) {
 
     const reviews = await prisma.review.findMany({
       where: {
-        productId,
+        productId: productId.trim(),
       },
 
       include: {
@@ -95,7 +96,37 @@ export async function POST(request: Request) {
     }
 
 
-    const body = await request.json();
+    let body: Record<string, unknown>;
+
+    try {
+      const parsedBody = await request.json();
+
+      if (
+        typeof parsedBody !== "object" ||
+        parsedBody === null ||
+        Array.isArray(parsedBody)
+      ) {
+        return NextResponse.json(
+          {
+            message: "Invalid request body.",
+          },
+          {
+            status: 400,
+          }
+        );
+      }
+
+      body = parsedBody as Record<string, unknown>;
+    } catch {
+      return NextResponse.json(
+        {
+          message: "Invalid request body.",
+        },
+        {
+          status: 400,
+        }
+      );
+    }
 
 
     const {
@@ -106,14 +137,10 @@ export async function POST(request: Request) {
 
 
 
-    if (
-      !productId ||
-      !rating ||
-      !comment
-    ) {
+    if (!isNonEmptyString(productId) || !isValidId(productId)) {
       return NextResponse.json(
         {
-          message: "Invalid review data.",
+          message: "Invalid product id.",
         },
         {
           status: 400,
@@ -121,11 +148,19 @@ export async function POST(request: Request) {
       );
     }
 
+    const parsedRating =
+      typeof rating === "number"
+        ? rating
+        : typeof rating === "string" && rating.trim() !== ""
+          ? Number(rating)
+          : Number.NaN;
+
 
 
     if (
-      rating < 1 ||
-      rating > 5
+      !Number.isInteger(parsedRating) ||
+      parsedRating < 1 ||
+      parsedRating > 5
     ) {
       return NextResponse.json(
         {
@@ -137,11 +172,25 @@ export async function POST(request: Request) {
       );
     }
 
+    if (!isNonEmptyString(comment)) {
+      return NextResponse.json(
+        {
+          message: "Comment cannot be empty.",
+        },
+        {
+          status: 400,
+        }
+      );
+    }
+
+    const normalizedProductId = productId.trim();
+    const normalizedComment = comment.trim();
+
 
 
     const product = await prisma.product.findUnique({
       where: {
-        id: productId,
+        id: normalizedProductId,
       },
     });
 
@@ -168,7 +217,7 @@ export async function POST(request: Request) {
 
         items: {
           some: {
-            productId,
+            productId: normalizedProductId,
           },
         },
       },
@@ -194,7 +243,7 @@ export async function POST(request: Request) {
       where: {
         userId_productId: {
           userId: session.user.id,
-          productId,
+          productId: normalizedProductId,
         },
       },
     });
@@ -217,12 +266,12 @@ export async function POST(request: Request) {
 
     const review = await prisma.review.create({
       data: {
-        rating: Number(rating),
-        comment: comment.trim(),
+        rating: parsedRating,
+        comment: normalizedComment,
 
         userId: session.user.id,
 
-        productId,
+        productId: normalizedProductId,
       },
 
       include: {

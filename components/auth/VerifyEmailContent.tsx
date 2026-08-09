@@ -17,9 +17,15 @@ export function VerifyEmailContent() {
   const searchParams = useSearchParams();
   const token = searchParams.get("token") ?? "";
 
-  const [message, setMessage] = useState("Verifying your email...");
+  const [message, setMessage] = useState(
+    token ? "Verifying your email..." : "Missing verification token"
+  );
 
   useEffect(() => {
+    if (!token) {
+      return;
+    }
+
     async function verifyEmail() {
       try {
         const res = await fetch(`/api/auth/verify-email?token=${encodeURIComponent(token)}`);
@@ -36,11 +42,7 @@ export function VerifyEmailContent() {
       }
     }
 
-    if (token) {
-      verifyEmail();
-    } else {
-      setMessage("Missing verification token");
-    }
+    verifyEmail();
   }, [token]);
 
   return (

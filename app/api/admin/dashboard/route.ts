@@ -45,6 +45,13 @@ export async function GET() {
     const orders = await prisma.order.count();
 
 
+    const pendingStores = await prisma.store.count({
+      where: {
+        status: "PENDING",
+      },
+    });
+
+
 
     const revenue = await prisma.order.aggregate({
       _sum: {
@@ -81,6 +88,8 @@ export async function GET() {
       products,
 
       orders,
+
+      pendingStores,
 
       revenue:
         revenue._sum.total || 0,

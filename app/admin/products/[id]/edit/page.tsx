@@ -146,7 +146,7 @@ export default function EditProductPage() {
     <main className="mx-auto w-full max-w-3xl px-6 pb-20 pt-10 sm:pb-24 sm:pt-12">
       <Link href="/admin/products" className="mb-6 inline-flex items-center gap-2 rounded-md text-sm font-medium text-muted-foreground hover:text-primary focus-visible:outline-none focus-visible:ring-3 focus-visible:ring-primary/15"><ArrowLeft className="size-4" /> Back to products</Link>
       <div className="mb-8"><p className="text-sm font-semibold text-primary">Catalog administration</p><h1 className="mt-3 text-4xl font-bold tracking-[-0.04em]">Edit product</h1><p className="mt-3 text-muted-foreground">Update product details, pricing, imagery, and available stock.</p></div>
-      <Card className="rounded-2xl border-0 shadow-[0_16px_42px_-30px_rgba(15,23,42,0.4)] ring-1 ring-border/80">
+      <Card className="overflow-hidden rounded-[1.5rem] border-0 shadow-[0_16px_42px_-30px_rgba(15,23,42,0.4)] ring-1 ring-border/80">
         <CardHeader className="border-b border-border/70 pb-5"><CardTitle>Product information</CardTitle></CardHeader>
         <CardContent className="pt-1">
           <form onSubmit={handleSubmit} className="space-y-6">

@@ -115,17 +115,11 @@ export function SellerProductForm({ productId }: { productId?: string }) {
   }
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-5">
-      <div className="space-y-2"><Label htmlFor="name">Product name</Label><Input className="h-11 rounded-xl" id="name" name="name" value={form.name} onChange={handleChange} placeholder="e.g. Wireless noise-cancelling headphones" required /></div>
-      <div className="space-y-2"><Label htmlFor="description">Description</Label><Textarea className="min-h-32 rounded-xl" id="description" name="description" value={form.description} onChange={handleChange} placeholder="Describe the product's key features and condition." required /></div>
-      <div className="grid gap-5 sm:grid-cols-2">
-        <div className="space-y-2"><Label htmlFor="price">Price</Label><Input className="h-11 rounded-xl" id="price" name="price" type="number" min="0.01" step="0.01" value={form.price} onChange={handleChange} required /></div>
-        <div className="space-y-2"><Label htmlFor="stock">Stock</Label><Input className="h-11 rounded-xl" id="stock" name="stock" type="number" min="0" step="1" value={form.stock} onChange={handleChange} required /></div>
-      </div>
-      <div className="space-y-2"><Label htmlFor="category">Category</Label><Input className="h-11 rounded-xl" id="category" name="category" value={form.category} onChange={handleChange} placeholder="e.g. Audio" required /></div>
-      <div className="space-y-2"><Label htmlFor="image">Image URL</Label><Input className="h-11 rounded-xl" id="image" name="image" type="url" value={form.image} onChange={handleChange} placeholder="https://..." required /></div>
-      {error && <p className="rounded-xl bg-destructive/5 p-3 text-sm text-destructive" role="alert">{error}</p>}
-      <Button type="submit" disabled={saving} className="rounded-xl">{saving ? <LoaderCircle className="size-4 animate-spin" aria-hidden="true" /> : <Save className="size-4" aria-hidden="true" />}{saving ? "Saving..." : productId ? "Update product" : "Create product"}</Button>
+    <form onSubmit={handleSubmit} className="space-y-7">
+      <section className="space-y-5"><div><p className="font-semibold">Product information</p><p className="mt-1 text-sm text-muted-foreground">Help customers recognize and understand this listing.</p></div><div className="space-y-2"><Label htmlFor="name">Product name</Label><Input className="h-12 rounded-xl bg-background/75" id="name" name="name" value={form.name} onChange={handleChange} placeholder="e.g. Wireless noise-cancelling headphones" required /></div><div className="space-y-2"><Label htmlFor="description">Description</Label><Textarea className="min-h-32 rounded-xl bg-background/75" id="description" name="description" value={form.description} onChange={handleChange} placeholder="Describe the product's key features and condition." required /></div></section>
+      <section className="grid gap-5 border-t border-border/70 pt-7 sm:grid-cols-2"><div className="space-y-2"><Label htmlFor="price">Price</Label><Input className="h-12 rounded-xl bg-background/75" id="price" name="price" type="number" min="0.01" step="0.01" value={form.price} onChange={handleChange} required /></div><div className="space-y-2"><Label htmlFor="stock">Stock</Label><Input className="h-12 rounded-xl bg-background/75" id="stock" name="stock" type="number" min="0" step="1" value={form.stock} onChange={handleChange} required /></div><div className="space-y-2"><Label htmlFor="category">Category</Label><Input className="h-12 rounded-xl bg-background/75" id="category" name="category" value={form.category} onChange={handleChange} placeholder="e.g. Audio" required /></div><div className="space-y-2"><Label htmlFor="image">Image URL</Label><Input className="h-12 rounded-xl bg-background/75" id="image" name="image" type="url" value={form.image} onChange={handleChange} placeholder="https://..." required /></div></section>
+      {error && <p className="rounded-xl border border-destructive/15 bg-destructive/5 p-3 text-sm text-destructive" role="alert">{error}</p>}
+      <Button type="submit" disabled={saving} className="h-11 rounded-xl">{saving ? <LoaderCircle className="size-4 animate-spin" aria-hidden="true" /> : <Save className="size-4" aria-hidden="true" />}{saving ? "Saving..." : productId ? "Update product" : "Create product"}</Button>
     </form>
   );
 }

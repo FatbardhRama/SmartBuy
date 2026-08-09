@@ -3,7 +3,7 @@ import { getServerSession } from "next-auth";
 import bcrypt from "bcrypt";
 import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
-import { isNonEmptyString, isValidEmail } from "@/lib/validation";
+import { isNonEmptyString } from "@/lib/validation";
 
 export async function GET() {
   try {

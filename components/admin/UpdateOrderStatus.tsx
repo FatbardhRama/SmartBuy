@@ -37,7 +37,7 @@ export function UpdateOrderStatus({
 
   return (
     <select
-      className="border rounded-md p-2"
+      className="h-10 rounded-xl border border-input bg-background px-3 text-sm font-semibold outline-none transition-[border-color,box-shadow] focus:border-primary focus:ring-3 focus:ring-primary/15"
       value={status}
       onChange={(e) =>
         changeStatus(e.target.value)

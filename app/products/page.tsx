@@ -1,22 +1,5 @@
 import ProductsClient from "@/components/products/ProductsClient";
-
-type Product = {
-  id: string;
-  name: string;
-  description: string;
-  price: number;
-  image: string;
-  category: string;
-  stock?: number;
-  store?: { name: string; slug: string } | null;
-};
-
-type ProductsResponse = {
-  products: Product[];
-  total: number;
-  page: number;
-  totalPages: number;
-};
+import { getApprovedProducts } from "@/lib/products-query";
 
 type ProductsPageProps = {
   searchParams: Promise<{
@@ -31,20 +14,6 @@ function getFirstValue(value: string | string[] | undefined) {
   return typeof value === "string" ? value : "";
 }
 
-async function getProducts(params: URLSearchParams): Promise<ProductsResponse> {
-  const query = params.toString();
-  const res = await fetch(
-    `http://localhost:3000/api/products${query ? `?${query}` : ""}`,
-    { cache: "no-store" }
-  );
-
-  if (!res.ok) {
-    throw new Error("Failed to fetch products");
-  }
-
-  return res.json();
-}
-
 export default async function ProductsPage({
   searchParams,
 }: ProductsPageProps) {
@@ -55,25 +24,23 @@ export default async function ProductsPage({
   const parsedPage = Number(getFirstValue(query.page));
   const page = Number.isInteger(parsedPage) && parsedPage > 0 ? parsedPage : 1;
 
-  const productParams = new URLSearchParams({
-    page: page.toString(),
-    limit: "12",
+  const data = await getApprovedProducts({
+    page,
+    limit: 12,
+    search,
+    category,
+    sort,
   });
 
-  if (search) productParams.set("search", search);
-  if (category !== "All") productParams.set("category", category);
-  if (sort !== "newest") productParams.set("sort", sort);
-
-  const data = await getProducts(productParams);
-
   return (
-    <div className="mx-auto w-full max-w-7xl px-6 pb-18 pt-10 sm:pb-24 sm:pt-12">
-      <div className="relative mb-10 overflow-hidden rounded-[1.75rem] bg-card px-6 py-9 ring-1 ring-border/80 sm:px-9 sm:py-11">
-        <div className="pointer-events-none absolute -right-16 -top-24 size-72 rounded-full bg-primary/6" />
+    <div className="mx-auto w-full max-w-7xl px-6 pb-18 pt-8 sm:pb-24 sm:pt-12">
+      <div className="relative mb-8 overflow-hidden rounded-[2rem] bg-[linear-gradient(118deg,#FFFFFF_0%,#F1F7FF_56%,#ECFEFF_100%)] px-6 py-10 shadow-[0_28px_72px_-48px_rgba(37,99,235,0.52)] ring-1 ring-border/80 sm:mb-10 sm:px-10 sm:py-14">
+        <div className="pointer-events-none absolute -right-16 -top-24 size-80 rounded-full bg-primary/10 blur-2xl" />
+        <div className="pointer-events-none absolute bottom-0 left-[38%] h-px w-2/5 bg-gradient-to-r from-transparent via-cyan-300 to-transparent" />
         <div className="relative max-w-3xl">
-          <p className="text-sm font-semibold text-primary">SmartBuy electronics</p>
-          <h1 className="mt-3 text-4xl font-bold tracking-[-0.04em] sm:text-5xl">Find tech that fits your day</h1>
-          <p className="mt-4 max-w-2xl text-base leading-7 text-muted-foreground sm:text-lg">Compare laptops, smartphones, gaming gear, audio, accessories, wearables, smart-home devices, and monitors from approved sellers.</p>
+          <p className="sb-eyebrow">The SmartBuy catalog</p>
+          <h1 className="sb-heading-xl">Tech worth bringing home.</h1>
+          <p className="mt-4 max-w-2xl text-base leading-7 text-muted-foreground sm:text-lg">Browse electronics from approved marketplace sellers, with clear availability and the details you need to choose confidently.</p>
         </div>
       </div>
 

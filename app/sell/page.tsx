@@ -31,14 +31,17 @@ export default async function SellPage() {
   });
 
   return (
-    <main className="mx-auto w-full max-w-7xl px-6 pb-20 pt-10 sm:pb-24 sm:pt-12">
-      <div className="mb-10 grid gap-7 lg:grid-cols-[minmax(0,1fr)_minmax(280px,0.55fr)] lg:items-end">
-        <div className="max-w-2xl"><p className="flex items-center gap-2 text-sm font-semibold text-primary"><Store className="size-4" aria-hidden="true" /> SmartBuy marketplace</p><h1 className="mt-3 text-4xl font-bold tracking-[-0.04em] sm:text-5xl">Build your store with us.</h1><p className="mt-4 max-w-xl text-base leading-7 text-muted-foreground">Apply to sell electronics through a trusted marketplace designed for clear product management and confident customer experiences.</p></div>
+    <main className="mx-auto w-full max-w-7xl px-6 pb-20 pt-8 sm:pb-24 sm:pt-12">
+      <section className="relative mb-8 overflow-hidden rounded-[2rem] bg-[linear-gradient(118deg,#FFFFFF_0%,#F1F7FF_56%,#ECFEFF_100%)] px-6 py-8 shadow-[0_24px_64px_-46px_rgba(37,99,235,0.42)] ring-1 ring-border/80 sm:mb-10 sm:px-9 sm:py-10">
+        <div className="pointer-events-none absolute -right-14 -top-20 size-64 rounded-full bg-primary/10 blur-2xl" />
+        <div className="relative grid gap-7 lg:grid-cols-[minmax(0,1fr)_minmax(280px,0.55fr)] lg:items-end">
+        <div className="max-w-2xl"><p className="flex items-center gap-2 text-sm font-semibold text-primary"><Store className="size-4" aria-hidden="true" /> SmartBuy marketplace</p><h1 className="sb-heading-xl">Build your store with us.</h1><p className="mt-4 max-w-xl text-base leading-7 text-muted-foreground">Apply to sell electronics through a trusted marketplace designed for clear product management and confident customer experiences.</p></div>
         <div className="grid gap-3 rounded-2xl bg-slate-950 p-5 text-sm text-slate-200 shadow-[0_22px_60px_-40px_rgba(15,23,42,0.9)]"><p className="flex items-center gap-2"><ShieldCheck className="size-4 text-cyan-300" aria-hidden="true" /> Reviewed seller applications</p><p className="flex items-center gap-2"><BadgeCheck className="size-4 text-cyan-300" aria-hidden="true" /> Dedicated seller workspace</p></div>
       </div>
+      </section>
 
       {store ? (
-        <Card className="max-w-3xl border-0 shadow-[0_24px_70px_-45px_rgba(15,23,42,0.55)] ring-1 ring-border">
+        <Card className="max-w-3xl overflow-hidden rounded-[1.5rem] border-0 ring-1 ring-border shadow-[0_20px_52px_-42px_rgba(15,23,42,0.38)]">
           <CardHeader>
             <div className="flex flex-wrap items-center justify-between gap-3">
               <div>

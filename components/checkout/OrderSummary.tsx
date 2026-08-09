@@ -35,7 +35,7 @@ export function OrderSummary({
   const [loading, setLoading] = useState(false);
 
   if (!loaded) {
-    return <Skeleton className="h-[460px] w-full rounded-2xl" />;
+    return <Skeleton className="h-[460px] w-full rounded-[1.5rem]" />;
   }
 
   const shipping = 0;
@@ -115,46 +115,46 @@ export function OrderSummary({
   }
 
   return (
-    <Card className="rounded-2xl border-0 shadow-[0_18px_45px_-30px_rgba(15,23,42,0.4)] ring-1 ring-border/80 motion-safe:animate-in motion-safe:fade-in-0 motion-safe:slide-in-from-bottom-2 lg:sticky lg:top-24">
+    <Card className="overflow-hidden rounded-[1.5rem] border-0 bg-[#0f172a] text-slate-100 ring-1 ring-slate-800 shadow-[0_26px_56px_-34px_rgba(15,23,42,0.8)] motion-safe:animate-in motion-safe:fade-in-0 motion-safe:slide-in-from-bottom-2 lg:sticky lg:top-24">
       <CardHeader className="border-b border-border/70 pb-5">
-        <CardTitle className="text-xl tracking-tight">Order summary</CardTitle>
+        <CardTitle className="text-xl tracking-tight text-white">Order summary</CardTitle>
       </CardHeader>
 
       <CardContent className="space-y-5">
         {cart.length === 0 ? (
-          <div className="rounded-xl bg-muted/45 p-5 text-center"><p className="text-sm font-medium">Your shopping cart is empty.</p><p className="mt-1 text-xs text-muted-foreground">Add a product before continuing to payment.</p></div>
+          <div className="rounded-xl bg-white/8 p-5 text-center"><p className="text-sm font-medium text-white">Your shopping cart is empty.</p><p className="mt-1 text-xs text-slate-400">Add a product before continuing to payment.</p></div>
         ) : (
           <>
             <div className="max-h-72 space-y-4 overflow-y-auto pr-1">
               {cart.map((item) => (
                 <div
                   key={item.id}
-                  className="flex items-center gap-3 rounded-xl bg-muted/25 p-2"
+                  className="flex items-center gap-3 rounded-xl bg-white/6 p-2"
                 >
-                  <div className="relative size-14 shrink-0 overflow-hidden rounded-xl bg-muted">
+                  <div className="relative size-14 shrink-0 overflow-hidden rounded-xl bg-slate-800">
                     <Image src={item.image} alt={item.name} fill className="object-cover" sizes="56px" />
                   </div>
                   <div className="min-w-0 flex-1">
-                    <p className="line-clamp-2 text-sm font-medium">
+                    <p className="line-clamp-2 text-sm font-medium text-white">
                       {item.name}
                     </p>
 
-                    <p className="text-xs text-muted-foreground">
+                    <p className="text-xs text-slate-400">
                       Qty {item.quantity}
                     </p>
                   </div>
 
-                  <span className="text-sm font-semibold">
+                  <span className="text-sm font-semibold text-slate-100">
                     {formatCurrency(item.price * item.quantity)}
                   </span>
                 </div>
               ))}
             </div>
 
-            <hr className="border-border/70" />
+            <hr className="border-white/10" />
 
             <div className="space-y-2">
-              <div className="flex justify-between text-sm text-muted-foreground">
+              <div className="flex justify-between text-sm text-slate-400">
                 <span>
                   Subtotal
                 </span>
@@ -164,7 +164,7 @@ export function OrderSummary({
                 </span>
               </div>
 
-              <div className="flex justify-between text-sm text-muted-foreground">
+              <div className="flex justify-between text-sm text-slate-400">
                 <span>
                   Shipping
                 </span>
@@ -174,12 +174,12 @@ export function OrderSummary({
                 </span>
               </div>
 
-              <div className="flex items-end justify-between border-t border-border/70 pt-4 text-lg font-semibold">
-                <span className="font-semibold">
+              <div className="flex items-end justify-between border-t border-white/10 pt-4 text-lg font-semibold">
+                <span className="font-semibold text-white">
                   Total
                 </span>
 
-                <span className="text-2xl font-bold tracking-[-0.03em]">
+                <span className="text-2xl font-bold tracking-[-0.03em] text-white">
                   {formatCurrency(total)}
                 </span>
               </div>
@@ -203,9 +203,9 @@ export function OrderSummary({
         >
           {loading ? "Redirecting to Stripe..." : <><CreditCard className="size-5" /> Pay securely with Stripe</>}
         </Button>
-        <div className="space-y-2 border-t border-border/70 pt-4 text-xs text-muted-foreground">
-          <p className="flex items-center gap-2"><LockKeyhole className="size-4 text-success" /> Payment details are handled securely by Stripe.</p>
-          <p className="flex items-center gap-2"><ShieldCheck className="size-4 text-accent" /> Prices and stock are verified before payment.</p>
+        <div className="space-y-2 border-t border-white/10 pt-4 text-xs text-slate-400">
+          <p className="flex items-center gap-2"><LockKeyhole className="size-4 text-cyan-300" /> Payment details are handled securely by Stripe.</p>
+          <p className="flex items-center gap-2"><ShieldCheck className="size-4 text-cyan-300" /> Prices and stock are verified before payment.</p>
         </div>
       </CardContent>
     </Card>

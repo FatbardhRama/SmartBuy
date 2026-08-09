@@ -5,7 +5,7 @@ export function Newsletter() {
   return (
     <section className="pb-18 pt-2 sm:pb-24">
       <div className="mx-auto max-w-7xl px-6">
-        <div className="relative overflow-hidden rounded-[1.75rem] bg-primary px-6 py-10 text-primary-foreground shadow-[0_28px_70px_-36px_rgba(37,99,235,0.65)] sm:px-10 sm:py-12 lg:px-14">
+        <div className="relative overflow-hidden rounded-[1.75rem] bg-primary px-6 py-10 text-primary-foreground shadow-[0_28px_70px_-36px_rgba(37,99,235,0.65)] dark:bg-[#173969] dark:shadow-[0_28px_70px_-40px_rgba(2,6,23,0.8)] sm:px-10 sm:py-12 lg:px-14">
           <div className="pointer-events-none absolute -right-16 -top-24 size-72 rounded-full border-[48px] border-white/5" />
           <div className="relative grid items-end gap-8 lg:grid-cols-[1fr_0.8fr] lg:gap-14">
             <div>

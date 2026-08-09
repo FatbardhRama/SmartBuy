@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import { useState } from "react";
 import { CalendarDays, LockKeyhole, Mail, ShieldCheck, UploadCloud, UserRound } from "lucide-react";
 
@@ -303,7 +304,7 @@ export function ProfileForm({
 
 
 
-      <Card className="rounded-2xl border-0 shadow-[0_16px_42px_-30px_rgba(15,23,42,0.4)] ring-1 ring-border/80">
+      <Card className="overflow-hidden rounded-[1.5rem] border-0 ring-1 ring-border/80 shadow-[0_20px_52px_-42px_rgba(15,23,42,0.38)]">
 
         <CardHeader className="border-b border-border/70 pb-5">
 
@@ -323,17 +324,23 @@ export function ProfileForm({
         <CardContent className="space-y-6 pt-1">
 
 
-          <div className="rounded-2xl bg-muted/35 p-5 ring-1 ring-border/70">
+          <div className="rounded-2xl bg-muted/45 p-5 ring-1 ring-border/70">
           <div className="flex flex-col items-center gap-4 sm:flex-row sm:items-center">
 
 
             {preview ? (
 
-              <img
+              <Image
 
                 src={preview}
 
                 alt="Profile picture"
+
+                width={112}
+
+                height={112}
+
+                unoptimized
 
                 className="size-28 shrink-0 rounded-2xl object-cover ring-1 ring-border"
 
@@ -460,7 +467,7 @@ export function ProfileForm({
 
 
 
-      <Card className="rounded-2xl border-0 shadow-[0_16px_42px_-30px_rgba(15,23,42,0.4)] ring-1 ring-border/80 lg:sticky lg:top-24">
+      <Card className="overflow-hidden rounded-[1.5rem] border-0 ring-1 ring-border/80 shadow-[0_20px_52px_-42px_rgba(15,23,42,0.38)] lg:sticky lg:top-24">
 
         <CardHeader className="border-b border-border/70 pb-5">
 

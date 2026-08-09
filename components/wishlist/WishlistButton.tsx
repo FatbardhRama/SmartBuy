@@ -13,11 +13,13 @@ import {
 type WishlistButtonProps = {
   productId: string;
   onWishlistChange?: (isWishlisted: boolean) => void;
+  compact?: boolean;
 };
 
 export function WishlistButton({
   productId,
   onWishlistChange,
+  compact = false,
 }: WishlistButtonProps) {
   const { data: session, status } = useSession();
 
@@ -105,12 +107,14 @@ export function WishlistButton({
     <Button
       type="button"
       variant={isWishlisted ? "destructive" : "outline"}
-      className="h-12 w-full gap-2 rounded-xl"
+      size={compact ? "icon" : "default"}
+      className={compact ? "size-9 rounded-lg border-white/35 bg-white/92 text-slate-700 shadow-[0_10px_24px_-16px_rgba(15,23,42,0.42)] hover:bg-white hover:text-primary" : "h-12 w-full gap-2 rounded-xl"}
       onClick={handleWishlist}
       disabled={loading || status === "loading"}
+      aria-label={isWishlisted ? "Remove from wishlist" : "Add to wishlist"}
     >
       {!loading && <Heart className={`size-5 ${isWishlisted ? "fill-current" : ""}`} aria-hidden="true" />}
-      {loading ? "Updating..." : isWishlisted ? "Remove from wishlist" : "Add to wishlist"}
+      {!compact && (loading ? "Updating..." : isWishlisted ? "Remove from wishlist" : "Add to wishlist")}
     </Button>
   );
 }

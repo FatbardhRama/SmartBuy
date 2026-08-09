@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { type FormEvent, useEffect, useState } from "react";
+import { type FormEvent, type MouseEvent, useEffect, useState } from "react";
 import { signOut, useSession } from "next-auth/react";
 import { usePathname, useRouter } from "next/navigation";
 import {
@@ -58,12 +58,7 @@ export function Header() {
   const [searchQuery, setSearchQuery] = useState("");
 
   useEffect(() => {
-    setMenuOpen(false);
-  }, [pathname]);
-
-  useEffect(() => {
     if (!session?.user?.id) {
-      setStoreStatus(null);
       return;
     }
 
@@ -91,7 +86,8 @@ export function Header() {
     };
   }, [session?.user?.id]);
 
-  const isApprovedSeller = storeStatus === "APPROVED";
+  const effectiveStoreStatus = session?.user?.id ? storeStatus : null;
+  const isApprovedSeller = effectiveStoreStatus === "APPROVED";
   const isAdmin = session?.user?.role === "ADMIN";
   const accountLabel = session?.user?.name?.split(" ")[0] || "Account";
 
@@ -102,18 +98,24 @@ export function Header() {
     setMenuOpen(false);
   }
 
+  function handleMobileNavigationClick(event: MouseEvent<HTMLDivElement>) {
+    if (event.target instanceof Element && event.target.closest("a")) {
+      setMenuOpen(false);
+    }
+  }
+
   return (
-    <header className="sticky top-0 z-40 border-b border-border/70 bg-background/95 shadow-[0_8px_24px_-22px_rgba(15,23,42,0.35)] backdrop-blur-xl supports-backdrop-filter:bg-background/85">
+    <header className="sticky top-0 z-40 border-b border-white/10 bg-[#020617]/96 text-slate-100 shadow-[0_14px_34px_-24px_rgba(2,6,23,0.72)] backdrop-blur-xl supports-backdrop-filter:bg-[#020617]/88">
       <div className="mx-auto flex h-[4.5rem] max-w-7xl items-center gap-3 px-4 sm:px-6">
         <Link
           href="/"
           className="group flex shrink-0 items-center gap-2.5 rounded-xl focus-visible:outline-none focus-visible:ring-3 focus-visible:ring-primary/20"
           aria-label="SmartBuy home"
         >
-          <span className="flex size-9 items-center justify-center rounded-xl bg-primary text-sm font-bold text-primary-foreground shadow-[0_8px_20px_-10px_rgba(37,99,235,0.8)] transition-transform duration-300 ease-[cubic-bezier(0.32,0.72,0,1)] group-hover:scale-105">
+          <span className="flex size-9 items-center justify-center rounded-xl bg-[linear-gradient(135deg,#2563EB,#06B6D4)] text-sm font-bold text-primary-foreground shadow-[0_12px_28px_-14px_rgba(37,99,235,0.9)] transition-transform duration-300 ease-[cubic-bezier(0.32,0.72,0,1)] group-hover:scale-105">
             S
           </span>
-          <span className="font-heading text-xl font-bold tracking-[-0.035em]">Smart<span className="text-primary">Buy</span></span>
+          <span className="font-heading text-xl font-bold tracking-[-0.035em] text-white">Smart<span className="text-cyan-300">Buy</span></span>
         </Link>
 
         <nav className="ml-2 hidden items-center gap-0.5 lg:flex" aria-label="Primary navigation">
@@ -126,8 +128,8 @@ export function Header() {
                 href={item.href}
                 aria-current={active ? "page" : undefined}
                 className={cn(
-                  "rounded-lg px-3 py-2 text-sm font-medium text-muted-foreground transition-colors duration-200 hover:bg-secondary hover:text-foreground focus-visible:outline-none focus-visible:ring-3 focus-visible:ring-primary/15",
-                  active && "bg-primary/8 text-primary",
+                  "rounded-lg px-3 py-2 text-sm font-medium text-slate-300 transition-colors duration-200 hover:bg-white/[0.08] hover:text-white focus-visible:outline-none focus-visible:ring-3 focus-visible:ring-cyan-300/25",
+                  active && "bg-blue-500/15 text-cyan-200",
                 )}
               >
                 {item.label}
@@ -144,9 +146,9 @@ export function Header() {
             onChange={(event) => setSearchQuery(event.target.value)}
             placeholder="Search electronics"
             aria-label="Search electronics"
-            className="h-10 rounded-xl border-border/90 bg-card pl-9 pr-14 shadow-none"
+            className="h-10 border-white/10 bg-white/[0.07] pl-9 pr-14 text-slate-100 shadow-none placeholder:text-slate-400 focus-visible:border-cyan-300/60 focus-visible:bg-white/[0.1] focus-visible:ring-cyan-300/15"
           />
-          <span className="pointer-events-none absolute right-3 top-1/2 hidden -translate-y-1/2 rounded-md bg-muted px-1.5 py-0.5 text-[10px] font-semibold text-muted-foreground 2xl:block">Enter</span>
+          <span className="pointer-events-none absolute right-3 top-1/2 hidden -translate-y-1/2 rounded-md bg-white/10 px-1.5 py-0.5 text-[10px] font-semibold text-slate-400 2xl:block">Enter</span>
         </form>
 
         <div className="ml-auto hidden shrink-0 items-center gap-1.5 lg:flex xl:ml-1">
@@ -154,8 +156,8 @@ export function Header() {
             href="/cart"
             aria-current={isActivePath(pathname, "/cart") ? "page" : undefined}
             className={cn(
-              "relative inline-flex h-10 items-center gap-2 rounded-xl border border-border bg-card px-3 text-sm font-semibold transition-colors hover:border-primary/25 hover:bg-secondary focus-visible:outline-none focus-visible:ring-3 focus-visible:ring-primary/15",
-              isActivePath(pathname, "/cart") && "border-primary/25 bg-primary/8 text-primary",
+              "relative inline-flex h-10 items-center gap-2 rounded-xl border border-white/10 bg-white/[0.06] px-3 text-sm font-semibold text-slate-100 transition-colors hover:border-cyan-300/25 hover:bg-white/[0.1] hover:text-cyan-100 focus-visible:outline-none focus-visible:ring-3 focus-visible:ring-cyan-300/25",
+              isActivePath(pathname, "/cart") && "border-blue-400/35 bg-blue-500/15 text-cyan-100",
             )}
           >
             <ShoppingCart className="size-4" />
@@ -167,10 +169,10 @@ export function Header() {
             )}
           </Link>
 
-          {session && storeStatus && (
+          {session && effectiveStoreStatus && (
             <DropdownMenu>
               <DropdownMenuTrigger
-                render={<Button variant="ghost" className="gap-1.5" />}
+                render={<Button variant="ghost" className="gap-1.5 text-slate-200 hover:bg-white/[0.08] hover:text-white" />}
               >
                 <Store className="size-4" />
                 Seller
@@ -205,8 +207,8 @@ export function Header() {
             <Link
               href="/admin"
             className={cn(
-                "inline-flex h-10 items-center gap-2 rounded-xl px-3 text-sm font-semibold transition-colors hover:bg-secondary focus-visible:outline-none focus-visible:ring-3 focus-visible:ring-primary/15",
-                isActivePath(pathname, "/admin") && "bg-primary/8 text-primary",
+                "inline-flex h-10 items-center gap-2 rounded-xl px-3 text-sm font-semibold text-slate-200 transition-colors hover:bg-white/[0.08] hover:text-white focus-visible:outline-none focus-visible:ring-3 focus-visible:ring-cyan-300/25",
+                isActivePath(pathname, "/admin") && "bg-blue-500/15 text-cyan-100",
               )}
             >
               <ShieldCheck className="size-4" />
@@ -219,7 +221,7 @@ export function Header() {
           {session ? (
             <DropdownMenu>
               <DropdownMenuTrigger
-                render={<Button variant="outline" className="max-w-44 gap-2" />}
+                render={<Button variant="outline" className="max-w-44 gap-2 border-white/10 bg-white/[0.06] text-slate-100 hover:border-cyan-300/25 hover:bg-white/[0.1] hover:text-white" />}
               >
                 <CircleUserRound className="size-4 shrink-0 text-primary" />
                 <span className="truncate">{accountLabel}</span>
@@ -251,7 +253,7 @@ export function Header() {
             </DropdownMenu>
           ) : (
             <>
-              <Link href="/login"><Button variant="ghost">Sign in</Button></Link>
+              <Link href="/login"><Button variant="ghost" className="text-slate-200 hover:bg-white/[0.08] hover:text-white">Sign in</Button></Link>
               <Link href="/register"><Button>Create account</Button></Link>
             </>
           )}
@@ -260,7 +262,7 @@ export function Header() {
         <div className="ml-auto flex items-center gap-1.5 lg:hidden">
           <Link
             href="/cart"
-            className="relative flex size-10 items-center justify-center rounded-xl border border-border bg-card focus-visible:outline-none focus-visible:ring-3 focus-visible:ring-primary/15"
+            className="relative flex size-10 items-center justify-center rounded-xl border border-white/10 bg-white/[0.06] text-slate-100 shadow-[0_10px_24px_-22px_rgba(2,6,23,0.72)] focus-visible:outline-none focus-visible:ring-3 focus-visible:ring-cyan-300/25"
             aria-label={`Cart${loaded && itemCount > 0 ? `, ${itemCount} items` : ""}`}
           >
             <ShoppingCart className="size-5" />
@@ -274,6 +276,7 @@ export function Header() {
           <Button
             type="button"
             variant="outline"
+            className="border-white/10 bg-white/[0.06] text-slate-100 hover:border-cyan-300/25 hover:bg-white/[0.1] hover:text-white"
             size="icon"
             onClick={() => setMenuOpen((open) => !open)}
             aria-expanded={menuOpen}
@@ -288,7 +291,8 @@ export function Header() {
       {menuOpen && (
         <div
           id="mobile-navigation"
-          className="max-h-[calc(100dvh-4.5rem)] overflow-y-auto border-t border-border/70 bg-background lg:hidden motion-safe:animate-in motion-safe:fade-in-0 motion-safe:slide-in-from-top-2"
+          className="max-h-[calc(100dvh-4.5rem)] overflow-y-auto border-t border-white/10 bg-[#020617]/98 text-slate-100 shadow-[0_18px_38px_-28px_rgba(2,6,23,0.8)] backdrop-blur-xl lg:hidden motion-safe:animate-in motion-safe:fade-in-0 motion-safe:slide-in-from-top-2"
+          onClick={handleMobileNavigationClick}
         >
           <div className="mx-auto max-w-7xl space-y-5 px-4 py-5 sm:px-6">
             <form onSubmit={handleSearch} role="search" className="relative">
@@ -299,7 +303,7 @@ export function Header() {
                 onChange={(event) => setSearchQuery(event.target.value)}
                 placeholder="Search products and categories"
                 aria-label="Search products and categories"
-                className="h-11 rounded-xl bg-card pl-9 pr-12"
+                className="h-11 border-white/10 bg-white/[0.07] pl-9 pr-12 text-slate-100 placeholder:text-slate-400 focus-visible:border-cyan-300/60 focus-visible:bg-white/[0.1] focus-visible:ring-cyan-300/15"
               />
               <Button type="submit" size="icon-sm" className="absolute right-1.5 top-1.5 rounded-lg" aria-label="Submit search">
                 <Search className="size-4" />
@@ -315,8 +319,8 @@ export function Header() {
                     href={item.href}
                     aria-current={active ? "page" : undefined}
                     className={cn(
-                      "rounded-xl px-3 py-2.5 text-sm font-medium transition-colors hover:bg-secondary focus-visible:outline-none focus-visible:ring-3 focus-visible:ring-primary/15",
-                      active && "bg-primary/8 text-primary",
+                      "rounded-xl px-3 py-2.5 text-sm font-medium text-slate-300 transition-colors hover:bg-white/[0.08] hover:text-white focus-visible:outline-none focus-visible:ring-3 focus-visible:ring-cyan-300/25",
+                      active && "bg-blue-500/15 text-cyan-100",
                     )}
                   >
                     {item.label}
@@ -330,21 +334,21 @@ export function Header() {
                 <div>
                   <p className="mb-2 px-3 text-xs font-semibold uppercase tracking-wider text-muted-foreground">Account</p>
                   <div className="grid gap-1">
-                    <Link href="/profile" className="rounded-lg px-3 py-2 text-sm hover:bg-secondary">Profile</Link>
-                    <Link href="/orders" className="rounded-lg px-3 py-2 text-sm hover:bg-secondary">My Orders</Link>
-                    <Link href="/wishlist" className="rounded-lg px-3 py-2 text-sm hover:bg-secondary">Wishlist</Link>
+                    <Link href="/profile" className="rounded-lg px-3 py-2 text-sm text-slate-300 hover:bg-white/[0.08] hover:text-white">Profile</Link>
+                    <Link href="/orders" className="rounded-lg px-3 py-2 text-sm text-slate-300 hover:bg-white/[0.08] hover:text-white">My Orders</Link>
+                    <Link href="/wishlist" className="rounded-lg px-3 py-2 text-sm text-slate-300 hover:bg-white/[0.08] hover:text-white">Wishlist</Link>
                   </div>
                 </div>
 
-                {(storeStatus || isAdmin) && (
+                {(effectiveStoreStatus || isAdmin) && (
                   <div>
                     <p className="mb-2 px-3 text-xs font-semibold uppercase tracking-wider text-muted-foreground">Workspace</p>
                     <div className="grid gap-1">
-                      {storeStatus && <Link href="/sell" className="rounded-lg px-3 py-2 text-sm hover:bg-secondary">My Store</Link>}
-                      {isApprovedSeller && <Link href="/seller" className="rounded-lg px-3 py-2 text-sm hover:bg-secondary">Seller Dashboard</Link>}
-                      {isApprovedSeller && <Link href="/seller/products" className="rounded-lg px-3 py-2 text-sm hover:bg-secondary">My Products</Link>}
-                      {isApprovedSeller && <Link href="/seller/orders" className="rounded-lg px-3 py-2 text-sm hover:bg-secondary">Seller Orders</Link>}
-                      {isAdmin && <Link href="/admin" className="rounded-lg px-3 py-2 text-sm font-medium text-primary hover:bg-secondary">Admin Panel</Link>}
+                      {effectiveStoreStatus && <Link href="/sell" className="rounded-lg px-3 py-2 text-sm text-slate-300 hover:bg-white/[0.08] hover:text-white">My Store</Link>}
+                      {isApprovedSeller && <Link href="/seller" className="rounded-lg px-3 py-2 text-sm text-slate-300 hover:bg-white/[0.08] hover:text-white">Seller Dashboard</Link>}
+                      {isApprovedSeller && <Link href="/seller/products" className="rounded-lg px-3 py-2 text-sm text-slate-300 hover:bg-white/[0.08] hover:text-white">My Products</Link>}
+                      {isApprovedSeller && <Link href="/seller/orders" className="rounded-lg px-3 py-2 text-sm text-slate-300 hover:bg-white/[0.08] hover:text-white">Seller Orders</Link>}
+                      {isAdmin && <Link href="/admin" className="rounded-lg px-3 py-2 text-sm font-medium text-cyan-200 hover:bg-white/[0.08]">Admin Panel</Link>}
                     </div>
                   </div>
                 )}

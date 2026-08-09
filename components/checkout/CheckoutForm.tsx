@@ -33,7 +33,7 @@ export function CheckoutForm({
   }
 
   return (
-    <Card className="overflow-hidden rounded-2xl border-0 shadow-[0_16px_42px_-30px_rgba(15,23,42,0.4)] ring-1 ring-border/80">
+    <Card className="overflow-hidden rounded-[1.5rem] border-0 ring-1 ring-border/80 shadow-[0_20px_52px_-42px_rgba(15,23,42,0.38)]">
       <CardHeader className="border-b border-border/70 pb-5">
         <div className="flex items-start gap-3">
           <span className="flex size-9 shrink-0 items-center justify-center rounded-xl bg-primary text-sm font-bold text-primary-foreground">1</span>
@@ -56,7 +56,7 @@ export function CheckoutForm({
               onChange={handleChange}
               placeholder="Your full name"
               autoComplete="name"
-              className="h-11 rounded-xl bg-background"
+              className="h-12 rounded-xl bg-background/75"
             />
           </div>
 
@@ -73,7 +73,7 @@ export function CheckoutForm({
               onChange={handleChange}
               placeholder="you@example.com"
               autoComplete="email"
-              className="h-11 rounded-xl bg-background"
+              className="h-12 rounded-xl bg-background/75"
             />
           </div>
 
@@ -89,7 +89,7 @@ export function CheckoutForm({
               onChange={handleChange}
               placeholder="+355 6X XXX XXXX"
               autoComplete="tel"
-              className="h-11 rounded-xl bg-background"
+              className="h-12 rounded-xl bg-background/75"
             />
           </div>
           </div>
@@ -111,7 +111,7 @@ export function CheckoutForm({
               onChange={handleChange}
               placeholder="Street and building number"
               autoComplete="street-address"
-              className="h-11 rounded-xl bg-background"
+              className="h-12 rounded-xl bg-background/75"
             />
           </div>
 
@@ -128,7 +128,7 @@ export function CheckoutForm({
                 onChange={handleChange}
                 placeholder="Tirana"
                 autoComplete="address-level2"
-                className="h-11 rounded-xl bg-background"
+                className="h-12 rounded-xl bg-background/75"
               />
             </div>
 
@@ -144,7 +144,7 @@ export function CheckoutForm({
                 onChange={handleChange}
                 placeholder="1001"
                 autoComplete="postal-code"
-                className="h-11 rounded-xl bg-background"
+                className="h-12 rounded-xl bg-background/75"
               />
             </div>
           </div>

@@ -54,32 +54,35 @@ export function CartProvider({
 
 
 
-  // Load cart only on client
   useEffect(() => {
+    let active = true;
 
-    try {
+    async function loadCart() {
+      await Promise.resolve();
 
-      const saved = localStorage.getItem(KEY);
-
-
-      if (saved) {
-
-        setCart(
-          JSON.parse(saved)
-        );
-
+      if (!active) {
+        return;
       }
 
-    } catch {
+      try {
+        const saved = localStorage.getItem(KEY);
 
-      setCart([]);
+        if (saved) {
+          const parsed = JSON.parse(saved);
+          setCart(Array.isArray(parsed) ? parsed : []);
+        }
+      } catch {
+        setCart([]);
+      }
 
+      setLoaded(true);
     }
 
+    loadCart();
 
-    setLoaded(true);
-
-
+    return () => {
+      active = false;
+    };
   }, []);
 
 

@@ -94,10 +94,10 @@ export default async function SellerProductsPage({ searchParams }: SellerProduct
   };
 
   return (
-    <main className="mx-auto w-full max-w-7xl px-6 pb-20 pt-10 sm:pb-24 sm:pt-12">
-      <div className="mb-9 flex flex-wrap items-end justify-between gap-4 border-b border-border pb-8"><div><p className="text-sm font-semibold text-primary">{seller.store.name}</p><h1 className="mt-2 text-4xl font-bold tracking-[-0.04em] sm:text-5xl">My products</h1><p className="mt-3 text-muted-foreground">Manage listings, pricing, and inventory in one place.</p></div><Link href="/seller/products/new" className={buttonVariants({ className: "rounded-xl" })}><Plus className="size-4" /> Add product</Link></div>
-      <form className="mb-7 grid gap-3 rounded-2xl border-0 bg-white p-5 shadow-sm ring-1 ring-border sm:grid-cols-2 lg:grid-cols-[minmax(0,1fr)_auto_auto_auto_auto]" action="/seller/products">
-        <div className="relative"><Search className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" aria-hidden="true" /><Input name="search" defaultValue={search} placeholder="Search products..." aria-label="Search products" className="pl-9" /></div>
+    <main className="mx-auto w-full max-w-7xl px-6 pb-20 pt-8 sm:pb-24 sm:pt-12">
+      <section className="relative mb-8 overflow-hidden rounded-[2rem] bg-[linear-gradient(118deg,#FFFFFF_0%,#F1F7FF_56%,#ECFEFF_100%)] px-6 py-8 shadow-[0_24px_64px_-46px_rgba(37,99,235,0.42)] ring-1 ring-border/80 sm:mb-10 sm:px-9 sm:py-10"><div className="pointer-events-none absolute -right-14 -top-20 size-64 rounded-full bg-primary/10 blur-2xl" /><div className="relative flex flex-col gap-5 sm:flex-row sm:items-end sm:justify-between"><div><p className="sb-eyebrow">{seller.store.name}</p><h1 className="sb-heading-xl">My products</h1><p className="mt-3 sb-muted-copy">Manage listings, pricing, and inventory in one place.</p></div><Link href="/seller/products/new" className={buttonVariants({ className: "w-fit rounded-xl" })}><Plus className="size-4" /> Add product</Link></div></section>
+      <form className="mb-7 grid gap-3 rounded-[1.5rem] p-4 sb-surface sm:p-5 sm:grid-cols-2 lg:grid-cols-[minmax(0,1fr)_auto_auto_auto_auto]" action="/seller/products">
+        <div className="relative"><Search className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" aria-hidden="true" /><Input name="search" defaultValue={search} placeholder="Search products..." aria-label="Search products" className="h-11 pl-9" /></div>
         <select name="category" defaultValue={category} className="h-9 rounded-xl border border-input bg-background px-3 text-sm outline-none focus:ring-2 focus:ring-ring" aria-label="Filter by category">
           <option value="">All categories</option>
           {categoryRows.map((row) => <option key={row.category} value={row.category}>{row.category}</option>)}
@@ -117,10 +117,10 @@ export default async function SellerProductsPage({ searchParams }: SellerProduct
       <p className="mb-4 text-sm text-muted-foreground">{total} {total === 1 ? "product" : "products"}</p>
       {products.length === 0 ? <EmptyState icon={<PackageOpen className="size-6" />} title={hasFilters ? "No matching products" : "No products yet"} description={hasFilters ? "Try changing or clearing your filters." : "Add your first product to start building your store catalog."} action={hasFilters ? <Link href="/seller/products" className={buttonVariants({ variant: "outline" })}>Clear filters</Link> : <Link href="/seller/products/new" className={buttonVariants()}>Add product</Link>} /> : (
         <div className="grid gap-4">{products.map((product) => (
-          <Card key={product.id} className="border-0 py-0 shadow-sm ring-1 ring-border transition-shadow hover:shadow-md"><CardContent className="flex flex-col gap-4 p-4 sm:flex-row sm:items-center sm:p-5">
+          <Card key={product.id} className="overflow-hidden rounded-[1.35rem] border-0 py-0 sb-surface sb-surface-hover"><CardContent className="flex flex-col gap-4 p-4 sm:flex-row sm:items-center sm:p-5">
             <Image src={product.image} alt={product.name} width={80} height={80} unoptimized className="size-20 rounded-xl bg-muted object-cover ring-1 ring-border" />
             <div className="min-w-0 flex-1"><h2 className="truncate font-semibold">{product.name}</h2><p className="text-sm text-muted-foreground">{product.category}</p></div>
-            <div className="sm:text-right"><p className="font-semibold">{formatCurrency(product.price)}</p><p className="text-sm text-muted-foreground">Stock: {product.stock}</p></div>
+            <div className="sm:text-right"><p className="font-semibold tabular-nums">{formatCurrency(product.price)}</p><p className={`text-sm font-medium ${product.stock === 0 ? "text-destructive" : product.stock <= 5 ? "text-warning" : "text-success"}`}>Stock: {product.stock}</p></div>
             <div className="flex gap-2"><Link href={`/seller/products/${product.id}/edit`} className={buttonVariants({ size: "sm", variant: "outline" })}>Edit</Link><DeleteSellerProductButton productId={product.id} /></div>
           </CardContent></Card>
         ))}</div>
