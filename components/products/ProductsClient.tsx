@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import { useSession } from "next-auth/react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { ChevronLeft, ChevronRight, PackageSearch, Search, SlidersHorizontal } from "lucide-react";
 
@@ -52,6 +53,42 @@ const categories = [
 
 const sorts = new Set(["newest", "price-low", "price-high", "name-a", "name-z"]);
 
+const wishlistRequests = new Map<string, Promise<string[]>>();
+const wishlistCache = new Map<string, string[]>();
+const emptyWishlistProductIds = new Set<string>();
+
+function loadWishlistProductIds(userId: string) {
+  const cachedIds = wishlistCache.get(userId);
+
+  if (cachedIds) {
+    return Promise.resolve(cachedIds);
+  }
+
+  const pendingRequest = wishlistRequests.get(userId);
+
+  if (pendingRequest) {
+    return pendingRequest;
+  }
+
+  const request = fetch("/api/wishlist")
+    .then(async (response) => {
+      if (!response.ok) {
+        throw new Error("Unable to load wishlist.");
+      }
+
+      const items: { productId: string }[] = await response.json();
+      const productIds = items.map((item) => item.productId);
+      wishlistCache.set(userId, productIds);
+      return productIds;
+    })
+    .finally(() => {
+      wishlistRequests.delete(userId);
+    });
+
+  wishlistRequests.set(userId, request);
+  return request;
+}
+
 export default function ProductsClient({
   products,
   initialSearch,
@@ -61,6 +98,7 @@ export default function ProductsClient({
   initialTotal,
   initialTotalPages,
 }: ProductsClientProps) {
+  const { data: session } = useSession();
   const pathname = usePathname();
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -79,6 +117,10 @@ export default function ProductsClient({
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [retryCount, setRetryCount] = useState(0);
+  const [wishlistProductIds, setWishlistProductIds] = useState<Set<string>>(
+    () => new Set(),
+  );
+  const userId = session?.user?.id;
 
   const hasActiveFilters = search !== "" || category !== "All" || sort !== "newest";
 
@@ -149,7 +191,54 @@ export default function ProductsClient({
     };
   }, [search, category, sort, page, retryCount]);
 
+  useEffect(() => {
+    let active = true;
+
+    if (!userId) {
+      return () => {
+        active = false;
+      };
+    }
+
+    loadWishlistProductIds(userId)
+      .then((productIds) => {
+        if (active) {
+          setWishlistProductIds(new Set(productIds));
+        }
+      })
+      .catch(() => {
+        if (active) {
+          setWishlistProductIds(new Set());
+        }
+      });
+
+    return () => {
+      active = false;
+    };
+  }, [userId]);
+
+  function handleWishlistChange(productId: string, isWishlisted: boolean) {
+    setWishlistProductIds((currentIds) => {
+      const nextIds = new Set(currentIds);
+
+      if (isWishlisted) {
+        nextIds.add(productId);
+      } else {
+        nextIds.delete(productId);
+      }
+
+      if (userId) {
+        wishlistCache.set(userId, Array.from(nextIds));
+      }
+
+      return nextIds;
+    });
+  }
+
   const resultLabel = `${total} ${total === 1 ? "result" : "results"}`;
+  const activeWishlistProductIds = userId
+    ? wishlistProductIds
+    : emptyWishlistProductIds;
 
   return (
     <>
@@ -224,7 +313,11 @@ export default function ProductsClient({
           action={hasActiveFilters ? <Button variant="outline" onClick={clearFilters}>Clear filters</Button> : undefined}
         />
       ) : (
-        <ProductsGrid products={displayedProducts} />
+        <ProductsGrid
+          products={displayedProducts}
+          wishlistProductIds={activeWishlistProductIds}
+          onWishlistChange={handleWishlistChange}
+        />
       )}
 
       {totalPages > 1 && (

@@ -12,24 +12,31 @@ import {
 
 type WishlistButtonProps = {
   productId: string;
+  initialIsWishlisted?: boolean;
   onWishlistChange?: (isWishlisted: boolean) => void;
   compact?: boolean;
 };
 
 export function WishlistButton({
   productId,
+  initialIsWishlisted,
   onWishlistChange,
   compact = false,
 }: WishlistButtonProps) {
   const { data: session, status } = useSession();
 
-  const [isWishlisted, setIsWishlisted] = useState(false);
+  const [fetchedIsWishlisted, setFetchedIsWishlisted] = useState(false);
   const [loading, setLoading] = useState(false);
+  const userId = session?.user?.id;
+  const isWishlisted = initialIsWishlisted ?? (userId ? fetchedIsWishlisted : false);
 
   useEffect(() => {
+    if (initialIsWishlisted !== undefined) {
+      return;
+    }
+
     async function fetchWishlist() {
-      if (!session) {
-        setIsWishlisted(false);
+      if (!userId) {
         return;
       }
 
@@ -42,19 +49,19 @@ export function WishlistButton({
 
         const wishlistItems = await res.json();
 
-        setIsWishlisted(
+        setFetchedIsWishlisted(
           wishlistItems.some(
             (item: { productId: string }) =>
               item.productId === productId
           )
         );
       } catch {
-        setIsWishlisted(false);
+        setFetchedIsWishlisted(false);
       }
     }
 
     fetchWishlist();
-  }, [productId, session]);
+  }, [initialIsWishlisted, productId, userId]);
 
   async function handleWishlist() {
     if (status === "loading") {
@@ -88,7 +95,7 @@ export function WishlistButton({
 
       const nextIsWishlisted = !isWishlisted;
 
-      setIsWishlisted(nextIsWishlisted);
+      setFetchedIsWishlisted(nextIsWishlisted);
       onWishlistChange?.(nextIsWishlisted);
 
       toastSuccess(

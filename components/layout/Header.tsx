@@ -7,7 +7,6 @@ import { usePathname, useRouter } from "next/navigation";
 import {
   ChevronDown,
   CircleUserRound,
-  Heart,
   LayoutDashboard,
   LogOut,
   Menu,
@@ -237,9 +236,6 @@ export function Header() {
                   </DropdownMenuItem>
                   <DropdownMenuItem render={<Link href="/orders" />}>
                     <ReceiptText /> My Orders
-                  </DropdownMenuItem>
-                  <DropdownMenuItem render={<Link href="/wishlist" />}>
-                    <Heart /> Wishlist
                   </DropdownMenuItem>
                 </DropdownMenuGroup>
                 <DropdownMenuSeparator />

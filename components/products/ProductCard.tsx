@@ -21,11 +21,12 @@ type ProductProps = {
   category: string;
   stock?: number;
   store?: { name: string; slug: string } | null;
+  isWishlisted?: boolean;
   onWishlistChange?: (isWishlisted: boolean) => void;
   showWishlistShortcut?: boolean;
 };
 
-export function ProductCard({ id, name, description, price, image, category, stock, store, onWishlistChange, showWishlistShortcut = true }: ProductProps) {
+export function ProductCard({ id, name, description, price, image, category, stock, store, isWishlisted, onWishlistChange, showWishlistShortcut = true }: ProductProps) {
   const { addToCart } = useCart();
   const [imageFailed, setImageFailed] = useState(false);
   const hasKnownStock = stock !== undefined;
@@ -38,7 +39,7 @@ export function ProductCard({ id, name, description, price, image, category, sto
   }
 
   return (
-    <Card className="group h-full gap-0 overflow-hidden rounded-[1.35rem] border-0 py-0 ring-1 ring-border/80 transition-[transform,box-shadow,ring-color] duration-500 ease-[cubic-bezier(0.32,0.72,0,1)] motion-safe:hover:-translate-y-1 motion-safe:hover:shadow-[0_28px_60px_-32px_rgba(37,99,235,0.38)] motion-safe:hover:ring-primary/20">
+    <Card className="group relative h-full gap-0 overflow-hidden rounded-[1.35rem] border-0 py-0 ring-1 ring-border/80 transition-[transform,box-shadow,ring-color] duration-500 ease-[cubic-bezier(0.32,0.72,0,1)] motion-safe:hover:-translate-y-1 motion-safe:hover:shadow-[0_28px_60px_-32px_rgba(37,99,235,0.38)] motion-safe:hover:ring-primary/20">
       <Link href={`/products/${id}`} className="relative block aspect-[4/3] overflow-hidden bg-[radial-gradient(circle_at_50%_0%,#FFFFFF_0%,#EFF6FF_48%,#E2E8F0_100%)] focus-visible:outline-none focus-visible:ring-3 focus-visible:ring-inset focus-visible:ring-primary/25 dark:bg-[radial-gradient(circle_at_50%_0%,#334155_0%,#172033_58%,#0F172A_100%)]">
         {image && !imageFailed ? (
           <Image src={image} alt={name} fill className="object-cover transition-transform duration-700 ease-[cubic-bezier(0.32,0.72,0,1)] group-hover:scale-[1.035]" sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw" onError={() => setImageFailed(true)} />
@@ -58,7 +59,7 @@ export function ProductCard({ id, name, description, price, image, category, sto
       </Link>
 
       {showWishlistShortcut && <div className="absolute right-3 top-14 z-10">
-        <WishlistButton productId={id} compact onWishlistChange={onWishlistChange} />
+        <WishlistButton productId={id} compact initialIsWishlisted={isWishlisted} onWishlistChange={onWishlistChange} />
       </div>}
 
       <CardContent className="flex flex-1 flex-col p-5 sm:p-5">
