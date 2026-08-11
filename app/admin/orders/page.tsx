@@ -8,14 +8,14 @@ import { EmptyState } from "@/components/ui/empty-state";
 import { formatCurrency } from "@/lib/formatCurrency";
 import { Badge } from "@/components/ui/badge";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import type { OrderStatus } from "@prisma/client";
+import type { Prisma } from "@prisma/client";
 
 interface AdminOrder {
   id: string;
   fullName: string;
   email: string;
   total: number;
-  status: OrderStatus;
+  status: Prisma.OrderGetPayload<Prisma.OrderDefaultArgs>["status"];
   createdAt: Date;
   store: {
     name: string;
