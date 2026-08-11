@@ -10,6 +10,13 @@ import { AlertTriangle, ArrowRight, DollarSign, Package, ShoppingBag, Store, Tre
 import { buttonVariants } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 
+type BestSellerGroup = {
+  productId: string | null;
+  _sum: {
+    quantity: number | null;
+  };
+};
+
 export default async function AdminDashboardPage() {
   const session = await getServerSession(authOptions);
 
@@ -112,7 +119,7 @@ export default async function AdminDashboardPage() {
 
   const monthlyRevenue = Array.from(revenueByMonth.values());
 
-  const bestSellerGroups = await prisma.orderItem.groupBy({
+  const bestSellerGroupResults = await prisma.orderItem.groupBy({
     by: ["productId"],
     where: {
       order: {
@@ -131,6 +138,8 @@ export default async function AdminDashboardPage() {
     },
     take: 5,
   });
+
+  const bestSellerGroups: BestSellerGroup[] = bestSellerGroupResults;
 
   const bestSellerProductIds = bestSellerGroups
     .map((group) => group.productId)
