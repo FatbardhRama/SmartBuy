@@ -8,6 +8,24 @@ import { EmptyState } from "@/components/ui/empty-state";
 import { formatCurrency } from "@/lib/formatCurrency";
 import { Badge } from "@/components/ui/badge";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import type { OrderStatus } from "@prisma/client";
+
+interface AdminOrder {
+  id: string;
+  fullName: string;
+  email: string;
+  total: number;
+  status: OrderStatus;
+  createdAt: Date;
+  store: {
+    name: string;
+  };
+  items: Array<{
+    id: string;
+    productName: string;
+    quantity: number;
+  }>;
+}
 
 const statusBadgeVariant = {
   PENDING: "secondary",
@@ -28,7 +46,7 @@ export default async function AdminOrdersPage() {
     redirect("/");
   }
 
-  const orders = await prisma.order.findMany({
+  const orders: AdminOrder[] = await prisma.order.findMany({
     include: {
       user: true,
       store: true,
