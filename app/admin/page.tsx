@@ -40,6 +40,52 @@ type PendingStore = {
   };
 };
 
+type LowStockProduct = {
+  id: string;
+  name: string;
+  image: string;
+  stock: number;
+};
+
+type RecentOrder = {
+  id: string;
+  fullName: string;
+  email: string;
+  phone: string;
+  address: string;
+  city: string;
+  postalCode: string;
+  total: number;
+  status: "PENDING" | "PROCESSING" | "SHIPPED" | "DELIVERED" | "CANCELLED";
+  paymentStatus: "PENDING" | "PAID" | "FAILED" | "REFUNDED";
+  checkoutSessionId: string | null;
+  paymentIntentId: string | null;
+  paidAt: Date | null;
+  createdAt: Date;
+  userId: string | null;
+  storeId: string;
+  items: Array<{
+    id: string;
+    quantity: number;
+    price: number;
+    productName: string;
+    productImage: string;
+    orderId: string;
+    productId: string | null;
+    product: {
+      id: string;
+      name: string;
+      description: string;
+      price: number;
+      image: string;
+      category: string;
+      stock: number;
+      createdAt: Date;
+      storeId: string | null;
+    } | null;
+  }>;
+};
+
 export default async function AdminDashboardPage() {
   const session = await getServerSession(authOptions);
 
@@ -55,7 +101,7 @@ export default async function AdminDashboardPage() {
 
   const products = await prisma.product.count();
 
-  const lowStockProducts = await prisma.product.findMany({
+  const lowStockProductResults = await prisma.product.findMany({
     where: {
       stock: {
         lte: 5,
@@ -183,6 +229,8 @@ export default async function AdminDashboardPage() {
     },
   });
 
+  const lowStockProducts: LowStockProduct[] = lowStockProductResults;
+
   const bestSellerProducts: BestSellerProduct[] = bestSellerProductResults;
 
   const productsById = new Map(
@@ -206,7 +254,7 @@ export default async function AdminDashboardPage() {
     }];
   });
 
-  const recentOrders = await prisma.order.findMany({
+  const recentOrderResults = await prisma.order.findMany({
     take: 5,
 
     orderBy: {
@@ -221,6 +269,8 @@ export default async function AdminDashboardPage() {
       },
     },
   });
+
+  const recentOrders: RecentOrder[] = recentOrderResults;
 
   return (
     <main className="mx-auto w-full max-w-7xl px-6 pb-20 pt-8 sm:pb-24 sm:pt-12">
