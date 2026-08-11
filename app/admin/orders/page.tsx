@@ -8,14 +8,20 @@ import { EmptyState } from "@/components/ui/empty-state";
 import { formatCurrency } from "@/lib/formatCurrency";
 import { Badge } from "@/components/ui/badge";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import type { Prisma } from "@prisma/client";
+
+type OrderStatus =
+  | "PENDING"
+  | "PROCESSING"
+  | "SHIPPED"
+  | "DELIVERED"
+  | "CANCELLED";
 
 interface AdminOrder {
   id: string;
   fullName: string;
   email: string;
   total: number;
-  status: Prisma.OrderGetPayload<Prisma.OrderDefaultArgs>["status"];
+  status: OrderStatus;
   createdAt: Date;
   store: {
     name: string;
