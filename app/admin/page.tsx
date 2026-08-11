@@ -23,6 +23,23 @@ type BestSellerProduct = {
   image: string;
 };
 
+type PendingStore = {
+  id: string;
+  ownerId: string;
+  name: string;
+  slug: string;
+  description: string | null;
+  logo: string | null;
+  banner: string | null;
+  status: "PENDING" | "APPROVED" | "REJECTED" | "SUSPENDED";
+  createdAt: Date;
+  updatedAt: Date;
+  owner: {
+    name: string | null;
+    email: string;
+  };
+};
+
 export default async function AdminDashboardPage() {
   const session = await getServerSession(authOptions);
 
@@ -57,7 +74,7 @@ export default async function AdminDashboardPage() {
 
   const orders = await prisma.order.count();
 
-  const pendingStores = await prisma.store.findMany({
+  const pendingStoreResults = await prisma.store.findMany({
     where: {
       status: "PENDING",
     },
@@ -74,6 +91,8 @@ export default async function AdminDashboardPage() {
     },
     take: 5,
   });
+
+  const pendingStores: PendingStore[] = pendingStoreResults;
 
   const revenue = await prisma.order.aggregate({
     where: {
