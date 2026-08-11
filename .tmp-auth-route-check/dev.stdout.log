@@ -1,0 +1,23 @@
+
+> smartbuy@0.1.0 dev
+> next dev --port 3107
+
+▲ Next.js 16.2.12 (Turbopack)
+- Local:         http://localhost:3107
+- Network:       http://192.168.56.1:3107
+- Environments: .env
+✓ Ready in 2.2s
+Creating turbopack project {
+  dir: 'C:\\Users\\Perdorues\\OneDrive - Fakulteti i Teknologjise se Informacionit\\Desktop\\smartbuy',
+  testMode: true
+}
+
+ GET /api/auth/session 200 in 6.0s (next.js: 6.0s, application-code: 96ms)
+ GET /api/auth/session 200 in 88ms (next.js: 36ms, application-code: 52ms)
+ GET /api/auth/csrf 200 in 56ms (next.js: 30ms, application-code: 26ms)
+ GET /api/auth/providers 200 in 59ms (next.js: 16ms, application-code: 44ms)
+ POST /api/auth/signout 200 in 82ms (next.js: 28ms, application-code: 54ms)
+ POST /api/auth/_log 200 in 48ms (next.js: 23ms, application-code: 25ms)
+ GET /api/auth/signin 302 in 34ms (next.js: 9ms, application-code: 26ms)
+ GET /api/auth/session 200 in 48ms (next.js: 22ms, application-code: 26ms)
+[?25h
