@@ -13,13 +13,28 @@ import { Badge } from "@/components/ui/badge";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { cn } from "@/lib/utils";
 
+type AdminProduct = {
+  id: string;
+  name: string;
+  description: string;
+  price: number;
+  image: string;
+  category: string;
+  stock: number;
+  createdAt: Date;
+  storeId: string | null;
+};
 
 async function getProducts() {
-  return await prisma.product.findMany({
+  const productResults = await prisma.product.findMany({
     orderBy: {
       createdAt: "desc",
     },
   });
+
+  const products: AdminProduct[] = productResults;
+
+  return products;
 }
 
 
