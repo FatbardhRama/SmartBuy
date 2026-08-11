@@ -17,6 +17,12 @@ type BestSellerGroup = {
   };
 };
 
+type BestSellerProduct = {
+  id: string;
+  name: string;
+  image: string;
+};
+
 export default async function AdminDashboardPage() {
   const session = await getServerSession(authOptions);
 
@@ -145,7 +151,7 @@ export default async function AdminDashboardPage() {
     .map((group) => group.productId)
     .filter((productId): productId is string => productId !== null);
 
-  const bestSellerProducts = await prisma.product.findMany({
+  const bestSellerProductResults = await prisma.product.findMany({
     where: {
       id: {
         in: bestSellerProductIds,
@@ -157,6 +163,8 @@ export default async function AdminDashboardPage() {
       image: true,
     },
   });
+
+  const bestSellerProducts: BestSellerProduct[] = bestSellerProductResults;
 
   const productsById = new Map(
     bestSellerProducts.map((product) => [product.id, product])
