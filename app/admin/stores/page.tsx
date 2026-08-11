@@ -9,6 +9,23 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 
+type AdminStore = {
+  id: string;
+  ownerId: string;
+  name: string;
+  slug: string;
+  description: string | null;
+  logo: string | null;
+  banner: string | null;
+  status: "PENDING" | "APPROVED" | "REJECTED" | "SUSPENDED";
+  createdAt: Date;
+  updatedAt: Date;
+  owner: {
+    name: string | null;
+    email: string;
+  };
+};
+
 const storeBadgeVariant = {
   PENDING: "warning",
   APPROVED: "success",
@@ -25,10 +42,12 @@ export default async function AdminStoresPage() {
   if (!session?.user?.id) redirect("/login");
   if (session.user.role !== "ADMIN") redirect("/");
 
-  const stores = await prisma.store.findMany({
+  const storeResults = await prisma.store.findMany({
     include: { owner: { select: { name: true, email: true } } },
     orderBy: { createdAt: "desc" },
   });
+
+  const stores: AdminStore[] = storeResults;
 
   return (
     <main className="mx-auto w-full max-w-7xl px-6 pb-20 pt-8 sm:pb-24 sm:pt-12">
