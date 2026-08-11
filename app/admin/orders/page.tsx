@@ -46,7 +46,7 @@ export default async function AdminOrdersPage() {
     redirect("/");
   }
 
-  const orders: AdminOrder[] = await prisma.order.findMany({
+  const orders: ReadonlyArray<AdminOrder> = await prisma.order.findMany({
     include: {
       user: true,
       store: true,
